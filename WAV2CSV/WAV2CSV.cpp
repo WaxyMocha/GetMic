@@ -2,61 +2,61 @@
 //
 
 #include "stdafx.h"
-#include <iostream>
-#include <fstream>
-#include <experimental/filesystem>
-#include <chrono>
-#include <string>
-#include <math.h>
-#include <Windows.h>
-#include "fftw3.h"
 
 using namespace std;
 using namespace std::chrono;
 
 namespace fs = std::experimental::filesystem;
 
+const int N = 320;//number of samples
+const int iterations = 40;// length of sound = N * iterations
+
 struct arguments
 {
 	string input;
 	string output;
-	int code = 0;
+	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
+	int number_of_files = 0;
 	bool quiet = false;
 	bool suprise = false;
 };
 
-void prepare_input_parameters(int argc, char **argv, arguments *arg);
-int list_directory(arguments *arg, string *files);
-void fill_with_data(double *in, float *data, int N);
-void complex_2_real(fftw_complex *in, float *out, int N);
-int read_file(string filename, float **samples, int N, int iterations);
-void save_DFT(float *out, int num, int N);
+arguments prepare_input_parameters(int argc, char **argv);
+int list_directory(arguments *arg, string *&files);
+void fill_with_data(double *in, float *data);
+void complex_2_real(fftw_complex *in, double *out);
+int read_file(string filename, float **samples, int iterations);
+void save_DFT(double *out, int num, arguments *arg, string filename);
+void display_suprise();
 
 int main(int argc, char **argv)
 {
 	//high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	arguments arg;
-	prepare_input_parameters(argc, argv, &arg);
-
+	arguments arg = prepare_input_parameters(argc, argv);
+	
 	if (arg.code == -1)
 	{
-		return 0;
+		return -1;
+	}
+	else if (arg.suprise)
+	{
+		display_suprise();
 	}
 
 	string *files = new string[1];
-	list_directory(&arg, files);
-	return 0;
-
-	int N = 320;//number of samples
-	int iterations = 40;// length of sound = N * iterations
+	if (list_directory(&arg, files) == -1)
+	{
+		cout << "Input directory empty, ending..." << endl;
+		return -1;
+	}
 
 	float **samples;
 	samples = new float*[iterations];
 	for (int i = 0; i < iterations; i++)
 		samples[i] = new float[N];
 
-	float *real;
-	real = new float[N];
+	double *real;
+	real = new double[N];
 
 	int num = 1;
 
@@ -73,33 +73,31 @@ int main(int argc, char **argv)
 	out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * N);//and output
 	p = fftw_plan_dft_r2c_1d(N, in, out, FFTW_MEASURE);
 
-	while (1)
+	for (int i = 0; i < arg.number_of_files; i++)
 	{
-		//TODO: add arg.input and arg.output
-		string filename = "data\\shutdown-";
-		if (num < 10)
 		{
-			filename.append("0");
-		}
-		filename.append(to_string(num));
-		filename.append(".wav");
+			struct stat buf;
+			if ((stat(files[i].c_str(), &buf) != -1) == false)//check for sound file, if not exists, basically end program
+			{
+				break;
+			}
 
-		struct stat buf;
-		if ((stat(filename.c_str(), &buf) != -1) == false)//check for sound file, if not exists, basically end program
-		{
-			break;
+			int read_result = read_file(files[i], samples, iterations);
+			if (read_result == 1)
+			{
+				return 1;
+			}
+			else if (read_result == 2)
+			{
+				continue;
+			}
 		}
-
-		if (read_file(filename, samples, N, iterations) != 0)
+		for (int j = 0; j < iterations; j++)//calculate dtf
 		{
-			return 1;
-		}
-		for (int i = 0; i < iterations; i++)//calculate dtf
-		{
-			fill_with_data(in, samples[i], N);
+			fill_with_data(in, samples[j]);
 			fftw_execute(p);
-			complex_2_real(out, real, N);
-			save_DFT(real, num, N);
+			complex_2_real(out, real);
+			save_DFT(real, i, &arg, files[i]);
 		}
 		if(!arg.quiet)
 			cout << "Done nr." << num << endl;
@@ -115,17 +113,20 @@ int main(int argc, char **argv)
 		delete[] samples;
 
 		delete[] real;
+
+		delete[] files;
 		//high_resolution_clock::time_point t2 = high_resolution_clock::now();
 		//cout << duration_cast<microseconds>(t2 - t1).count() << endl;
 	}
 	return 0;
 }
 
-void prepare_input_parameters(int argc, char **argv, arguments *arg) //-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
+arguments prepare_input_parameters(int argc, char **argv) 
 {
+	arguments arg;
 	if (argc == 1)
 	{
-		return;
+		return arg;
 	}
 	for (int i = 1; i < argc; i++)
 	{
@@ -133,14 +134,16 @@ void prepare_input_parameters(int argc, char **argv, arguments *arg) //-1 - end 
 		tmp = tmp[0];
 		if (tmp == "-")
 		{
-			bool anything = false;
-			cout << argv[i] << endl;
-			if (!strcmp(argv[i], "-q")) arg->quiet = anything = true;
-			if (!strcmp(argv[i], "-S")) arg->suprise = anything = true;
+			bool anything = true;
+
+			if (!strcmp(argv[i], "-q")) arg.quiet = true;
+			else if (!strcmp(argv[i], "-S")) arg.suprise = true;
+
+			else anything = false;
 
 			if (!anything && argc == 2)//no arguments match
 			{
-				if (argv[1] == "--help" || argv[1] == "/help" || argv[1] == "/?")
+				if (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-?") || !strcmp(argv[1], "/help") || !strcmp(argv[1], "/?"))
 				{
 					cout << "program [-S] <input> <output>" << endl;
 				}
@@ -148,21 +151,30 @@ void prepare_input_parameters(int argc, char **argv, arguments *arg) //-1 - end 
 				{
 					cout << "see --help" << endl;
 				}
-				arg->code = -1;
+				arg.code = -1;
 			}
 		}
 		else
 		{
-			arg->input = argv[i];
-			arg->output = argv[i + 1];
-			arg->code = 1;
+			if (argc == 2)
+			{
+				arg.code = -1;
+				cout << "No output directory. Ending..." << endl;
+			}
+			else
+			{
+				arg.input = argv[i];
+				arg.output = argv[i + 1];
+				arg.code = 1;
+			}
+			
 			break;
 		}
 	}
-	return;
+	return arg;
 }
 
-int list_directory(arguments *arg, string *files)
+int list_directory(arguments *arg, string *&files)
 {
 	int num = 0;
 	for (auto & p : fs::directory_iterator(arg->input))
@@ -171,7 +183,14 @@ int list_directory(arguments *arg, string *files)
 	}
 
 	delete[] files;
+
+	if (num == 0)
+	{
+		return -1;
+	}
+
 	files = new string[num];
+	arg->number_of_files = num;
 	num = 0;
 
 	for (auto & p : fs::directory_iterator(arg->input))
@@ -183,7 +202,7 @@ int list_directory(arguments *arg, string *files)
 	return 0;
 }
 
-void fill_with_data(double *in, float *data, int N)
+void fill_with_data(double *in, float *data)
 {
 	for (int i = 0; i < N; i++)
 	{
@@ -192,7 +211,7 @@ void fill_with_data(double *in, float *data, int N)
 	return;
 }
 
-void complex_2_real(fftw_complex *in, float *out, int N)//dtf output complex numbers, this function convert it to real numbers
+void complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers
 {
 	for (int i = 0; i < N / 2; i++)
 	{
@@ -203,7 +222,7 @@ void complex_2_real(fftw_complex *in, float *out, int N)//dtf output complex num
 	return;
 }
 
-int read_file(string filename, float **samples, int N, int iterations)
+int read_file(string filename, float **samples, int iterations)
 {
 	fstream file;
 	file.open(filename, ios::binary | ios::in);
@@ -223,7 +242,7 @@ int read_file(string filename, float **samples, int N, int iterations)
 	{
 		cout << "File is not valid WAV PCM file" << endl;//valid WAV PCM file consists of more things, but checking if file is even pretending to be sound file is good enough for me
 		file.close();
-		return 1;
+		return 2;//skip
 	}
 	memset(buff, 0, 16);
 
@@ -269,30 +288,157 @@ int read_file(string filename, float **samples, int N, int iterations)
 	return 0;
 }
 
-void save_DFT(float *out, int num, int N)
+void save_DFT(double *out, int num, arguments *arg, string path)
 {
 	static int temp = 0;
 	temp++;
+
 	fstream file;
-	string filename = "output\\";
-	filename.append(to_string(num));
+
+	int prefix = 0;
+	int sufix = path.length() - 5;// .wav(4) minus one for array
+	{
+		int tmp = 0;
+		string tmp2;
+
+		while (1)//separate path from file name
+		{
+			tmp2 = path[tmp];
+			if (tmp2 == "\\")
+			{
+				prefix = tmp + 1;
+				tmp++;
+			}
+			else if (tmp2 == ".")
+			{
+				tmp2 += path[tmp + 1];
+				tmp2 += path[tmp + 2];
+				tmp2 += path[tmp + 3];
+				if (tmp2 == ".wav")
+				{
+					break;
+				}
+				else
+				{
+					tmp++;
+					continue;
+				}
+			}
+			else
+			{
+				tmp++;
+			}
+		}
+	}
+	string filename;
+	for (int i = prefix; i <= sufix; i++)
+	{
+		filename += path.at(i);
+	}
+	
 	filename.append(".csv");
+	filename = arg->output + "\\" + filename;
 	file.open(filename, ios::app);
 
 	if (!file.good())
 	{
 		cout << "creating/opening file" << endl;
 	}
+
 	string to_Save = "";
+	std::ostringstream s;
 	for (int i = 0; i < N / 2; i += 2)
 	{
-		to_Save += out[i];
+		s << out[i];
+		to_Save += s.str();
+		s.clear();
+		s.str("");
 		to_Save += ";";
 	}
+
 	file << to_Save;
 	file << "\n";
-
 	file.close();
 
 	return;
+}
+
+void display_suprise()
+{
+	cout <<
+
+		"                                                                                                    " << endl <<
+		"                                            mMMMMMMMMMMMMMMMMMMM                                    " << endl <<
+		"                                       MMMMMMMMMMMMMMMMMMMMMMMMMMMMM                                " << endl <<
+		"                                    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                             " << endl <<
+		"                                 NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMy                           " << endl <<
+		"                                MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                          " << endl <<
+		"                              MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                        " << endl <<
+		"                             MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN                      " << endl <<
+		"                            MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                     " << endl <<
+		"                          `MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                   " << endl <<
+		"                         MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                  " << endl <<
+		"                        MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                 " << endl <<
+		"                       MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMM               " << endl <<
+		"                      MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM`              " << endl <<
+		"                     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM              " << endl <<
+		"                    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM              " << endl <<
+		"                   MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmNmmmmmmmmmmNMMMMMMMMMMMMMMMMMMMMM              " << endl <<
+		"                  MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNmmmmmmmmmmmmmmmmmmMMMMMMMMMMMMMMMM              " << endl <<
+		"                 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMNMMNNNmmmmmmmmmmmmmmmmmmmmmmMMMMMMMMMMMMm             " << endl <<
+		"                 MMMMMMMMMMMMMMMMMMMMMMMM:  :+o+++++               odmmmmmmmMMMMMMMMMMM             " << endl <<
+		"                 MMMMMMMMMMMMMMMMMMMMMN  oooo+++++++                  dmmmmmmmMMMMMMMMM             " << endl <<
+		"                NMMMMMMMMMMMMMMMMMMM M oooo+++++++oo                    mmdmmmmNMMMMNNMN            " << endl <<
+		"                MMMMMMMMMMMMMMMMMM M ooooo+++++++sso                     `mdmmmmmMMMMNMM            " << endl <<
+		"                MMMMMMMMMMMMMMMMMM ooooooo+++++oosoo                       mmmmmmNMMMMMM            " << endl <<
+		"                MMMMMMMMMMMMMMM/N ooooosoo++++ooosoo                        mmmmmmmMMMNM            " << endl <<
+		"                MMMMMMMMMMMMMMN +oooossooooo+ooooooo                     /   mmmmmmmMMNMo           " << endl <<
+		"                MMMMMMMMMMMMMM`+ooosysoooooooo++o+o+              /      +    ymmmmmmMNMM           " << endl <<
+		"               `MMMMMMMMMMNNM++sosyyysooo++++m+o+++o             /:     /      smmmmmmMNM           " << endl <<
+		"               hMMMMMMMMMNNd++sosyyyoooo++d/m/++++++ -  :       ::     :/       ommmmmmMM           " << endl <<
+		"               MMMMMMMMMNNo++oosysyoooo++d/ /++/+///-  .       ::s    -s         smmmmmmN           " << endl <<
+		"               NMMMMMMMNN ++oosyyyso++/mdmmm////////   -   /  :o--   -:: :        mmmdmmN           " << endl <<
+		"               MMMMMMMNNN+++osyyss++//ddNNm///////d/ `-   //.:..-   `.- `y        dmmhdmmN          " << endl <<
+		"               MMMMMMNNN+//oosyss+//d`  /dd/////dm/m`-   /+//..``  mmm  `         `dmmmmmN          " << endl <<
+		"               MMMMMMNNN//++osyso// ::/::/o////dmhmm:  //so+.` y mNNmM oo         `ddmNmNM.         " << endl <<
+		"               MMMMMNNN///+oosoo//m/y+/  o/// mmmmmN  //hh+-`ohhNy.dNyhsy         ddddNNNM`         " << endl <<
+		"               MMMMNNNN///+osooo/oM mhMhyo+ m-NNNMMM/+oddhs.sydMMMdMNNmm          :dddNNNN          " << endl <<
+		"               MMNMNNN////+osoo+/.mMyMNMNdsMMNNMMMMNsydmdd+-dMMmmMMMMNNM          ddddNNNN          " << endl <<
+		"               MMMMNNN///++oooo++omsMMMMMMMMmMMMMMNNddddddy/s NM.oMMMMMs          ddhdNNNN          " << endl <<
+		"               MMMMNNN///++o+++++/dmNNNNNNNMMMMMMMNMNNmmmNdy:/ohmNMMM//- :        ddhdNNN+          " << endl <<
+		"               NNMMNNN:o/++o+++++/ddmmNNNNNNNNMMMMMMNNNNNNNmddy.-----.- /         dddmmNN           " << endl <<
+		"               mNMMNNm:N/+++++++//dddmNNNNNNNNMMMMMNMNNNNNNNNmmmddmNdmmy         mdddmdNN           " << endl <<
+		"               :NMMNNm:N//++//+///:hddNNNNNNNNMMMMNNMNNNNNNNNdNNNNhNNNhy         mmmmhmNN           " << endl <<
+		"               `NMMNNN:N//////////:hhdmNNNNNNMMMMMNNMNNNNNNNNNNNsyNNNdh          mmmmdNN            " << endl <<
+		"                NMMNNN:N://///////:ohdmNNNNNMMMMMMNNNNNNNNNNNNNNNNmhdh          dmmNmNNN            " << endl <<
+		"                NMMNNNNN://////:::::hmmNNNMMMMMMMN  +.mNNNNNNNNNNy/yh`d        .NmmNmNN             " << endl <<
+		"                NNMNNNNN::///:::::h:mmmNMMMMMMMMMNd`ddmNNNNNNNNN`/dhyh         dNmNNmN              " << endl <<
+		"                NNMMMNNNN:N///::::/h:mNNNMMMMMMMMMNNdmNNNNNNNN ++dddh         ysmmmmNd              " << endl <<
+		"`                NMMMNNNN:hm:::::::shdNNMMMMMMMMMMMMmNNNNNN/ -hddddd         yyymmmmm               " << endl <<
+		"```              MMMMMNNNN:N:::::::: dmNNMMMMMMMMMNN///+//+ddNNmmmd         dyymmmmm                " << endl <<
+		"``````            MMMMMNNNNNN:::::::+ dmNNMMMMMMMMNNNNNNNNNNNNNNmd        dddhmmmmm                 " << endl <<
+		"````````````       MMNNMNNNNNm:::::::sm mmNMMMMMMMMNmNNNNNNyNNNN:       .dmmmNNdmm                  " << endl <<
+		"`````````````````  yNNNNMNNNNNo::::::shh`mmNMMMMMMMMNNNNNNNNNNN        .dddmNNddd                   " << endl <<
+		"````````````````````NNNNNMNNNNNm:::+::yhhh mNMMMMMMMNNNNNNNNN N `s    dddddNNddd d                  " << endl <<
+		"````````````````` MNNNNNNNMMMMNNN::/s:hhhdhh NNMMMMMNNNNNNy mmNNh    d dddmNddd ddMM-               " << endl <<
+		"`````````````` `:MMMN:`NNNNMMMMNNNo:sy:hddhhhh mMMMMNNNN: NmNmm./   dd.mmNNddd ddMMMMMM             " << endl <<
+		"````````````` NMMMMMMN: NNNNMMMNNN myyddmmddhhhhho  N  mmmmmmm h  `hhydmmNmdd ddMMMMMMMMM           " << endl <<
+		"```````````` MMMMMMMMMN: NNNNMMMNNN mhdmNNmdydhhddhhsmmmmmmmmyhh yhhh/NNNddd ddMMMMMMMMMMMM         " << endl <<
+		"``````````` MNMMMMMMMMMN:NNNNNMMMNNNmmmmNNNmd:dmddddmmmmmmmmm y+yhhh NNNhyd ddNMMMMNMMMmmMMM.```````" << endl <<
+		".......... MMM MMMMMMMMMNhN NNNMMMNN mmmmNNmmd dmmmmommmmmmmmyyyhyy.NNmhyd dddMMMMMmMMMmNMMMMM``````" << endl <<
+		"..........dMMMN MMMMMMMMMNNN NNNMMNNN NNNNNNNmm`dmmmmmmmmmhh hhyyy:NNmhsd dddMMMMMMMMMMMMMMMMMM`````" << endl <<
+		".......... MMMMN MMMMMMMMMMNNNhNNMMNNN NNNNNNNmm-mmmmmmmhhdhhssyh NNNhsd dddMMMMMMMMMmNMMMMMMMNh````" << endl <<
+		"..........+MMMMMNhMMMMMMMMMMMNN NNNMNNN NNhNNNNmmmmmddddhdhhsosy NNmmyd dddMMMMMMMMMmNMMMMMMmddd ```" << endl <<
+		".......... MMMMMMNmMMMMMMMMMMMNNN NNNNNN mNMMMNNNmmmdddddhhhss NNNdddd dddNMMMMMMMMNMMMMMMM/ddddd```" << endl <<
+		".......... MMMMMMNNNNMMMMMMMMMMNNNNNNNNNN-mNMMNNNNNNddddhhhhh NNNmddd dddNMMMhNMMMMMMMNNNmddddddh```" << endl <<
+		".......... MMMMMMMNNNNMMMMMMMMMMNNNNmNNNNNo mNNNNNNNdddhhhd.dNNNdddd/ddNMMMNhdNMMMMMMMNNsddddddd ```" << endl <<
+		".......... MMMMMMMNNNNNNMMMMMMMMMMNNNNyNNNNNM NmNNNNddhhhhdNNNdddddsdmNMhdMmmNMMMMMMMM`ddddddddd````" << endl <<
+		".......... MMMMMMMMNNNNMMMMMMMMMMMMNNNNNNNsNNMN`+mNNhhh NNNdddddddoNNMMyydNNNMMMMMMM-dddddmmmdd ````" << endl <<
+		"..--------`MMMMMMMMMNNNNMMNMMMMMMMMMMNNNNN  NMMMNN`mh+hNNddd . ddNMMMMMMMMNNNMMMMMmmmNdddNmmdd ````." << endl <<
+		"-----------:MMMMMMMMNNNNNNMMMMMMMMMMMMNNNNNdNNMMMMMMNNNdddddm .NMMMMMMMMMNNNNMMNNmmmNdddNmmmd ......" << endl <<
+		"----------- MMMMMMMMNNNNNNNNMMMMMMMMMMMNNNNN NNMMMMMNNmmdNNN NNNdmMMMMMNNNNNMMNmmmmNmmmNNmmd  ......" << endl <<
+		"----------- MMMMMMMMMNNNNNNNNMMMMMMMMMMMNNNNN.NNMMMMNNNNNNNNsNmNddhdMMddNNNMMNmmmNNmmNNNmmmd ......." << endl <<
+		"----------- MMMMMMMMMNNNNNMNNNNMMMMMMMMMMNNNN`NNMMMMNNNNNhNNNNNNdMhMmmdmdhdNNmmmNNmmNNNNddm ........" << endl <<
+		"----------- MMMMMMMMMNNNNNNMMNNNNMMMMMMMMMNNNN NNMMMMMNmmdNddhdMNMNmmNyddhdNmmmNNNNMMNNddd ........." << endl <<
+		"----------- MMMMMMMMMNNNNNNNMMMNNNNMMMMMMMNNNN`NNNMMosMhdNNNysymNmhhdhdmdhdmmmNNNNMMMNNddm`........." << endl;
 }
