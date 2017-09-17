@@ -12,7 +12,7 @@
 #elif __linux__
 #include <cstring>
 #include <sys/types.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 #endif
 
 #include <iostream>
