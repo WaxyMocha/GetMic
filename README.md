@@ -6,5 +6,16 @@ How to use:
 wav2csv [-q] [input] [output]
 
 -q - quiet, don't display progres
+
 input - folder with input files
+
 output - folder with output files
+
+For linux users:
+
+Requirements:
+FFTW 3 - http://www.fftw.org/
+
+to compile, in WAV2CSV/WAV2CSV/ execute:
+
+g++ WAV2CSV.cpp -o wav2csv -lfftw3 -std=c++17 -lstdc++fs
