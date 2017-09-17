@@ -2,14 +2,6 @@
 //
 
 #include "stdafx.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <experimental/filesystem>
-#include <chrono>
-#include <string>
-#include <math.h>
-#include "fftw3.h"
 
 using namespace std;
 using namespace std::chrono;

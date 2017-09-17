@@ -5,14 +5,16 @@
 
 #pragma once
 
+#ifdef _WIN32
 #include "targetver.h"
-
-#include <stdio.h>
 #include <tchar.h>
+#include <stdio.h>
+#elif __linux__
+#include <cstring>
+#include <sys/types.h>
+#include <sys\stat.h>
+#endif
 
-<<<<<<< HEAD
-
-=======
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -21,7 +23,6 @@
 #include <string>
 #include <math.h>
 #include "fftw3.h"
->>>>>>> 86418e76fcb6c3e2b12c8700c81bfb3f2b9449a1
 
 
 
