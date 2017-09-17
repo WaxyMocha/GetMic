@@ -22,6 +22,8 @@
 #include <chrono>
 #include <string>
 #include <math.h>
+#include <array>
+#include <vector>
 #include "fftw3.h"
 
 

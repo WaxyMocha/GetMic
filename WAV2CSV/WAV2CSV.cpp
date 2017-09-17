@@ -24,7 +24,6 @@ struct arguments
 	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
 	int number_of_files = 0;
 	bool quiet = false;
-	bool suprise = false;
 };
 
 arguments prepare_input_parameters(int argc, char **argv);
@@ -33,23 +32,20 @@ void fill_with_data(double *in, float *data);
 void complex_2_real(fftw_complex *in, double *out);
 int read_file(string filename, float **samples, int iterations);
 void save_DFT(double *out, int num, arguments *arg, string filename);
-void display_suprise();
+void suprise();
 
 int main(int argc, char **argv)
 {
 	//high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	arguments arg = prepare_input_parameters(argc, argv);
-	
+
 	if (arg.code == -1)
 	{
 		return -1;
 	}
-	else if (arg.suprise)
-	{
-		display_suprise();
-	}
 
 	string *files = new string[1];
+
 	if (list_directory(&arg, files) == -1)
 	{
 		cout << "Input directory empty, ending..." << endl;
@@ -143,7 +139,7 @@ arguments prepare_input_parameters(int argc, char **argv)
 			bool anything = true;
 
 			if (!strcmp(argv[i], "-q")) arg.quiet = true;
-			else if (!strcmp(argv[i], "-S")) arg.suprise = true;
+			else if (!strcmp(argv[i], "-S")) suprise();
 
 			else anything = false;
 
@@ -270,6 +266,7 @@ int read_file(string filename, float **samples, int iterations)
 	}
 	pos += 4 + 4;//skip "data" and file size
 
+	bool eof = false; //end of file
 	for (int i = 0; i < iterations; i++)
 	{
 		for (int j = 0; j < N; j++)
@@ -279,7 +276,7 @@ int read_file(string filename, float **samples, int iterations)
 			if ((file.rdstate() & std::ifstream::eofbit) != 0)
 			{
 				file.close();
-				//cout << "error: end of file" << endl;
+				eof = true;
 				break;
 			}
 			float f;
@@ -288,6 +285,8 @@ int read_file(string filename, float **samples, int iterations)
 			samples[i][j] = f;
 			pos += 4;
 		}
+		if (eof)
+			break;
 	}
 
 	file.close();
@@ -296,13 +295,10 @@ int read_file(string filename, float **samples, int iterations)
 
 void save_DFT(double *out, int num, arguments *arg, string path)
 {
-	static int temp = 0;
-	temp++;
-
 	fstream file;
 
 	int prefix = 0;
-	int sufix = path.length() - 5;// .wav(4) minus one for array
+	int sufix = path.length() - 5;// .wav(4) plus one for array
 	{
 		int tmp = 0;
 		string tmp2;
@@ -369,7 +365,7 @@ void save_DFT(double *out, int num, arguments *arg, string path)
 	return;
 }
 
-void display_suprise()
+void suprise()
 {
 	cout <<
 
