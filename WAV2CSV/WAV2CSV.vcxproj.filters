@@ -37,6 +37,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="libfftw3-3.lib" />
+    <Library Include="libfftw3-3_x64.lib" />
+    <Library Include="libfftw3-3_x86.lib" />
   </ItemGroup>
 </Project>
