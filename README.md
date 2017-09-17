@@ -6,7 +6,9 @@ How to use:
 wav2csv [-q] [input] [output]
 
 -q - quiet, don't display progres
+
 input - folder with input files
+
 output - folder with output files
 
 For linux users:
