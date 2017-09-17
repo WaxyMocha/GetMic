@@ -10,15 +10,7 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <experimental/filesystem>
-#include <chrono>
-#include <string>
-#include <math.h>
-#include <Windows.h>
-#include "fftw3.h"
+
 
 
 

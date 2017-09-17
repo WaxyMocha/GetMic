@@ -2,11 +2,25 @@
 //
 
 #include "stdafx.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <experimental/filesystem>
+#include <chrono>
+#include <string>
+#include <math.h>
+#include "fftw3.h"
 
 using namespace std;
 using namespace std::chrono;
 
 namespace fs = std::experimental::filesystem;
+
+#ifdef _WIN32
+const string slash = "\\";
+#elif __linux__
+const string slash = "/";
+#endif
 
 const int N = 320;//number of samples
 const int iterations = 40;// length of sound = N * iterations
@@ -304,7 +318,7 @@ void save_DFT(double *out, int num, arguments *arg, string path)
 		while (1)//separate path from file name
 		{
 			tmp2 = path[tmp];
-			if (tmp2 == "\\")
+			if (tmp2 == slash)
 			{
 				prefix = tmp + 1;
 				tmp++;
@@ -337,7 +351,7 @@ void save_DFT(double *out, int num, arguments *arg, string path)
 	}
 	
 	filename.append(".csv");
-	filename = arg->output + "\\" + filename;
+	filename = arg->output + slash + filename;
 	file.open(filename, ios::app);
 
 	if (!file.good())
