@@ -17,7 +17,6 @@
 #include <chrono>
 #include <string>
 #include <math.h>
-#include <Windows.h>
 #include "fftw3.h"
 
 
