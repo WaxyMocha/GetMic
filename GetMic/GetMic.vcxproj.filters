@@ -38,5 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="portaudio_x64.lib" />
+    <Library Include="opus.lib" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <tchar.h>
 
+#include <fstream>
 
 
 // TODO: W tym miejscu odwołaj się do dodatkowych nagłówków wymaganych przez program
