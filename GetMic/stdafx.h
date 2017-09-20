@@ -11,6 +11,7 @@
 #include <tchar.h>
 
 #include <fstream>
+#include <iostream>
 
 
 // TODO: W tym miejscu odwołaj się do dodatkowych nagłówków wymaganych przez program
