@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include "portaudio.h"
+#include "..\WAV2CSV.h"
 
 using namespace std;
 
@@ -24,18 +25,16 @@ struct paTestData
 	SAMPLE      *recordedSamples;
 };
 
-int save_WAV(string filename, float *samples);
+int save_WAV(string filename, float *samples, int numOfSamples);
+void create_wav_header(fstream &file, int &pos, int numOfSamples);
+void flip_Endian(char *in, char *out, int lenght);
+void int2char(int in, char *out, int lenght);
+void float2char(float in, char *out, int lenght);
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
-static int playCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
-int main(void)
+int main(int argc, char** argv)
 {
-
-	save_WAV("Test", (float*)NULL);
-
-	return 0;
-
 	PaStreamParameters  inputParameters, outputParameters;
 	PaStream*           stream;
 	PaError             err = paNoError;
@@ -120,48 +119,10 @@ int main(void)
 	cout << "sample max amplitude = " << max << endl;
 	cout << "sample average = " << average << endl;
 
-	/* Playback recorded data.  -------------------------------------------- */
-	data.frameIndex = 0;
 
-	outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
-	if (outputParameters.device == paNoDevice) {
-		fprintf(stderr, "Error: No default output device.\n");
-		goto done;
-	}
-	outputParameters.channelCount = NUM_CHANNELS;                     /* stereo output */
-	outputParameters.sampleFormat = PA_SAMPLE_TYPE;
-	outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
-	outputParameters.hostApiSpecificStreamInfo = NULL;
-
-	printf("\n=== Now playing back. ===\n"); fflush(stdout);
-	err = Pa_OpenStream(
-		&stream,
-		NULL, /* no input */
-		&outputParameters,
-		SAMPLE_RATE,
-		FRAMES_PER_BUFFER,
-		paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-		playCallback,
-		&data);
-	if (err != paNoError) goto done;
-
-	if (stream)
-	{
-		err = Pa_StartStream(stream);
-		if (err != paNoError) goto done;
-
-		printf("Waiting for playback to finish.\n"); fflush(stdout);
-
-		while ((err = Pa_IsStreamActive(stream)) == 1) Pa_Sleep(100);
-		if (err < 0) goto done;
-
-		err = Pa_CloseStream(stream);
-		if (err != paNoError) goto done;
-
-		printf("Done.\n"); fflush(stdout);
-	}
-
-done:
+	save_WAV("Test.wav", data.recordedSamples, totalFrames);
+	
+	done:
 	Pa_Terminate();
 	if (data.recordedSamples)       /* Sure it is NULL or valid. */
 		delete [] data.recordedSamples;
@@ -175,7 +136,7 @@ done:
 	return err;
 }
 
-int save_WAV(string filename, float *samples)
+int save_WAV(string filename, float *samples, int numOfSamples)
 {
 	fstream file;
 	file.open(filename, ios::binary | ios::out);
@@ -187,70 +148,146 @@ int save_WAV(string filename, float *samples)
 		return 1;
 	}
 
-	string buff;
-	int iBuff;
+	char buff[16] = { 0 };
 	int pos = 0;
 
-	buff = "RIFF";
-	file.write(buff.c_str(), 4);
-	pos += 4;
+	create_wav_header(file, pos, numOfSamples);
 
-	buff = "    ";//File size
-	file.seekg(pos);
-	file.write(buff.c_str(), 4);
-	pos += 4;
+	for (int i = 0; i < numOfSamples; i++)
+	{
+		float2char(samples[i], buff, 4);
+		flip_Endian(buff, buff, 4);
 
-	buff = "WAVE";
-	file.seekg(pos);
-	file.write(buff.c_str(), 4);
-	pos += 4;
-
-	buff = "fmt ";
-	file.seekg(pos);
-	file.write(buff.c_str(), 4);
-	pos += 4;
-
-	iBuff = 0x10;
-	file.seekg(pos);
-	file.write(reinterpret_cast<char*>(&iBuff), 4);
-	pos += 4;
-
-	iBuff = 0x3;//Type(?)
-	file.seekg(pos);
-	file.write(reinterpret_cast<char*>(&iBuff), 2);
-	pos += 2;
-
-	iBuff = 0x1;//Number of chanels
-	file.seekg(pos);
-	file.write(reinterpret_cast<char*>(&iBuff), 2);
-	pos += 2;
-
-	iBuff = 0x3E80;//Sample rate
-	file.seekg(pos);
-	file.write(reinterpret_cast<char*>(&iBuff), 4);
-	pos += 4;
-
-	iBuff = 0x0;//(Sample Rate * BitsPerSample * Channels) / 8.
-	file.seekg(pos);
-	file.write(reinterpret_cast<char*>(&iBuff), 1);
-	pos += 1;
-
-	iBuff = 0xFA;//(Sample Rate * BitsPerSample * Channels) / 8.
-	file.seekg(pos);
-	file.write(reinterpret_cast<char*>(&iBuff), 3);
-	pos += 3;
-
-	iBuff = 0x04;//BitsPerSample
-	file.seekg(pos);
-	file.write(reinterpret_cast<char*>(&iBuff), 2);
-	pos += 2;
-
-	buff = "data";
-	file.seekg(pos);
-	file.write(buff.c_str(), 4);
-	pos += 4;
+		file.seekg(pos);
+		file.write(buff, 4);
+		pos += 4;
+	}
 
 	file.close();
+
+	return 0;
+}
+
+void create_wav_header(fstream &file, int &pos, int numOfSamples)
+{
+	char buff[16] = { 0 };
+
+	file.write("RIFF", 4);
+	pos += 4;
+
+	int2char(((numOfSamples * 4) + 44), buff, 4);//File size
+	flip_Endian(buff, buff, 4);
+	file.seekg(pos);
+	file.write(buff, 4);
+	pos += 4;
+
+	file.seekg(pos);
+	file.write("WAVE", 4);
+	pos += 4;
+
+	file.seekg(pos);
+	file.write("fmt ", 4);
+	pos += 4;
+
+	int2char(0x10, buff, 4);
+	flip_Endian(buff, buff, 4);
+	file.seekg(pos);
+	file.write(buff, 4);
+	pos += 4;
+
+	int2char(0x3, buff, 2);
+	flip_Endian(buff, buff, 2);
+	file.seekg(pos);
+	file.write(buff, 2);
+	pos += 2;
+
+	int2char(0x1, buff, 2);//Number of chanels
+	flip_Endian(buff, buff, 2);
+	file.seekg(pos);
+	file.write(buff, 2);
+	pos += 2;
+
+	int2char(0x3E80, buff, 4);//Sample rate
+	flip_Endian(buff, buff, 4);
+	file.seekg(pos);
+	file.write(buff, 4);
+	pos += 4;
+
+
+	int2char(0xFA00, buff, 4);//(Sample Rate * BitsPerSample * Channels) / 8.
+	flip_Endian(buff, buff, 4);
+	file.seekg(pos);
+	file.write(buff, 4);
+	pos += 4;
+
+	int2char(0x4, buff, 2);//(BitsPerSample * Channels) / 8 = (32 * 1)/8 = 4
+	flip_Endian(buff, buff, 2);
+	file.seekg(pos);
+	file.write(buff, 2);
+	pos += 2;
+
+	int2char(0x20, buff, 2);//Bits per sample
+	flip_Endian(buff, buff, 2);
+	file.seekg(pos);
+	file.write(buff, 2);
+	pos += 2;
+
+	file.seekg(pos);
+	file.write("data", 4);
+	pos += 4;
+
+	int2char((numOfSamples * 4), buff, 4);
+	flip_Endian(buff, buff, 4);
+	file.seekg(pos);
+	file.write(buff, 4);
+	pos += 4;
+}
+
+void flip_Endian(char *in, char *out, int lenght)
+{
+	char *tmp = new char[lenght];
+
+	int j = 0;
+	for (int i = lenght - 1; i >= 0; i--)
+	{
+		tmp[i] = in[j];
+
+		j++;
+	}
+	for (int i = lenght - 1; i >= 0; i--)
+	{
+		out[i] = tmp[i];
+	}
+
+	return;
+}
+
+void int2char(int in, char *out, int lenght)
+{
+	int shift = (lenght * 8) - 8;
+
+	for (int i = 0; i < lenght; i++)
+	{
+		out[i] = (in >> shift) & 0xFF;
+		shift -= 8;
+	}
+	return;
+}
+
+void float2char(float in, char *out, int lenght)
+{
+	int tmp = 0;
+
+	memcpy(&tmp, &in, sizeof(tmp));
+
+	int shift = (lenght * 8) - 8;
+
+	for (int i = 0; i < lenght; i++)
+	{
+		out[i] = (tmp >> shift) & 0xFF;
+		shift -= 8;
+	}
+	return;
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
@@ -296,48 +333,5 @@ static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned 
 		}
 	}
 	data->frameIndex += framesToCalc;
-	return finished;
-}
-
-static int playCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
-{
-	paTestData *data = (paTestData*)userData;
-	SAMPLE *rptr = &data->recordedSamples[data->frameIndex * NUM_CHANNELS];
-	SAMPLE *wptr = (SAMPLE*)outputBuffer;
-	unsigned int i;
-	int finished;
-	unsigned int framesLeft = data->maxFrameIndex - data->frameIndex;
-
-	(void)inputBuffer; /* Prevent unused variable warnings. */
-	(void)timeInfo;
-	(void)statusFlags;
-	(void)userData;
-
-	if (framesLeft < framesPerBuffer)
-	{
-		/* final buffer... */
-		for (i = 0; i<framesLeft; i++)
-		{
-			*wptr++ = *rptr++;  /* left */
-			if (NUM_CHANNELS == 2) *wptr++ = *rptr++;  /* right */
-		}
-		for (; i<framesPerBuffer; i++)
-		{
-			*wptr++ = 0;  /* left */
-			if (NUM_CHANNELS == 2) *wptr++ = 0;  /* right */
-		}
-		data->frameIndex += framesLeft;
-		finished = paComplete;
-	}
-	else
-	{
-		for (i = 0; i<framesPerBuffer; i++)
-		{
-			*wptr++ = *rptr++;  /* left */
-			if (NUM_CHANNELS == 2) *wptr++ = *rptr++;  /* right */
-		}
-		data->frameIndex += framesPerBuffer;
-		finished = paContinue;
-	}
 	return finished;
 }

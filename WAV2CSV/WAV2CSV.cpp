@@ -2,9 +2,12 @@
 //
 
 #include "stdafx.h"
+#include "..\WAV2CSV.h"
 
 using namespace std;
 using namespace std::chrono;
+
+using namespace WAV2CSV;
 
 namespace fs = std::experimental::filesystem;
 
@@ -16,23 +19,6 @@ const string slash = "/";
 
 const int N = 320;//number of samples
 const int iterations = 40;// length of sound = N * iterations
-
-struct arguments
-{
-	string input;
-	string output;
-	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
-	int number_of_files = 0;
-	bool quiet = false;
-};
-
-arguments prepare_input_parameters(int argc, char **argv);
-int list_directory(arguments *arg, string *&files);
-void fill_with_data(double *in, float *data);
-void complex_2_real(fftw_complex *in, double *out);
-int read_file(string filename, float **samples, int iterations);
-void save_DFT(double *out, int num, arguments *arg, string filename);
-void suprise();
 
 int main(int argc, char **argv)
 {
@@ -123,7 +109,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-arguments prepare_input_parameters(int argc, char **argv) 
+arguments WAV2CSV::prepare_input_parameters(int argc, char **argv)
 {
 	arguments arg;
 	if (argc == 1)
@@ -176,7 +162,7 @@ arguments prepare_input_parameters(int argc, char **argv)
 	return arg;
 }
 
-int list_directory(arguments *arg, string *&files)
+int WAV2CSV::list_directory(arguments *arg, string *&files)
 {
 	int num = 0;
 	for (auto & p : fs::directory_iterator(arg->input))
@@ -204,7 +190,7 @@ int list_directory(arguments *arg, string *&files)
 	return 0;
 }
 
-void fill_with_data(double *in, float *data)
+void WAV2CSV::fill_with_data(double *in, float *data)
 {
 	for (int i = 0; i < N; i++)
 	{
@@ -213,7 +199,7 @@ void fill_with_data(double *in, float *data)
 	return;
 }
 
-void complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers
+void WAV2CSV::complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers
 {
 	for (int i = 0; i < N / 2; i++)
 	{
@@ -224,7 +210,7 @@ void complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, 
 	return;
 }
 
-int read_file(string filename, float **samples, int iterations)
+int WAV2CSV::read_file(string filename, float **samples, int iterations)
 {
 	fstream file;
 	file.open(filename, ios::binary | ios::in);
@@ -293,7 +279,7 @@ int read_file(string filename, float **samples, int iterations)
 	return 0;
 }
 
-void save_DFT(double *out, int num, arguments *arg, string path)
+void WAV2CSV::save_DFT(double *out, int num, arguments *arg, string path)
 {
 	fstream file;
 
@@ -365,7 +351,7 @@ void save_DFT(double *out, int num, arguments *arg, string path)
 	return;
 }
 
-void suprise()
+void  WAV2CSV::suprise()
 {
 	cout <<
 
