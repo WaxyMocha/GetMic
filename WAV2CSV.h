@@ -22,5 +22,6 @@ namespace WAV2CSV
 	void complex_2_real(fftw_complex *in, double *out);
 	int read_file(string filename, float **samples, int iterations);
 	void save_DFT(double *out, int num, arguments *arg, string filename);
+	void double2char(double in, char *out, int lenght);
 	void suprise();
 }

@@ -338,16 +338,32 @@ void WAV2CSV::save_DFT(double *out, int num, arguments *arg, string path)
 	for (int i = 0; i < N / 2; i += 2)
 	{
 		s << out[i];
-		to_Save += s.str();
+		file.write(s.str().c_str(), sizeof(s.str().c_str()));
+		//to_Save += s.str();
 		s.clear();
 		s.str("");
 		to_Save += ";";
 	}
-
-	file << to_Save;
+	//file << to_Save;
 	file << "\n";
 	file.close();
 
+	return;
+}
+
+void double2char(double in, char *out, int lenght)
+{
+	int tmp = 0;
+
+	memcpy(&tmp, &in, sizeof(tmp));
+
+	int shift = (lenght * 8) - 8;
+
+	for (int i = 0; i < lenght; i++)
+	{
+		out[i] = (tmp >> shift) & 0xFF;
+		shift -= 8;
+	}
 	return;
 }
 
