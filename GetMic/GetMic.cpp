@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <math.h>
 #include "headers\portaudio.h"
 #include "headers\fftw3.h"
 #include "headers\WAV.h"
@@ -33,16 +34,15 @@ int main(int argc, char** argv)
 	{
 		return -1;
 	}
-
-
 	paTestData data;
-	//float max, val;
-	//double average;
 
 	future<int> threads[max_Threads];//Threads handlers
 
 	bool create_New = false;
 	int file_No = 0;
+	float max, val;
+	double avg, avg_Old, change;
+	avg_Old = 0;
 
 	fftw_plan plans[max_Threads];//Plans for FFT
 
@@ -59,6 +59,27 @@ int main(int argc, char** argv)
 		{
 			Pa_Sleep(10);
 		}
+		max = 0;
+		avg = 0.0;
+		for (int i = 0; i < numOfSamples; i++)
+		{
+			val = data.recordedSamples[i];
+			val = abs(val); // ABS
+			if (val > max)
+			{
+				max = val;
+			}
+			avg += val;
+		}
+		avg /= (double)numOfSamples;
+
+		change = (abs(avg - avg_Old) / ((avg + avg_Old) / 2));
+
+		cout << "sample max amplitude = " << max << endl;
+		cout << "sample average = " << avg << endl;
+		cout << "change = " << change * 100 << "%" << endl;
+
+		avg_Old = avg;
 
 		create_New = true;
 		if (!arg.quiet || arg.debug) cout << endl;
@@ -106,7 +127,7 @@ int main(int argc, char** argv)
 			{
 				if (arg.quiet) cout << "Thread on: " << i << ", is still running" << endl;
 			}
-			if (create_New)
+			if (i = max_Threads - 1 && create_New)
 			{
 				if (!arg.quiet) cout << "Out of free thread handlers, increase number of it." << endl;
 				return 1;
@@ -114,26 +135,11 @@ int main(int argc, char** argv)
 		}
 		if (arg.debug) cout << "skipped samples: " << data.skipped_Frames << endl;
 		data.skipped_Frames = 0;
-	}
-	/* Measure maximum peak amplitude. 
-	max = 0;
-	average = 0.0;
-	for (i = 0; i<numSamples; i++)
-	{
-		val = data.recordedSamples[i];
-		if (val < 0) val = -val; // ABS
-		if (val > max)
-		{
-			max = val;
-		}
-		average += val;
-	}
 
-	average = average / (double)numSamples;
 
-	cout << "sample max amplitude = " << max << endl;
-	cout << "sample average = " << average << endl;
-	*/
+	}
+	//Measure maximum peak amplitude.
+
 }
 
 int Init(paTestData *data, fftw_plan *plans)

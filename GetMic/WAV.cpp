@@ -19,12 +19,10 @@ int save_WAV(string filename, float *samples, int numOfSamples)
 	int pos = 0;
 
 	create_wav_header(file, pos, numOfSamples);
-
 	for (int i = 0; i < numOfSamples; i++)
 	{
 		float2char(samples[i], buff, 4);
 		flip_Endian(buff, buff, 4);
-
 		file.seekg(pos);
 		file.write(buff, 4);
 		pos += 4;
@@ -126,6 +124,7 @@ void flip_Endian(char *in, char *out, int lenght)
 		out[i] = tmp[i];
 	}
 
+	delete[] tmp;
 	return;
 }
 
