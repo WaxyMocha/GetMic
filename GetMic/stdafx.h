@@ -12,6 +12,11 @@
 
 #include <fstream>
 #include <iostream>
-
+#include <sstream>
+#include <chrono>
+#include <thread>
+#include <string>
+#include <future>
+#include "headers\fftw3.h"
 
 // TODO: W tym miejscu odwołaj się do dodatkowych nagłówków wymaganych przez program

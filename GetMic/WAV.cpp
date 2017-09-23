@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "WAV.h"
+#include "headers\WAV.h"
 
 using namespace std;
 
