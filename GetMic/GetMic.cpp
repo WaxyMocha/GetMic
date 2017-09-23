@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 	{
 		while (data.frameIndex != numOfSamples)
 		{
-			Pa_Sleep(100);
+			Pa_Sleep(10);
 		}
 
 		create_New = true;
