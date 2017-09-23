@@ -17,6 +17,8 @@
 #include <thread>
 #include <string>
 #include <future>
+#include <experimental/filesystem>
+#include "headers\GetMic.h"
 #include "headers\fftw3.h"
 
 // TODO: W tym miejscu odwołaj się do dodatkowych nagłówków wymaganych przez program

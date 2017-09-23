@@ -10,7 +10,7 @@ int save_WAV(string filename, float *samples, int numOfSamples)
 
 	if (!file.good())
 	{
-		cout << "Error while loading file" << endl;
+		if (arg.quiet) cout << "Error while loading file" << endl;
 		file.close();
 		return 1;
 	}

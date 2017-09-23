@@ -4,50 +4,37 @@
 #include "stdafx.h"
 #include "headers\portaudio.h"
 #include "headers\fftw3.h"
-#include "..\WAV2CSV.h"
 #include "headers\WAV.h"
 #include "headers\thread.h"
 
 using namespace std;
 using namespace std::chrono;
 
-#ifdef _WIN32
-const string slash = "\\";
-#elif __linux__
-const string slash = "/";
-#endif
-
-const int max_Threads = 8;
+namespace fs = std::experimental::filesystem;
 
 double **in;
 fftw_complex **out;
 float **buff;
 
 /* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
-#define SAMPLE_RATE  (16000)
-#define FRAMES_PER_BUFFER (320)
-#define NUM_SECONDS     (1)
-#define NUM_CHANNELS    (1)
 
-#define PA_SAMPLE_TYPE  paFloat32
-#define SAMPLE_SILENCE  (0.0f)
+arguments arg;
 
-const int numOfSamples = SAMPLE_RATE * NUM_CHANNELS;
-const int iterations = SAMPLE_RATE / 320;
-
-struct paTestData
-{
-	int          frameIndex = 0;  /* Index into sample array. */
-	int          maxFrameIndex = numOfSamples;
-	float      *recordedSamples;
-	long skipped_Frames = 0;
-};
 int Init(paTestData *data, fftw_plan *plans);
+arguments prepare_input_parameters(int argc, char **argv);
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
 int main(int argc, char** argv)
 {
+	arg = prepare_input_parameters(argc, argv);
+
+	if (arg.code == -1)
+	{
+		return -1;
+	}
+
+
 	paTestData data;
 	//float max, val;
 	//double average;
@@ -59,13 +46,13 @@ int main(int argc, char** argv)
 
 	fftw_plan plans[max_Threads];//Plans for FFT
 
-	if (Init(&data, plans))
+	if (Init(&data, plans) && !arg.quiet)
 	{
 		cout << "Init failed, ending..." << endl;
 		return 0;
 	}
 
-	cout << "Init completed" << endl;
+	if (arg.debug) cout << "Init completed" << endl;
 	while (1)
 	{
 		while (data.frameIndex != numOfSamples)//check if callback function buffer is full
@@ -74,7 +61,7 @@ int main(int argc, char** argv)
 		}
 
 		create_New = true;
-		cout << endl;
+		if (!arg.quiet || arg.debug) cout << endl;
 
 		for (int i = 0; i < max_Threads; i++)
 		{
@@ -86,10 +73,11 @@ int main(int argc, char** argv)
 					data.frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 
 					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);//New thread
+					if (!arg.quiet) cout << "Started No. " << file_No << endl;
 					create_New = false;
 					file_No++;
 
-					cout << "New thread created on: " << i << endl;
+					if (arg.debug) cout << "New thread created on: " << i << endl;
 				}
 				else
 				{
@@ -107,23 +95,24 @@ int main(int argc, char** argv)
 					data.frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 
 					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);//New thread
+					if (!arg.quiet) cout << "Started No. " << file_No << endl;
 					create_New = false;
 					file_No++;
 
-					cout << "New thread created on: " << i << endl;
+					if (arg.quiet) cout << "New thread created on: " << i << endl;
 				}
 			}
 			else
 			{
-				cout << "Thread on: " << i << ", is still running" << endl;
+				if (arg.quiet) cout << "Thread on: " << i << ", is still running" << endl;
 			}
 			if (create_New)
 			{
-				cout << "Out of free thread handlers, increase number of it." << endl;
+				if (!arg.quiet) cout << "Out of free thread handlers, increase number of it." << endl;
 				return 1;
 			}
 		}
-		cout << "skipped samples: " << data.skipped_Frames << endl;
+		if (arg.debug) cout << "skipped samples: " << data.skipped_Frames << endl;
 		data.skipped_Frames = 0;
 	}
 	/* Measure maximum peak amplitude. 
@@ -180,13 +169,13 @@ int Init(paTestData *data, fftw_plan *plans)
 	if (Pa_Initialize() != paNoError)
 	{
 		Pa_Terminate();
-		cout << "Cannot initialize PortAudio" << endl;
+		if (!arg.quiet) cout << "Cannot initialize PortAudio" << endl;
 		return 1;
 	}
 
 	inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 	if (inputParameters.device == paNoDevice) {
-		cout << "Error: No default input device." << endl;
+		if (!arg.quiet) cout << "Error: No default input device." << endl;
 		Pa_Terminate();
 		return 1;
 	}
@@ -198,16 +187,80 @@ int Init(paTestData *data, fftw_plan *plans)
 	if (Pa_OpenStream(&stream, &inputParameters, NULL, SAMPLE_RATE, FRAMES_PER_BUFFER, paClipOff, recordCallback, data) != paNoError)
 	{
 		Pa_Terminate();
-		cout << "Open stream failed" << endl;
+		if (!arg.quiet) cout << "Open stream failed" << endl;
 		return 1;
 	}
 	if (Pa_StartStream(stream) != paNoError)
 	{
 		Pa_Terminate();
-		cout << "Start stream failed" << endl;
+		if (!arg.quiet) cout << "Start stream failed" << endl;
 		return 1;
 	}
 	return 0;
+}
+
+arguments prepare_input_parameters(int argc, char **argv)
+{
+	arguments arg;
+	if (argc == 1)
+	{
+		return arg;
+	}
+	for (int i = 1; i < argc; i++)
+	{
+		string tmp = argv[i];
+		tmp = tmp[0];
+		if (tmp == "-")
+		{
+			bool anything = true;
+
+			if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) arg.quiet = true;
+			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) arg.debug = true;
+
+			else if (!strcmp(argv[i], "-a") || !strcmp(argv[i], "--audio"))
+			{
+				if (fs::is_directory(argv[i + 1]))
+				{
+					arg.folder_for_audio = argv[i + 1];
+				}
+			}
+			else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--csv"))
+			{
+				if (fs::is_directory(argv[i + 1]))
+				{
+					arg.folder_for_csv = argv[i + 1];
+				}
+			}
+
+			else anything = false;
+
+			if (!anything && argc == 2)//no arguments match
+			{
+				if (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-?") || !strcmp(argv[1], "/help") || !strcmp(argv[1], "/?"))
+				{
+					cout << "program <parameters> <audio> <csv>" << endl
+						<< "Audio and csv are folders for respective, audio files and results of DFT" << endl;
+					cout << "Avaiable parameters: " << endl
+						<< "-q, --quiet " << "Do not output any information about progress" << endl
+						<< "-d, --debug " << "Enable debug informaton" << endl;
+				}
+				else
+				{
+					cout << "see --help" << endl;
+				}
+				arg.code = -1;
+				break;
+			}
+		}
+		else
+		{
+			arg.code = -1;
+			cout << "see --help" << endl;
+
+			break;
+		}
+	}
+	return arg;
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)

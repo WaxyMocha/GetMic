@@ -27,7 +27,7 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 	t.join();
 	delete[] tmp;
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
+	if (arg.debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
 	return 0;
 }
 
@@ -82,7 +82,7 @@ void save_CSV(string path, double *out, int num)
 
 	if (!file.good())
 	{
-		cout << "creating/opening file" << endl;
+		if (!arg.quiet) cout << "Error while creating/opening file" << endl;
 	}
 	string to_Save = "";
 	std::ostringstream s;
