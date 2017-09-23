@@ -52,12 +52,12 @@ int main(int argc, char** argv)
 	//float max, val;
 	//double average;
 
-	future<int> threads[max_Threads];
+	future<int> threads[max_Threads];//Threads handlers
 
 	bool create_New = false;
 	int file_No = 0;
 
-	fftw_plan plans[max_Threads];
+	fftw_plan plans[max_Threads];//Plans for FFT
 
 	if (Init(&data, plans))
 	{
@@ -68,23 +68,24 @@ int main(int argc, char** argv)
 	cout << "Init completed" << endl;
 	while (1)
 	{
-		while (data.frameIndex != numOfSamples)
+		while (data.frameIndex != numOfSamples)//check if callback function buffer is full
 		{
 			Pa_Sleep(10);
 		}
 
 		create_New = true;
 		cout << endl;
+
 		for (int i = 0; i < max_Threads; i++)
 		{
 			if (!threads[i].valid())//check if handle is empty
 			{
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					copy(data.recordedSamples, data.recordedSamples + numOfSamples, buff[i]);
-					data.frameIndex = 0;
+					copy(data.recordedSamples, data.recordedSamples + numOfSamples, buff[i]);//Copy buffer to other place
+					data.frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 
-					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);
+					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);//New thread
 					create_New = false;
 					file_No++;
 
@@ -102,10 +103,10 @@ int main(int argc, char** argv)
 
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					copy(data.recordedSamples, data.recordedSamples + numOfSamples, buff[i]);
-					data.frameIndex = 0;
+					copy(data.recordedSamples, data.recordedSamples + numOfSamples, buff[i]);//Copy buffer to other place
+					data.frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 
-					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);
+					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);//New thread
 					create_New = false;
 					file_No++;
 
@@ -151,8 +152,8 @@ int Init(paTestData *data, fftw_plan *plans)
 	PaStreamParameters inputParameters;
 	PaStream *stream;
 
-	fftw_init_threads();
-	fftw_plan_with_nthreads(2);
+	fftw_init_threads();//Enable multi-threaded FFTW
+	fftw_plan_with_nthreads(2);//Number of threads for FFTW
 
 	in = new double*[max_Threads];
 	out = new fftw_complex*[max_Threads];
@@ -171,9 +172,9 @@ int Init(paTestData *data, fftw_plan *plans)
 
 	for (int i = 0; i < max_Threads; i++)
 	{
-		plans[i] = fftw_plan_dft_r2c_1d(320, in[i], out[i], FFTW_MEASURE);
+		plans[i] = fftw_plan_dft_r2c_1d(320, in[i], out[i], FFTW_MEASURE);//Create plans for FFTW
 	}
-	data->recordedSamples = new float[numOfSamples]; /* From now on, recordedSamples is initialised. */
+	data->recordedSamples = new float[numOfSamples];
 	memset(data->recordedSamples, 0, numOfSamples * sizeof(*data->recordedSamples));
 
 	if (Pa_Initialize() != paNoError)
