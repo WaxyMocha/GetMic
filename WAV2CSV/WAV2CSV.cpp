@@ -281,6 +281,7 @@ int WAV2CSV::read_file(string filename, float **samples, int iterations)
 
 void WAV2CSV::save_DFT(double *out, int num, arguments *arg, string path)
 {
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	fstream file;
 
 	int prefix = 0;
@@ -335,18 +336,22 @@ void WAV2CSV::save_DFT(double *out, int num, arguments *arg, string path)
 
 	string to_Save = "";
 	std::ostringstream s;
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	for (int i = 0; i < N / 2; i += 2)
 	{
 		s << out[i];
-		file.write(s.str().c_str(), sizeof(s.str().c_str()));
-		//to_Save += s.str();
+		to_Save += s.str();
 		s.clear();
 		s.str("");
 		to_Save += ";";
 	}
-	//file << to_Save;
+	file.write(to_Save.c_str(), sizeof(to_Save.c_str()));
 	file << "\n";
 	file.close();
+	high_resolution_clock::time_point t3 = high_resolution_clock::now();
+
+	cout << "one: " << duration_cast<microseconds>(t2 - t1).count() << endl;
+	cout << "two: " << duration_cast<microseconds>(t3 - t2).count() << endl;
 
 	return;
 }

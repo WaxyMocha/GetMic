@@ -15,7 +15,7 @@ int save_WAV(string filename, float *samples, int numOfSamples)
 		return 1;
 	}
 
-	char buff[16] = { 0 };
+	char *buff = new char[16];
 	int pos = 0;
 
 	create_wav_header(file, pos, numOfSamples);
@@ -29,7 +29,7 @@ int save_WAV(string filename, float *samples, int numOfSamples)
 		file.write(buff, 4);
 		pos += 4;
 	}
-
+	delete[] buff;
 	file.close();
 
 	return 0;
@@ -141,7 +141,7 @@ void int2char(int in, char *out, int lenght)
 	return;
 }
 
-void float2char(float in, char *out, int lenght)
+void float2char(float &in, char *out, int lenght)
 {
 	int tmp = 0;
 
