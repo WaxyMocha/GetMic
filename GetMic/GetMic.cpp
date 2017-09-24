@@ -108,8 +108,10 @@ int Init(paTestData *data, fftw_plan *plans)
 	PaStreamParameters inputParameters;
 	PaStream *stream;
 
+	/* For DFT with 320 points, there is no sense for using threads
 	fftw_init_threads();//Enable multi-threaded FFTW
 	fftw_plan_with_nthreads(2);//Number of threads for FFTW
+	*/
 
 	in = new double*[max_Threads];
 	out = new fftw_complex*[max_Threads];
