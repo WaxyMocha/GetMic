@@ -8,6 +8,7 @@ using namespace std;
 extern const int numOfSamples;
 extern const int iterations;
 extern const string slash;
+extern arguments arg;
 
 int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out);
 void FFT(fftw_plan p, fftw_complex *out, double *tmp);

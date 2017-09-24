@@ -32,8 +32,8 @@ struct paTestData
 };
 struct arguments
 {
-	string folder_for_audio;
-	string folder_for_csv;
+	string folder_for_audio = "";
+	string folder_for_csv = "";
 	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
 	bool quiet = false;
 	bool debug = false;

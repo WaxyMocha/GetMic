@@ -9,11 +9,13 @@ using namespace std::chrono;
 int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out)
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	string str = "WAV\\";
-	str.append(filename);
-	str.append(".wav");
 
-	thread t(save_WAV, str, buff, numOfSamples);
+	thread t;
+
+	if (arg.folder_for_audio != "")
+	{
+		t = thread(save_WAV, filename, buff, numOfSamples);
+	}
 
 	double *tmp = new double[numOfSamples];
 
@@ -21,10 +23,16 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 	{
 		fill_with_data(in, buff);
 		FFT(p, out, tmp);
-		save_CSV(str, tmp, i);
+		if (arg.folder_for_csv != "")
+		{
+			save_CSV(filename, tmp, i);
+		}
 	}
-
-	t.join();
+	if (t.joinable())
+	{
+		t.join();
+	}
+	
 	delete[] tmp;
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	if (arg.debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
@@ -35,49 +43,17 @@ void save_CSV(string path, double *out, int num)
 {
 	fstream file;
 
-	int prefix = 0;
-	int sufix = path.length() - 5;// .wav(4) plus one for array
-	{
-		int tmp = 0;
-		string tmp2;
+	int sufix = arg.folder_for_csv.length() - 1;// arrays start at zero
 
-		while (1)//separate path from file name
-		{
-			tmp2 = path[tmp];
-			if (tmp2 == slash)
-			{
-				prefix = tmp + 1;
-				tmp++;
-			}
-			else if (tmp2 == ".")
-			{
-				tmp2 += path[tmp + 1];
-				tmp2 += path[tmp + 2];
-				tmp2 += path[tmp + 3];
-				if (tmp2 == ".wav")
-				{
-					break;
-				}
-				else
-				{
-					tmp++;
-					continue;
-				}
-			}
-			else
-			{
-				tmp++;
-			}
-		}
-	}
-	string filename;
-	for (int i = prefix; i <= sufix; i++)
+	string filename = arg.folder_for_csv;
+	filename = filename.at(sufix);
+
+	if (filename == "\\")
 	{
-		filename += path.at(i);
+		arg.folder_for_csv.erase(sufix - 2, 2);
 	}
 
-	filename.append(".csv");
-	filename = "CSV" + slash + filename;
+	filename = arg.folder_for_csv + slash + path + ".csv";
 	file.open(filename, ios::app);
 
 	if (!file.good())

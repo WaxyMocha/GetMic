@@ -23,6 +23,7 @@ arguments arg;
 
 int Init(paTestData *data, fftw_plan *plans);
 arguments prepare_input_parameters(int argc, char **argv);
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int i);
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
@@ -40,9 +41,6 @@ int main(int argc, char** argv)
 
 	bool create_New = false;
 	int file_No = 0;
-	float max, val;
-	double avg, avg_Old, change;
-	avg_Old = 0;
 
 	fftw_plan plans[max_Threads];//Plans for FFT
 
@@ -59,27 +57,6 @@ int main(int argc, char** argv)
 		{
 			Pa_Sleep(10);
 		}
-		max = 0;
-		avg = 0.0;
-		for (int i = 0; i < numOfSamples; i++)
-		{
-			val = data.recordedSamples[i];
-			val = abs(val); // ABS
-			if (val > max)
-			{
-				max = val;
-			}
-			avg += val;
-		}
-		avg /= (double)numOfSamples;
-
-		change = (abs(avg - avg_Old) / ((avg + avg_Old) / 2));
-
-		cout << "sample max amplitude = " << max << endl;
-		cout << "sample average = " << avg << endl;
-		cout << "change = " << change * 100 << "%" << endl;
-
-		avg_Old = avg;
 
 		create_New = true;
 		if (!arg.quiet || arg.debug) cout << endl;
@@ -90,15 +67,7 @@ int main(int argc, char** argv)
 			{
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					copy(data.recordedSamples, data.recordedSamples + numOfSamples, buff[i]);//Copy buffer to other place
-					data.frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
-
-					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);//New thread
-					if (!arg.quiet) cout << "Started No. " << file_No << endl;
-					create_New = false;
-					file_No++;
-
-					if (arg.debug) cout << "New thread created on: " << i << endl;
+					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i);
 				}
 				else
 				{
@@ -112,15 +81,7 @@ int main(int argc, char** argv)
 
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					copy(data.recordedSamples, data.recordedSamples + numOfSamples, buff[i]);//Copy buffer to other place
-					data.frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
-
-					threads[i] = async(task, to_string(file_No), plans[i], buff[i], in[i], out[i]);//New thread
-					if (!arg.quiet) cout << "Started No. " << file_No << endl;
-					create_New = false;
-					file_No++;
-
-					if (arg.quiet) cout << "New thread created on: " << i << endl;
+					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i);
 				}
 			}
 			else
@@ -227,14 +188,16 @@ arguments prepare_input_parameters(int argc, char **argv)
 			{
 				if (fs::is_directory(argv[i + 1]))
 				{
-					arg.folder_for_audio = argv[i + 1];
+					i++;
+					arg.folder_for_audio = argv[i];
 				}
 			}
 			else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--csv"))
 			{
 				if (fs::is_directory(argv[i + 1]))
 				{
-					arg.folder_for_csv = argv[i + 1];
+					i++;
+					arg.folder_for_csv = argv[i];
 				}
 			}
 
@@ -267,6 +230,45 @@ arguments prepare_input_parameters(int argc, char **argv)
 		}
 	}
 	return arg;
+}
+
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int i)
+{
+	float max, val;
+	double avg, change;
+	static double avg_Old;
+
+	copy(data->recordedSamples, data->recordedSamples + numOfSamples, buff);//Copy buffer to other place
+	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
+
+	threads = async(task, to_string(No), plan, buff, in[i], out[i]);//New thread
+	if (!arg.quiet) cout << "Started No. " << No << endl;
+	create_New = false;
+	No++;
+
+	if (arg.quiet) cout << "New thread created on: " << i << endl;
+
+	max = 0;
+	avg = 0.0;
+	for (int j = 0; j < numOfSamples; j++)
+	{
+		val = buff[j];
+		val = abs(val); // ABS
+		if (val > max)
+		{
+			max = val;
+		}
+		avg += val;
+	}
+	avg /= (double)numOfSamples;
+
+	change = (abs(avg - avg_Old) / ((avg + avg_Old) / 2));
+
+	cout << "sample max amplitude = " << max << endl;
+	cout << "sample average = " << avg << endl;
+	cout << "change = " << change * 100 << "%" << endl;
+
+	avg_Old = avg;
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)

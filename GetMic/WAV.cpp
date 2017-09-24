@@ -3,8 +3,21 @@
 
 using namespace std;
 
-int save_WAV(string filename, float *samples, int numOfSamples)
+int save_WAV(string path, float *samples, int numOfSamples)
 {
+	int sufix = arg.folder_for_audio.length() - 1;// arrays start at zero
+
+	string filename = arg.folder_for_audio;
+
+	filename = filename.at(sufix);
+
+	if (filename == "\\")
+	{
+		arg.folder_for_audio.erase(sufix - 2, 2);
+	}
+
+	filename = arg.folder_for_audio + slash + path + ".wav";
+
 	fstream file;
 	file.open(filename, ios::binary | ios::out);
 
