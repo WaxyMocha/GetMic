@@ -28,9 +28,11 @@ How to use:
 getmic arguments --audio path --csv path
 
 -a, --audio; Output folder for audio files, if not specified, no audio files will be written
+
 -c, --csv; Output folder for csv files, if not specified, no csv files will be written
 
 -q, --quiet; Do not output any information about progress
+
 -d, --debug; Enable debug informaton
 
 For linux users:
