@@ -25,7 +25,7 @@ Program that get microphone input and saves data in to audio file and, after pro
 
 How to use:
 
-getmic <arguments> -a <path> -c <path>
+getmic arguments --audio path --csv path
 
 -a, --audio; Output folder for audio files, if not specified, no audio files will be written
 -c, --csv; Output folder for csv files, if not specified, no csv files will be written
