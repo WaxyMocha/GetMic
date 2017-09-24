@@ -25,7 +25,13 @@ Program that get microphone input and saves data in to audio file and, after pro
 
 How to use:
 
-For now, you just run it, program will save audio to WAV folder and .csv to CSV folder. More options will be available later.
+getmic <arguments> [-a <path>] [-c <path>]
+
+-a, --audio; Output folder for audio files
+-c, --csv; Output folder for csv files
+
+-q, --quiet; Do not output any information about progress
+-d, --debug; Enable debug informaton
 
 For linux users:
 
