@@ -28,11 +28,14 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 			save_CSV(filename, tmp, i);
 		}
 	}
+	string tmp2 = "opusenc.exe --quiet " + arg.folder_for_audio + "\\" + filename + ".WAV " + "OGG\\" + filename + ".opus";
+	system(tmp2.c_str());
+
 	if (t.joinable())
 	{
 		t.join();
 	}
-	
+
 	delete[] tmp;
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	if (arg.debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;

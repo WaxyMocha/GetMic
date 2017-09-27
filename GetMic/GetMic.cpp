@@ -21,6 +21,7 @@ arguments arg;
 int Init(paTestData *data, fftw_plan *plans);
 arguments prepare_input_parameters(int argc, char **argv);
 void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int i);
+bool is_number(const std::string& s);
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
@@ -199,6 +200,20 @@ arguments prepare_input_parameters(int argc, char **argv)
 					arg.folder_for_csv = argv[i];
 				}
 			}
+			else if (!strcmp(argv[i], "-D") || !strcmp(argv[i], "--differential"))
+			{
+				arg.differential = true;
+				i++;
+				string tmp = argv[i];
+				if (is_number(tmp))
+				{
+					arg.change = stof(tmp);
+				}
+				else
+				{
+					arg.code = -1;
+				}
+			}
 
 			else anything = false;
 
@@ -242,7 +257,7 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	for (int j = 0; j < numOfSamples; j++)
 	{
 		val = buff[j];
-		val = abs(val); // ABS
+		val = abs(val); 
 		if (val > max)
 		{
 			max = val;
@@ -251,29 +266,48 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	}
 	avg /= (double)numOfSamples;
 
-	change = abs((avg_Old - avg) / abs(avg));
+	change = abs((avg_Old - avg) / avg) * 100;
 
-	if (change > arg.change && arg.differential)
+	copy(data->recordedSamples, data->recordedSamples + numOfSamples, buff);//Copy buffer to other place
+	if (!arg.differential)
 	{
-		copy(data->recordedSamples, data->recordedSamples + numOfSamples, buff);//Copy buffer to other place
-		data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
-
 		threads = async(task, to_string(No), plan, buff, in[i], out[i]);//New thread
 		if (!arg.quiet) cout << "Started No. " << No << endl;
-		create_New = false;
 		No++;
 
 		if (arg.quiet) cout << "New thread created on: " << i << endl;
+		cout << "change: " << change << "%" << endl;
 	}
 	else
 	{
-		cout << "Sample has been skipped, change was: " << change * 100 << "%" << endl;
+		if (change >= arg.change)
+		{
+			threads = async(task, to_string(No), plan, buff, in[i], out[i]);//New thread
+			if (!arg.quiet) cout << "Started No. " << No << endl;
+			No++;
+
+			if (arg.quiet) cout << "New thread created on: " << i << endl;
+			cout << "change: " << change << "%" << endl;
+		}
+		else
+		{
+			cout << "Sample has been skipped, change was: " << change << "%" << endl;
+		}
+		
 	}
+	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
+	create_New = false;
 	
 	cout << "sample max amplitude = " << max << endl;
 	cout << "sample average = " << avg << endl;
 
 	avg_Old = avg;
+}
+
+bool is_number(const std::string& s)
+{
+	return !s.empty() && std::find_if(s.begin(),
+		s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
