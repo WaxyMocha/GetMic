@@ -1,6 +1,3 @@
-// GetMic.cpp: Definiuje punkt wejścia dla aplikacji konsolowej.
-//
-
 #include "stdafx.h"
 #include <math.h>
 #include "headers\portaudio.h"
@@ -17,7 +14,7 @@ double **in;
 fftw_complex **out;
 float **buff;
 
-/* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
+float change = 0;
 
 arguments arg;
 
@@ -240,16 +237,6 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	double avg, change;
 	static double avg_Old;
 
-	copy(data->recordedSamples, data->recordedSamples + numOfSamples, buff);//Copy buffer to other place
-	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
-
-	threads = async(task, to_string(No), plan, buff, in[i], out[i]);//New thread
-	if (!arg.quiet) cout << "Started No. " << No << endl;
-	create_New = false;
-	No++;
-
-	if (arg.quiet) cout << "New thread created on: " << i << endl;
-
 	max = 0;
 	avg = 0.0;
 	for (int j = 0; j < numOfSamples; j++)
@@ -264,11 +251,27 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	}
 	avg /= (double)numOfSamples;
 
-	change = (abs(avg - avg_Old) / ((avg + avg_Old) / 2));
+	change = abs((avg_Old - avg) / abs(avg));
 
+	if (change > arg.change && arg.differential)
+	{
+		copy(data->recordedSamples, data->recordedSamples + numOfSamples, buff);//Copy buffer to other place
+		data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
+
+		threads = async(task, to_string(No), plan, buff, in[i], out[i]);//New thread
+		if (!arg.quiet) cout << "Started No. " << No << endl;
+		create_New = false;
+		No++;
+
+		if (arg.quiet) cout << "New thread created on: " << i << endl;
+	}
+	else
+	{
+		cout << "Sample has been skipped, change was: " << change * 100 << "%" << endl;
+	}
+	
 	cout << "sample max amplitude = " << max << endl;
 	cout << "sample average = " << avg << endl;
-	cout << "change = " << change * 100 << "%" << endl;
 
 	avg_Old = avg;
 }

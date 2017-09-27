@@ -37,6 +37,8 @@ struct arguments
 	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
 	bool quiet = false;
 	bool debug = false;
+	bool differential = false;
+	float change = 0;
 };
 
 extern arguments arg;

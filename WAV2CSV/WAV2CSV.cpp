@@ -350,8 +350,8 @@ void WAV2CSV::save_DFT(double *out, int num, arguments *arg, string path)
 	file.close();
 	high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
-	cout << "one: " << duration_cast<microseconds>(t2 - t1).count() << endl;
-	cout << "two: " << duration_cast<microseconds>(t3 - t2).count() << endl;
+	//cout << "one: " << duration_cast<microseconds>(t2 - t1).count() << endl;
+	//cout << "two: " << duration_cast<microseconds>(t3 - t2).count() << endl;
 
 	return;
 }
