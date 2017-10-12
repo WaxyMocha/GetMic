@@ -10,14 +10,37 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-	thread t;
+	thread wav;
 
-	if (arg.folder_for_audio != "")
+	wav = thread(save_WAV, filename, buff, NUM_OF_SAMPLES);
+
+
+	if (wav.joinable())
 	{
-		t = thread(save_WAV, filename, buff, numOfSamples);
+		wav.join();
+	}
+	if (arg.folder_for_opus != "")
+	{
+		string folder;
+		if (arg.folder_for_wav == "")
+		{
+			folder = arg.folder_for_opus;
+		}
+		else
+		{
+			folder = arg.folder_for_wav;
+		}
+		string tmp = "opusenc.exe --quiet " + folder + slash + filename + ".wav " + arg.folder_for_opus + slash + filename + ".opus";
+		system(tmp.c_str());
 	}
 
-	double *tmp = new double[numOfSamples];
+	if (arg.folder_for_wav == "")
+	{
+		string tmp = "." + slash + arg.folder_for_opus + slash + filename + ".wav";
+		remove(tmp.c_str());
+	}
+
+	double *tmp = new double[NUM_OF_SAMPLES];
 
 	for (int i = 0; i < 50; i++)
 	{
@@ -28,13 +51,7 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 			save_CSV(filename, tmp, i);
 		}
 	}
-	string tmp2 = "opusenc.exe --quiet " + arg.folder_for_audio + "\\" + filename + ".WAV " + "OGG\\" + filename + ".opus";
-	system(tmp2.c_str());
 
-	if (t.joinable())
-	{
-		t.join();
-	}
 
 	delete[] tmp;
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -65,7 +82,7 @@ void save_CSV(string path, double *out, int num)
 	}
 	string to_Save = "";
 	std::ostringstream s;
-	for (int j = 0; j < (320 / 2); j++)
+	for (int j = 0; j < (DFT_SIZE / 2); j++)
 	{
 		s << out[j];
 		to_Save += s.str();
@@ -90,7 +107,7 @@ void FFT(fftw_plan p, fftw_complex *out, double *tmp)
 
 void fill_with_data(double *in, float *data)
 {
-	for (int i = 0; i < numOfSamples; i++)
+	for (int i = 0; i < NUM_OF_SAMPLES; i++)
 	{
 		in[i] = data[i];
 	}
@@ -99,11 +116,11 @@ void fill_with_data(double *in, float *data)
 
 void complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers
 {
-	for (int i = 0; i < numOfSamples / 2; i++)
+	for (int i = 0; i < NUM_OF_SAMPLES / 2; i++)
 	{
 		out[i] = sqrt(pow(in[i][0], 2) + pow(in[i][1], 2));
 		out[i] *= 2;
-		out[i] /= numOfSamples;
+		out[i] /= NUM_OF_SAMPLES;
 	}
 	return;
 }

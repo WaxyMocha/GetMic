@@ -5,8 +5,8 @@
 
 using namespace std;
 
-extern const int numOfSamples;
-extern const int iterations;
+extern const int NUM_OF_SAMPLES;
+extern const int ITERATIONS;
 extern const string slash;
 extern arguments arg;
 

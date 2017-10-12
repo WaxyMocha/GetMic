@@ -20,7 +20,7 @@ arguments arg;
 
 int Init(paTestData *data, fftw_plan *plans);
 arguments prepare_input_parameters(int argc, char **argv);
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int i);
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number);
 bool is_number(const std::string& s);
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
@@ -35,12 +35,12 @@ int main(int argc, char** argv)
 	}
 	paTestData data;
 
-	future<int> threads[max_Threads];//Threads handlers
+	future<int> threads[MAX_THREADS];//Threads handlers
 
 	bool create_New = false;
 	int file_No = 0;
 
-	fftw_plan plans[max_Threads];//Plans for FFT
+	fftw_plan plans[MAX_THREADS];//Plans for FFT
 
 	if (Init(&data, plans) && !arg.quiet)
 	{
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 	if (arg.debug) cout << "Init completed" << endl;
 	while (1)
 	{
-		while (data.frameIndex != numOfSamples)//check if callback function buffer is full
+		while (data.frameIndex != NUM_OF_SAMPLES)//check if callback function buffer is full
 		{
 			Pa_Sleep(10);
 		}
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 		create_New = true;
 		if (!arg.quiet || arg.debug) cout << endl;
 
-		for (int i = 0; i < max_Threads; i++)
+		for (int i = 0; i < MAX_THREADS; i++)
 		{
 			if (!threads[i].valid())//check if handle is empty
 			{
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 			else if (threads[i].wait_for(0ms) == future_status::ready)//check if the thread has already finished
 			{
 				threads[i].get();//end it
-				fill(in[i], in[i] + numOfSamples, (float)0);//clean buffer
+				fill(in[i], in[i] + NUM_OF_SAMPLES, (float)0);//clean buffer
 
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 			{
 				if (arg.quiet) cout << "Thread on: " << i << ", is still running" << endl;
 			}
-			if (i = max_Threads - 1 && create_New)
+			if (i = MAX_THREADS - 1 && create_New)
 			{
 				if (!arg.quiet) cout << "Out of free thread handlers, increase number of it." << endl;
 				return 1;
@@ -94,11 +94,7 @@ int main(int argc, char** argv)
 		}
 		if (arg.debug) cout << "skipped samples: " << data.skipped_Frames << endl;
 		data.skipped_Frames = 0;
-
-
 	}
-	//Measure maximum peak amplitude.
-
 }
 
 int Init(paTestData *data, fftw_plan *plans)
@@ -111,27 +107,24 @@ int Init(paTestData *data, fftw_plan *plans)
 	fftw_plan_with_nthreads(2);//Number of threads for FFTW
 	*/
 
-	in = new double*[max_Threads];
-	out = new fftw_complex*[max_Threads];
+	in = new double*[MAX_THREADS];
+	out = new fftw_complex*[MAX_THREADS];
+	buff = new float*[MAX_THREADS];
 
-	for (int i = 0; i < max_Threads; i++)
+	for (int i = 0; i < MAX_THREADS; i++)
 	{
-		in[i] = (double*)fftw_malloc(sizeof(double) * numOfSamples);//allocate memory for input
-		out[i] = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * numOfSamples);//and output
+		in[i] = (double*)fftw_malloc(sizeof(double) * NUM_OF_SAMPLES);//allocate memory for input
+		out[i] = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * NUM_OF_SAMPLES);//and output
+		buff[i] = new float[NUM_OF_SAMPLES];
 	}
 
-	buff = new float*[max_Threads];
-	for (int i = 0; i < max_Threads; i++)
+	for (int i = 0; i < MAX_THREADS; i++)
 	{
-		buff[i] = new float[numOfSamples];
+		plans[i] = fftw_plan_dft_r2c_1d(DFT_SIZE, in[i], out[i], FFTW_MEASURE);//Create plans for FFTW
 	}
 
-	for (int i = 0; i < max_Threads; i++)
-	{
-		plans[i] = fftw_plan_dft_r2c_1d(320, in[i], out[i], FFTW_MEASURE);//Create plans for FFTW
-	}
-	data->recordedSamples = new float[numOfSamples];
-	memset(data->recordedSamples, 0, numOfSamples * sizeof(*data->recordedSamples));
+	data->recordedSamples = new float[NUM_OF_SAMPLES];
+	memset(data->recordedSamples, 0, NUM_OF_SAMPLES * sizeof(*data->recordedSamples));
 
 	if (Pa_Initialize() != paNoError)
 	{
@@ -147,7 +140,7 @@ int Init(paTestData *data, fftw_plan *plans)
 		return 1;
 	}
 	inputParameters.channelCount = NUM_CHANNELS;                    /* stereo input */
-	inputParameters.sampleFormat = PA_SAMPLE_TYPE;
+	inputParameters.sampleFormat = paFloat32;
 	inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
 	inputParameters.hostApiSpecificStreamInfo = NULL;
 
@@ -171,8 +164,18 @@ arguments prepare_input_parameters(int argc, char **argv)
 	arguments arg;
 	if (argc == 1)
 	{
+		if (!fs::is_directory("output"))
+		{
+			if (!fs::create_directory("output"))
+			{
+				cout << "Couldn't create output directory" << endl;
+				arg.code = -1;
+			}
+			arg.folder_for_opus = "output";
+		}
 		return arg;
 	}
+	
 	for (int i = 1; i < argc; i++)
 	{
 		string tmp = argv[i];
@@ -183,13 +186,14 @@ arguments prepare_input_parameters(int argc, char **argv)
 
 			if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) arg.quiet = true;
 			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) arg.debug = true;
+			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) arg.continue_ = true;
 
-			else if (!strcmp(argv[i], "-a") || !strcmp(argv[i], "--audio"))
+			else if (!strcmp(argv[i], "-a") || !strcmp(argv[i], "--wav"))
 			{
 				if (fs::is_directory(argv[i + 1]))
 				{
 					i++;
-					arg.folder_for_audio = argv[i];
+					arg.folder_for_wav = argv[i];
 				}
 			}
 			else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--csv"))
@@ -198,6 +202,14 @@ arguments prepare_input_parameters(int argc, char **argv)
 				{
 					i++;
 					arg.folder_for_csv = argv[i];
+				}
+			}
+			else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--ogg"))
+			{
+				if (fs::is_directory(argv[i + 1]))
+				{
+					i++;
+					arg.folder_for_opus = argv[i];
 				}
 			}
 			else if (!strcmp(argv[i], "-D") || !strcmp(argv[i], "--differential"))
@@ -246,17 +258,15 @@ arguments prepare_input_parameters(int argc, char **argv)
 	return arg;
 }
 
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int i)
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number)
 {
-	float max, val;
-	double avg, change;
+	float val, max = 0;
+	double change, avg = 0;
 	static double avg_Old;
 
-	max = 0;
-	avg = 0.0;
-	for (int j = 0; j < numOfSamples; j++)
+	for (int i = 0; i < NUM_OF_SAMPLES; i++)
 	{
-		val = buff[j];
+		val = buff[i];
 		val = abs(val); 
 		if (val > max)
 		{
@@ -264,29 +274,29 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 		}
 		avg += val;
 	}
-	avg /= (double)numOfSamples;
+	avg /= (double)NUM_OF_SAMPLES;
 
 	change = abs((avg_Old - avg) / avg) * 100;
 
-	copy(data->recordedSamples, data->recordedSamples + numOfSamples, buff);//Copy buffer to other place
+	copy(data->recordedSamples, data->recordedSamples + NUM_OF_SAMPLES, buff);//Copy buffer to other place
 	if (!arg.differential)
 	{
-		threads = async(task, to_string(No), plan, buff, in[i], out[i]);//New thread
+		threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
 		if (!arg.quiet) cout << "Started No. " << No << endl;
 		No++;
 
-		if (arg.quiet) cout << "New thread created on: " << i << endl;
+		if (arg.quiet) cout << "New thread created on: " << thread_number << endl;
 		cout << "change: " << change << "%" << endl;
 	}
 	else
 	{
 		if (change >= arg.change)
 		{
-			threads = async(task, to_string(No), plan, buff, in[i], out[i]);//New thread
+			threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
 			if (!arg.quiet) cout << "Started No. " << No << endl;
 			No++;
 
-			if (arg.quiet) cout << "New thread created on: " << i << endl;
+			if (arg.quiet) cout << "New thread created on: " << thread_number << endl;
 			cout << "change: " << change << "%" << endl;
 		}
 		else

@@ -345,7 +345,8 @@ void WAV2CSV::save_DFT(double *out, int num, arguments *arg, string path)
 		s.str("");
 		to_Save += ";";
 	}
-	file.write(to_Save.c_str(), sizeof(to_Save.c_str()));
+
+	file << to_Save;
 	file << "\n";
 	file.close();
 	high_resolution_clock::time_point t3 = high_resolution_clock::now();

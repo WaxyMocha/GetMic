@@ -3,21 +3,27 @@
 
 using namespace std;
 
-int save_WAV(string path, float *samples, int numOfSamples)
+int save_WAV(string path, float *samples, int NUM_OF_SAMPLES)
 {
-	int sufix = arg.folder_for_audio.length() - 1;// arrays start at zero
-
-	string filename = arg.folder_for_audio;
-
-	filename = filename.at(sufix);
-
-	if (filename == "\\")
+	int sufix;
+	string filename;
+	if (arg.folder_for_wav != "")
 	{
-		arg.folder_for_audio.erase(sufix - 2, 2);
+		sufix = arg.folder_for_wav.length() - 1;// arrays start at zero
+		filename = arg.folder_for_wav;
+
+		if (filename == "\\")
+		{
+			arg.folder_for_wav.erase(sufix - 2, 2);
+		}
+
+		filename = arg.folder_for_wav + slash + path + ".wav";
 	}
-
-	filename = arg.folder_for_audio + slash + path + ".wav";
-
+	else if ( arg.folder_for_opus != "")
+	{
+		filename = arg.folder_for_opus + slash + path + ".wav";
+	}
+	
 	fstream file;
 	file.open(filename, ios::binary | ios::out);
 
@@ -31,8 +37,8 @@ int save_WAV(string path, float *samples, int numOfSamples)
 	char *buff = new char[16];
 	int pos = 0;
 
-	create_wav_header(file, pos, numOfSamples);
-	for (int i = 0; i < numOfSamples; i++)
+	create_wav_header(file, pos, NUM_OF_SAMPLES);
+	for (int i = 0; i < NUM_OF_SAMPLES; i++)
 	{
 		float2char(samples[i], buff, 4);
 		flip_Endian(buff, buff, 4);
@@ -46,14 +52,14 @@ int save_WAV(string path, float *samples, int numOfSamples)
 	return 0;
 }
 
-void create_wav_header(fstream &file, int &pos, int numOfSamples)
+void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES)
 {
 	char buff[16] = { 0 };
 
 	file.write("RIFF", 4);
 	pos += 4;
 
-	int2char(((numOfSamples * 4) + 44), buff, 4);//File size
+	int2char(((NUM_OF_SAMPLES * 4) + 44), buff, 4);//File size
 	flip_Endian(buff, buff, 4);
 	file.seekg(pos);
 	file.write(buff, 4);
@@ -114,7 +120,7 @@ void create_wav_header(fstream &file, int &pos, int numOfSamples)
 	file.write("data", 4);
 	pos += 4;
 
-	int2char((numOfSamples * 4), buff, 4);
+	int2char((NUM_OF_SAMPLES * 4), buff, 4);
 	flip_Endian(buff, buff, 4);
 	file.seekg(pos);
 	file.write(buff, 4);
