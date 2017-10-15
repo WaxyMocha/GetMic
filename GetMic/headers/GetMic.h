@@ -21,12 +21,11 @@ const string slash = "\\";
 const string slash = "/";
 #endif
 
-
 struct paTestData
 {
-	int          frameIndex = 0;  /* Index into sample array. */
-	int          maxFrameIndex = NUM_OF_SAMPLES;
-	float      *recordedSamples;
+	int frameIndex = 0;  /* Index into sample array. */
+	int  maxFrameIndex = NUM_OF_SAMPLES;
+	float *recordedSamples;
 	long skipped_Frames = 0;
 };
 struct arguments

@@ -19,15 +19,16 @@ float change = 0;
 arguments arg;
 
 int Init(paTestData *data, fftw_plan *plans);
-arguments prepare_input_parameters(int argc, char **argv);
+void prepare_input_parameters(int argc, char **argv);
 void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number);
 bool is_number(const std::string& s);
+int check_Directory(char *argv, string &output);
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
 int main(int argc, char** argv)
 {
-	arg = prepare_input_parameters(argc, argv);
+	prepare_input_parameters(argc, argv);
 
 	if (arg.code == -1)
 	{
@@ -86,7 +87,7 @@ int main(int argc, char** argv)
 			{
 				if (arg.quiet) cout << "Thread on: " << i << ", is still running" << endl;
 			}
-			if (i = MAX_THREADS - 1 && create_New)
+			if (i == MAX_THREADS - 1 && create_New)
 			{
 				if (!arg.quiet) cout << "Out of free thread handlers, increase number of it." << endl;
 				return 1;
@@ -159,9 +160,8 @@ int Init(paTestData *data, fftw_plan *plans)
 	return 0;
 }
 
-arguments prepare_input_parameters(int argc, char **argv)
+void prepare_input_parameters(int argc, char **argv)
 {
-	arguments arg;
 	if (argc == 1)
 	{
 		if (!fs::is_directory("output"))
@@ -173,7 +173,7 @@ arguments prepare_input_parameters(int argc, char **argv)
 			}
 			arg.folder_for_opus = "output";
 		}
-		return arg;
+		return;
 	}
 	
 	for (int i = 1; i < argc; i++)
@@ -188,29 +188,20 @@ arguments prepare_input_parameters(int argc, char **argv)
 			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) arg.debug = true;
 			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) arg.continue_ = true;
 
-			else if (!strcmp(argv[i], "-a") || !strcmp(argv[i], "--wav"))
+			else if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--wav"))
 			{
-				if (fs::is_directory(argv[i + 1]))
-				{
-					i++;
-					arg.folder_for_wav = argv[i];
-				}
+				i++;
+				check_Directory(argv[i], arg.folder_for_wav);
 			}
 			else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--csv"))
 			{
-				if (fs::is_directory(argv[i + 1]))
-				{
-					i++;
-					arg.folder_for_csv = argv[i];
-				}
+				i++;
+				check_Directory(argv[i], arg.folder_for_csv);
 			}
-			else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--ogg"))
+			else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--opus"))
 			{
-				if (fs::is_directory(argv[i + 1]))
-				{
-					i++;
-					arg.folder_for_opus = argv[i];
-				}
+				i++;
+				check_Directory(argv[i], arg.folder_for_opus);
 			}
 			else if (!strcmp(argv[i], "-D") || !strcmp(argv[i], "--differential"))
 			{
@@ -255,7 +246,26 @@ arguments prepare_input_parameters(int argc, char **argv)
 			break;
 		}
 	}
-	return arg;
+	return;
+}
+
+int check_Directory(char *argv, string &output)
+{
+	if (fs::is_directory(argv))
+	{
+		output = argv;
+	}
+	else if (fs::create_directory(argv))
+	{
+		if (arg.debug) cout << "Created output directory" << endl;
+		output = argv;
+	}
+	else
+	{
+		cout << "Couldn't create output directory" << endl;
+		return -1;
+	}
+	return 1;
 }
 
 void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number)
@@ -285,8 +295,8 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 		if (!arg.quiet) cout << "Started No. " << No << endl;
 		No++;
 
-		if (arg.quiet) cout << "New thread created on: " << thread_number << endl;
-		cout << "change: " << change << "%" << endl;
+		if (arg.debug) cout << "New thread created on: " << thread_number << endl;
+		if (!arg.quiet) cout << "change: " << change << "%" << endl;
 	}
 	else
 	{
@@ -296,20 +306,20 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 			if (!arg.quiet) cout << "Started No. " << No << endl;
 			No++;
 
-			if (arg.quiet) cout << "New thread created on: " << thread_number << endl;
-			cout << "change: " << change << "%" << endl;
+			if (arg.debug) cout << "New thread created on: " << thread_number << endl;
+			if (!arg.quiet) cout << "change: " << change << "%" << endl;
 		}
 		else
 		{
-			cout << "Sample has been skipped, change was: " << change << "%" << endl;
+			if (!arg.quiet) cout << "Sample has been skipped, change was: " << change << "%" << endl;
 		}
 		
 	}
 	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 	create_New = false;
 	
-	cout << "sample max amplitude = " << max << endl;
-	cout << "sample average = " << avg << endl;
+	if (!arg.quiet) cout << "sample max amplitude = " << max << endl;
+	if (!arg.quiet) cout << "sample average = " << avg << endl;
 
 	avg_Old = avg;
 }

@@ -3,29 +3,10 @@
 
 using namespace std;
 
-int save_WAV(string path, float *samples, int NUM_OF_SAMPLES)
+int WAV(string path, string filename, float *samples)
 {
-	int sufix;
-	string filename;
-	if (arg.folder_for_wav != "")
-	{
-		sufix = arg.folder_for_wav.length() - 1;// arrays start at zero
-		filename = arg.folder_for_wav;
-
-		if (filename == "\\")
-		{
-			arg.folder_for_wav.erase(sufix - 2, 2);
-		}
-
-		filename = arg.folder_for_wav + slash + path + ".wav";
-	}
-	else if ( arg.folder_for_opus != "")
-	{
-		filename = arg.folder_for_opus + slash + path + ".wav";
-	}
-	
 	fstream file;
-	file.open(filename, ios::binary | ios::out);
+	file.open(path + slash + filename + ".wav", ios::binary | ios::out);
 
 	if (!file.good())
 	{
@@ -40,7 +21,7 @@ int save_WAV(string path, float *samples, int NUM_OF_SAMPLES)
 	create_wav_header(file, pos, NUM_OF_SAMPLES);
 	for (int i = 0; i < NUM_OF_SAMPLES; i++)
 	{
-		float2char(samples[i], buff, 4);
+		num2char(samples[i], buff, 4);
 		flip_Endian(buff, buff, 4);
 		file.seekg(pos);
 		file.write(buff, 4);
@@ -59,7 +40,7 @@ void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES)
 	file.write("RIFF", 4);
 	pos += 4;
 
-	int2char(((NUM_OF_SAMPLES * 4) + 44), buff, 4);//File size
+	num2char(((NUM_OF_SAMPLES * 4) + 44), buff, 4);//File size
 	flip_Endian(buff, buff, 4);
 	file.seekg(pos);
 	file.write(buff, 4);
@@ -73,44 +54,44 @@ void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES)
 	file.write("fmt ", 4);
 	pos += 4;
 
-	int2char(0x10, buff, 4);
+	num2char(0x10, buff, 4);
 	flip_Endian(buff, buff, 4);
 	file.seekg(pos);
 	file.write(buff, 4);
 	pos += 4;
 
-	int2char(0x3, buff, 2);
+	num2char(0x3, buff, 2);
 	flip_Endian(buff, buff, 2);
 	file.seekg(pos);
 	file.write(buff, 2);
 	pos += 2;
 
-	int2char(0x1, buff, 2);//Number of chanels
+	num2char(0x1, buff, 2);//Number of chanels
 	flip_Endian(buff, buff, 2);
 	file.seekg(pos);
 	file.write(buff, 2);
 	pos += 2;
 
-	int2char(0x3E80, buff, 4);//Sample rate
+	num2char(0x3E80, buff, 4);//Sample rate
 	flip_Endian(buff, buff, 4);
 	file.seekg(pos);
 	file.write(buff, 4);
 	pos += 4;
 
 
-	int2char(0xFA00, buff, 4);//(Sample Rate * BitsPerSample * Channels) / 8.
+	num2char(0xFA00, buff, 4);//(Sample Rate * BitsPerSample * Channels) / 8.
 	flip_Endian(buff, buff, 4);
 	file.seekg(pos);
 	file.write(buff, 4);
 	pos += 4;
 
-	int2char(0x4, buff, 2);//(BitsPerSample * Channels) / 8 = (32 * 1)/8 = 4
+	num2char(0x4, buff, 2);//(BitsPerSample * Channels) / 8 = (32 * 1)/8 = 4
 	flip_Endian(buff, buff, 2);
 	file.seekg(pos);
 	file.write(buff, 2);
 	pos += 2;
 
-	int2char(0x20, buff, 2);//Bits per sample
+	num2char(0x20, buff, 2);//Bits per sample
 	flip_Endian(buff, buff, 2);
 	file.seekg(pos);
 	file.write(buff, 2);
@@ -120,7 +101,7 @@ void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES)
 	file.write("data", 4);
 	pos += 4;
 
-	int2char((NUM_OF_SAMPLES * 4), buff, 4);
+	num2char((NUM_OF_SAMPLES * 4), buff, 4);
 	flip_Endian(buff, buff, 4);
 	file.seekg(pos);
 	file.write(buff, 4);
@@ -147,7 +128,7 @@ void flip_Endian(char *in, char *out, int lenght)
 	return;
 }
 
-void int2char(int in, char *out, int lenght)
+void num2char(int in, char *out, int lenght)
 {
 	int shift = (lenght * 8) - 8;
 
@@ -159,7 +140,7 @@ void int2char(int in, char *out, int lenght)
 	return;
 }
 
-void float2char(float &in, char *out, int lenght)
+void num2char(float &in, char *out, int lenght)
 {
 	int tmp = 0;
 

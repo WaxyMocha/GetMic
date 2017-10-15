@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include <iostream>
 #include "headers\thread.h"
@@ -9,46 +10,36 @@ using namespace std::chrono;
 int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out)
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	thread wav, opus;
 
-	thread wav;
+	if (arg.folder_for_wav != "")
+	{
+		wav = thread(WAV, arg.folder_for_wav, filename, buff);
+	}
 
-	wav = thread(save_WAV, filename, buff, NUM_OF_SAMPLES);
-
+	if (arg.folder_for_opus != "")
+	{
+		opus = thread(OPUS, arg.folder_for_opus, filename, buff);
+	}
 
 	if (wav.joinable())
 	{
 		wav.join();
 	}
-	if (arg.folder_for_opus != "")
+	if (opus.joinable())
 	{
-		string folder;
-		if (arg.folder_for_wav == "")
-		{
-			folder = arg.folder_for_opus;
-		}
-		else
-		{
-			folder = arg.folder_for_wav;
-		}
-		string tmp = "opusenc.exe --quiet " + folder + slash + filename + ".wav " + arg.folder_for_opus + slash + filename + ".opus";
-		system(tmp.c_str());
+		opus.join();
 	}
-
-	if (arg.folder_for_wav == "")
-	{
-		string tmp = "." + slash + arg.folder_for_opus + slash + filename + ".wav";
-		remove(tmp.c_str());
-	}
-
+	
 	double *tmp = new double[NUM_OF_SAMPLES];
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < ITERATIONS; i++)
 	{
 		fill_with_data(in, buff);
 		FFT(p, out, tmp);
 		if (arg.folder_for_csv != "")
 		{
-			save_CSV(filename, tmp, i);
+			CSV(arg.folder_for_csv, filename, tmp);
 		}
 	}
 
@@ -59,22 +50,10 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 	return 0;
 }
 
-void save_CSV(string path, double *out, int num)
+void CSV(string path, string filename, double *out)
 {
 	fstream file;
-
-	int sufix = arg.folder_for_csv.length() - 1;// arrays start at zero
-
-	string filename = arg.folder_for_csv;
-	filename = filename.at(sufix);
-
-	if (filename == "\\")
-	{
-		arg.folder_for_csv.erase(sufix - 2, 2);
-	}
-
-	filename = arg.folder_for_csv + slash + path + ".csv";
-	file.open(filename, ios::app);
+	file.open(path + slash + filename + ".csv", ios::app);
 
 	if (!file.good())
 	{
@@ -96,6 +75,19 @@ void save_CSV(string path, double *out, int num)
 	file.close();
 
 	return;
+}
+
+void OPUS(string path, string filename, float *samples)
+{
+	WAV(path, filename, samples);//create .wav file, this is necessary, for now, opusenc.exe require .wav file. In future, I probably inplement opus in-code.
+
+	string tmp;
+
+	tmp = "opusenc.exe --quiet " + arg.folder_for_opus + slash + filename + ".wav " + arg.folder_for_opus + slash + filename + ".opus";//create command for generating .opus using opusenc.exe
+	system(tmp.c_str());
+
+	tmp = "." + slash + arg.folder_for_opus + slash + filename + ".wav";//delete created earlier .wav file
+	remove(tmp.c_str());
 }
 
 void FFT(fftw_plan p, fftw_complex *out, double *tmp)

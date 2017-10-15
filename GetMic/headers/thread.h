@@ -14,4 +14,5 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 void FFT(fftw_plan p, fftw_complex *out, double *tmp);
 void complex_2_real(fftw_complex *in, double *out);
 void fill_with_data(double *in, float *data);
-void save_CSV(string path, double *out, int num);
+void CSV(string path, string filename, double *out);
+void OPUS(string path, string filename, float *samples);
