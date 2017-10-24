@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WAV2CSV", "WAV2CSV\WAV2CSV.vcxproj", "{36316723-7F83-4918-90E6-62E28916C582}"
 EndProject
@@ -30,15 +30,23 @@ Global
 		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Debug|x64.Build.0 = Debug|x64
 		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Debug|x86.ActiveCfg = Debug|Win32
 		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Debug|x86.Build.0 = Debug|Win32
+		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Debug|x86.Deploy.0 = Debug|Win32
 		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Release|x64.ActiveCfg = Release|x64
 		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Release|x64.Build.0 = Release|x64
 		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Release|x86.ActiveCfg = Release|Win32
 		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Release|x86.Build.0 = Release|Win32
+		{03605FE2-C229-4E7D-B0E4-AAF318953DDC}.Release|x86.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {029D53C0-089D-4065-B6AD-36EB455336E5}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="headers\thread.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -53,10 +50,5 @@
     <ClCompile Include="thread.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="portaudio_x64.lib" />
-    <Library Include="opus.lib" />
-    <Library Include="libfftw3-3_x64.lib" />
   </ItemGroup>
 </Project>

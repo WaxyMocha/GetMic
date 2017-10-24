@@ -41,4 +41,4 @@ struct arguments
 	bool continue_ = false;
 };
 
-extern arguments arg;
+extern arguments argu;

@@ -10,7 +10,7 @@ int WAV(string path, string filename, float *samples)
 
 	if (!file.good())
 	{
-		if (arg.quiet) cout << "Error while loading file" << endl;
+		if (argu.quiet) cout << "Error while loading file" << endl;
 		file.close();
 		return 1;
 	}

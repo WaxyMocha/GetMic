@@ -16,7 +16,7 @@ float **buff;
 
 float change = 0;
 
-arguments arg;
+arguments argu;
 
 int Init(paTestData *data, fftw_plan *plans);
 void prepare_input_parameters(int argc, char **argv);
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 {
 	prepare_input_parameters(argc, argv);
 
-	if (arg.code == -1)
+	if (argu.code == -1)
 	{
 		return -1;
 	}
@@ -41,15 +41,17 @@ int main(int argc, char** argv)
 	bool create_New = false;
 	int file_No = 0;
 
+
+
 	fftw_plan plans[MAX_THREADS];//Plans for FFT
 
-	if (Init(&data, plans) && !arg.quiet)
+	if (Init(&data, plans) && !argu.quiet)
 	{
 		cout << "Init failed, ending..." << endl;
 		return 0;
 	}
 
-	if (arg.debug) cout << "Init completed" << endl;
+	if (argu.debug) cout << "Init completed" << endl;
 	while (1)
 	{
 		while (data.frameIndex != NUM_OF_SAMPLES)//check if callback function buffer is full
@@ -58,7 +60,7 @@ int main(int argc, char** argv)
 		}
 
 		create_New = true;
-		if (!arg.quiet || arg.debug) cout << endl;
+		if (!argu.quiet || argu.debug) cout << endl;
 
 		for (int i = 0; i < MAX_THREADS; i++)
 		{
@@ -76,7 +78,7 @@ int main(int argc, char** argv)
 			else if (threads[i].wait_for(0ms) == future_status::ready)//check if the thread has already finished
 			{
 				threads[i].get();//end it
-				fill(in[i], in[i] + NUM_OF_SAMPLES, (float)0);//clean buffer
+				fill(in[i], in[i] + DFT_SIZE, 0.0);//clean buffer
 
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
@@ -85,15 +87,15 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				if (arg.quiet) cout << "Thread on: " << i << ", is still running" << endl;
+				if (argu.quiet) cout << "Thread on: " << i << ", is still running" << endl;
 			}
 			if (i == MAX_THREADS - 1 && create_New)
 			{
-				if (!arg.quiet) cout << "Out of free thread handlers, increase number of it." << endl;
+				if (!argu.quiet) cout << "Out of free thread handlers, increase number of it." << endl;
 				return 1;
 			}
 		}
-		if (arg.debug) cout << "skipped samples: " << data.skipped_Frames << endl;
+		if (argu.debug) cout << "skipped samples: " << data.skipped_Frames << endl;
 		data.skipped_Frames = 0;
 	}
 }
@@ -114,8 +116,8 @@ int Init(paTestData *data, fftw_plan *plans)
 
 	for (int i = 0; i < MAX_THREADS; i++)
 	{
-		in[i] = (double*)fftw_malloc(sizeof(double) * NUM_OF_SAMPLES);//allocate memory for input
-		out[i] = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * NUM_OF_SAMPLES);//and output
+		in[i] = (double*)fftw_malloc(sizeof(double) * DFT_SIZE);//allocate memory for input
+		out[i] = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * DFT_SIZE);//and output
 		buff[i] = new float[NUM_OF_SAMPLES];
 	}
 
@@ -130,13 +132,13 @@ int Init(paTestData *data, fftw_plan *plans)
 	if (Pa_Initialize() != paNoError)
 	{
 		Pa_Terminate();
-		if (!arg.quiet) cout << "Cannot initialize PortAudio" << endl;
+		if (!argu.quiet) cout << "Cannot initialize PortAudio" << endl;
 		return 1;
 	}
 
 	inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 	if (inputParameters.device == paNoDevice) {
-		if (!arg.quiet) cout << "Error: No default input device." << endl;
+		if (!argu.quiet) cout << "Error: No default input device." << endl;
 		Pa_Terminate();
 		return 1;
 	}
@@ -148,13 +150,13 @@ int Init(paTestData *data, fftw_plan *plans)
 	if (Pa_OpenStream(&stream, &inputParameters, NULL, SAMPLE_RATE, FRAMES_PER_BUFFER, paClipOff, recordCallback, data) != paNoError)
 	{
 		Pa_Terminate();
-		if (!arg.quiet) cout << "Open stream failed" << endl;
+		if (!argu.quiet) cout << "Open stream failed" << endl;
 		return 1;
 	}
 	if (Pa_StartStream(stream) != paNoError)
 	{
 		Pa_Terminate();
-		if (!arg.quiet) cout << "Start stream failed" << endl;
+		if (!argu.quiet) cout << "Start stream failed" << endl;
 		return 1;
 	}
 	return 0;
@@ -169,9 +171,9 @@ void prepare_input_parameters(int argc, char **argv)
 			if (!fs::create_directory("output"))
 			{
 				cout << "Couldn't create output directory" << endl;
-				arg.code = -1;
+				argu.code = -1;
 			}
-			arg.folder_for_opus = "output";
+			argu.folder_for_opus = "output";
 		}
 		return;
 	}
@@ -184,37 +186,37 @@ void prepare_input_parameters(int argc, char **argv)
 		{
 			bool anything = true;
 
-			if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) arg.quiet = true;
-			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) arg.debug = true;
-			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) arg.continue_ = true;
+			if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) argu.quiet = true;
+			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) argu.debug = true;
+			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) argu.continue_ = true;
 
 			else if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--wav"))
 			{
 				i++;
-				check_Directory(argv[i], arg.folder_for_wav);
+				check_Directory(argv[i], argu.folder_for_wav);
 			}
 			else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--csv"))
 			{
 				i++;
-				check_Directory(argv[i], arg.folder_for_csv);
+				check_Directory(argv[i], argu.folder_for_csv);
 			}
 			else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--opus"))
 			{
 				i++;
-				check_Directory(argv[i], arg.folder_for_opus);
+				check_Directory(argv[i], argu.folder_for_opus);
 			}
 			else if (!strcmp(argv[i], "-D") || !strcmp(argv[i], "--differential"))
 			{
-				arg.differential = true;
+				argu.differential = true;
 				i++;
 				string tmp = argv[i];
 				if (is_number(tmp))
 				{
-					arg.change = stof(tmp);
+					argu.change = stof(tmp);
 				}
 				else
 				{
-					arg.code = -1;
+					argu.code = -1;
 				}
 			}
 
@@ -234,13 +236,13 @@ void prepare_input_parameters(int argc, char **argv)
 				{
 					cout << "see --help" << endl;
 				}
-				arg.code = -1;
+				argu.code = -1;
 				break;
 			}
 		}
 		else
 		{
-			arg.code = -1;
+			argu.code = -1;
 			cout << "see --help" << endl;
 
 			break;
@@ -257,7 +259,7 @@ int check_Directory(char *argv, string &output)
 	}
 	else if (fs::create_directory(argv))
 	{
-		if (arg.debug) cout << "Created output directory" << endl;
+		if (argu.debug) cout << "Created output directory" << endl;
 		output = argv;
 	}
 	else
@@ -274,6 +276,8 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	double change, avg = 0;
 	static double avg_Old;
 
+	copy(data->recordedSamples, data->recordedSamples + NUM_OF_SAMPLES, buff);//Copy buffer to other place
+
 	for (int i = 0; i < NUM_OF_SAMPLES; i++)
 	{
 		val = buff[i];
@@ -288,38 +292,37 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 
 	change = abs((avg_Old - avg) / avg) * 100;
 
-	copy(data->recordedSamples, data->recordedSamples + NUM_OF_SAMPLES, buff);//Copy buffer to other place
-	if (!arg.differential)
+	if (!argu.differential)
 	{
 		threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
-		if (!arg.quiet) cout << "Started No. " << No << endl;
+		if (!argu.quiet) cout << "Started No. " << No << endl;
 		No++;
 
-		if (arg.debug) cout << "New thread created on: " << thread_number << endl;
-		if (!arg.quiet) cout << "change: " << change << "%" << endl;
+		if (argu.debug) cout << "New thread created on: " << thread_number << endl;
+		if (!argu.quiet) cout << "change: " << change << "%" << endl;
 	}
 	else
 	{
-		if (change >= arg.change)
+		if (change >= argu.change)
 		{
 			threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
-			if (!arg.quiet) cout << "Started No. " << No << endl;
+			if (!argu.quiet) cout << "Started No. " << No << endl;
 			No++;
 
-			if (arg.debug) cout << "New thread created on: " << thread_number << endl;
-			if (!arg.quiet) cout << "change: " << change << "%" << endl;
+			if (argu.debug) cout << "New thread created on: " << thread_number << endl;
+			if (!argu.quiet) cout << "change: " << change << "%" << endl;
 		}
 		else
 		{
-			if (!arg.quiet) cout << "Sample has been skipped, change was: " << change << "%" << endl;
+			if (!argu.quiet) cout << "Sample has been skipped, change was: " << change << "%" << endl;
 		}
 		
 	}
 	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 	create_New = false;
 	
-	if (!arg.quiet) cout << "sample max amplitude = " << max << endl;
-	if (!arg.quiet) cout << "sample average = " << avg << endl;
+	if (!argu.quiet) cout << "sample max amplitude = " << max << endl;
+	if (!argu.quiet) cout << "sample average = " << avg << endl;
 
 	avg_Old = avg;
 }
