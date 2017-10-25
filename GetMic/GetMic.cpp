@@ -18,11 +18,6 @@ float change = 0;
 
 arguments argu;
 
-int Init(paTestData *data, fftw_plan *plans);
-void prepare_input_parameters(int argc, char **argv);
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number);
-bool is_number(const std::string& s);
-int check_Directory(char *argv, string &output);
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 

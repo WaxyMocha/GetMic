@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\stdafx.h"
+#include "fftw3.h"
 
 using namespace std;
 
@@ -20,6 +21,11 @@ const string slash = "\\";
 #elif __linux__
 const string slash = "/";
 #endif
+
+extern double **in;
+extern fftw_complex **out;
+extern float **buff;
+
 
 struct paTestData
 {
@@ -42,3 +48,9 @@ struct arguments
 };
 
 extern arguments argu;
+
+int Init(paTestData *data, fftw_plan *plans);
+void prepare_input_parameters(int argc, char **argv);
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number);
+bool is_number(const std::string& s);
+int check_Directory(char *argv, string &output);
