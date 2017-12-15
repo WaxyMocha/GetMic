@@ -10,14 +10,8 @@ using namespace std::chrono;
 
 namespace fs = std::experimental::filesystem;
 
-double **in;
-fftw_complex **out;
-float **buff;
-
 float change = 0;
-
 arguments argu;
-
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
@@ -36,16 +30,28 @@ int main(int argc, char** argv)
 	bool create_New = false;
 	int file_No = 0;
 
+	double **in = new double *[1];
+	fftw_complex **out = new fftw_complex *[1];
+	float **buff = new float *[1];
 
+	
 
 	fftw_plan plans[MAX_THREADS];//Plans for FFT
 
-	if (Init(&data, plans) && !argu.quiet)
+	if (Init(&data, plans, in, out, buff) && !argu.quiet)
 	{
 		cout << "Init failed, ending..." << endl;
 		return 0;
 	}
 
+	pointers point[MAX_THREADS];
+	for (int i = 0; i < MAX_THREADS; i++)
+	{
+		point[i].in = in[i];
+		point[i].out = out[i];
+		point[i].buff = buff[i];
+	}
+	point[0].in[0] = 5;
 	if (argu.debug) cout << "Init completed" << endl;
 	while (1)
 	{
@@ -63,7 +69,7 @@ int main(int argc, char** argv)
 			{
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i);
+					new_Thread(file_No, plans[i], threads[i], &data, create_New, i, &point[i]);
 				}
 				else
 				{
@@ -77,12 +83,12 @@ int main(int argc, char** argv)
 
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i);
+					//new_Thread(file_No, plans[i], threads[i], &data, create_New, i, pointers{ in[0], out[0], buff[0] });
 				}
 			}
 			else
 			{
-				if (argu.quiet) cout << "Thread on: " << i << ", is still running" << endl;
+				if (!argu.quiet) cout << "Thread on: " << i << ", is still running" << endl;
 			}
 			if (i == MAX_THREADS - 1 && create_New)
 			{
@@ -95,7 +101,7 @@ int main(int argc, char** argv)
 	}
 }
 
-int Init(paTestData *data, fftw_plan *plans)
+int Init(paTestData *data, fftw_plan *plans, double **in, fftw_complex **out, float **buff)
 {
 	PaStreamParameters inputParameters;
 	PaStream *stream;
@@ -105,9 +111,15 @@ int Init(paTestData *data, fftw_plan *plans)
 	fftw_plan_with_nthreads(2);//Number of threads for FFTW
 	*/
 
-	in = new double*[MAX_THREADS];
-	out = new fftw_complex*[MAX_THREADS];
-	buff = new float*[MAX_THREADS];
+	{
+		delete[] in;//clean up
+		delete[] out;
+		delete[] buff;
+
+		in = new double*[MAX_THREADS];
+		out = new fftw_complex*[MAX_THREADS];
+		buff = new float*[MAX_THREADS];
+	}
 
 	for (int i = 0; i < MAX_THREADS; i++)
 	{
@@ -265,42 +277,49 @@ int check_Directory(char *argv, string &output)
 	return 1;
 }
 
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number)
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, paTestData *data, bool &create_New, int thread_number, pointers *point)
 {
-	float val, max = 0;
-	double change, avg = 0;
+	double change;
 	static double avg_Old;
 
-	copy(data->recordedSamples, data->recordedSamples + NUM_OF_SAMPLES, buff);//Copy buffer to other place
+	copy(data->recordedSamples, data->recordedSamples + NUM_OF_SAMPLES, point->buff);//Copy buffer to other place
 
-	for (int i = 0; i < NUM_OF_SAMPLES; i++)
 	{
-		val = buff[i];
-		val = abs(val); 
-		if (val > max)
+		float val, max = 0;//Calculate max and average
+		double avg = 0;
+		for (int i = 0; i < NUM_OF_SAMPLES; i++)
 		{
-			max = val;
+			val = point->buff[i];
+			val = abs(val);
+			if (val > max)
+			{
+				max = val;
+			}
+			avg += val;
 		}
-		avg += val;
-	}
-	avg /= (double)NUM_OF_SAMPLES;
+		avg /= (double)NUM_OF_SAMPLES;
 
-	change = abs((avg_Old - avg) / avg) * 100;
+		change = abs((avg_Old - avg) / avg) * 100;
+
+		if (!argu.quiet) cout << "sample max amplitude = " << max << endl;
+		if (!argu.quiet) cout << "sample average = " << avg << endl;
+
+		avg_Old = avg;
+	}
 
 	if (!argu.differential)
 	{
-		threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
+		threads = async(task, to_string(No), plan, point->buff, point->in, point->out);//New thread
 		if (!argu.quiet) cout << "Started No. " << No << endl;
 		No++;
 
 		if (argu.debug) cout << "New thread created on: " << thread_number << endl;
-		if (!argu.quiet) cout << "change: " << change << "%" << endl;
 	}
 	else
 	{
 		if (change >= argu.change)
 		{
-			threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
+			threads = async(task, to_string(No), plan, point->buff, point->in, point->out);//New thread
 			if (!argu.quiet) cout << "Started No. " << No << endl;
 			No++;
 
@@ -315,11 +334,6 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	}
 	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 	create_New = false;
-	
-	if (!argu.quiet) cout << "sample max amplitude = " << max << endl;
-	if (!argu.quiet) cout << "sample average = " << avg << endl;
-
-	avg_Old = avg;
 }
 
 bool is_number(const std::string& s)
@@ -353,7 +367,6 @@ static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned 
 	else if (framesLeft < framesPerBuffer)
 	{
 		framesToCalc = framesLeft;
-		//finished = paComplete;
 		finished = paContinue;
 	}
 	else

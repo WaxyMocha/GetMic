@@ -22,11 +22,6 @@ const string slash = "\\";
 const string slash = "/";
 #endif
 
-extern double **in;
-extern fftw_complex **out;
-extern float **buff;
-
-
 struct paTestData
 {
 	int frameIndex = 0;  /* Index into sample array. */
@@ -46,11 +41,17 @@ struct arguments
 	float change = 0;
 	bool continue_ = false;
 };
+struct pointers
+{
+	double *in;
+	fftw_complex *out;
+	float *buff;
+};
 
 extern arguments argu;
 
-int Init(paTestData *data, fftw_plan *plans);
+int Init(paTestData *data, fftw_plan *plans, double **in, fftw_complex **out, float **buff);
 void prepare_input_parameters(int argc, char **argv);
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number);
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, paTestData *data, bool &create_New, int thread_number, pointers *point);
 bool is_number(const std::string& s);
 int check_Directory(char *argv, string &output);
