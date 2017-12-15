@@ -28,13 +28,29 @@ int main(int argc, char** argv)
 	future<int> threads[MAX_THREADS];//Threads handlers
 
 	bool create_New = false;
-	int file_No = 0;
-
-	double **in = new double *[1];
-	fftw_complex **out = new fftw_complex *[1];
-	float **buff = new float *[1];
-
-	
+	int file_No;
+	if (argu.continue_)
+	{
+		if (argu.continue_from == -1)
+		{
+			if (argu.folder_for_csv != "")
+				file_No = get_last(argu.folder_for_csv, ".csv");
+			else if (argu.folder_for_opus != "")
+				file_No = get_last(argu.folder_for_opus, ".opus");
+			else if (argu.folder_for_wav != "")
+				file_No = get_last(argu.folder_for_wav, ".wav");
+			else
+				file_No = 0;
+		}
+		else
+		{
+			file_No = argu.continue_from;
+		}
+	}
+	else
+	{
+		file_No = 0;
+	}
 
 	fftw_plan plans[MAX_THREADS];//Plans for FFT
 
@@ -145,7 +161,7 @@ int Init(paTestData *data, fftw_plan *plans, double **in, fftw_complex **out, fl
 
 	inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 	if (inputParameters.device == paNoDevice) {
-		if (!argu.quiet) cout << "Error: No default input device." << endl;
+		if (!argu.quiet) cout << "Error: Cannot find microphone" << endl;
 		Pa_Terminate();
 		return 1;
 	}
@@ -220,6 +236,20 @@ void prepare_input_parameters(int argc, char **argv)
 				if (is_number(tmp))
 				{
 					argu.change = stof(tmp);
+				}
+				else
+				{
+					argu.code = -1;
+				}
+			}
+			else if (!strcmp(argv[i], "-Cf") || !strcmp(argv[i], "--continue_from"))
+			{
+				argu.continue_ = true;
+				i++;
+				string tmp = argv[i];
+				if (is_number(tmp))
+				{
+					argu.continue_from = stof(tmp);
 				}
 				else
 				{
@@ -340,6 +370,33 @@ bool is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
 		s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+}
+
+int get_last(string path, string extension)
+{
+	int max = 0;
+	for (auto& p : fs::directory_iterator(path))
+	{
+		string filename = p.path().string();
+		filename = filename.substr(path.length() + 1, filename.length());
+
+		if (filename.substr(filename.length() - extension.length(), filename.length()) != extension)
+		{
+			continue;
+		}
+
+		filename = filename.substr(0, filename.length() - extension.length());
+		
+		int num;
+		istringstream iss(filename);
+		iss >> num;
+
+		if (num > max)
+		{
+			max = num;
+		}
+	}
+	return max;
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
