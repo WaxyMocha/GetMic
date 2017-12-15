@@ -13,14 +13,14 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	thread wav, opus;
 
-	if (argu.folder_for_wav != "")
-	{
-		wav = thread(WAV, argu.folder_for_wav, filename, buff);
-	}
-
 	if (argu.folder_for_opus != "")
 	{
 		opus = thread(OPUS, argu.folder_for_opus, filename, buff);
+	}
+
+	if (argu.folder_for_wav != "")
+	{
+		wav = thread(WAV, argu.folder_for_wav, filename, buff);
 	}
 
 	double *tmp = new double[DFT_SIZE];
@@ -36,15 +36,15 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 		}
 	}
 
-	if (wav.joinable())
-	{
-		wav.join();
-	}
 	if (opus.joinable())
 	{
 		opus.join();
 	}
 
+	if (wav.joinable())
+	{
+		wav.join();
+	}
 
 	delete[] tmp;
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
