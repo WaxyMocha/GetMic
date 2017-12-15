@@ -31,9 +31,17 @@ getmic arguments --audio path --csv path
 
 -c, --csv; Output folder for csv files, if not specified, no csv files will be written
 
+-o, --opus; Output folder for opus files, if not specified, no opus files will be written
+
 -q, --quiet; Do not output any information about progress
 
 -d, --debug; Enable debug informaton
+
+-C, --continue; Start saving files from the last one
+
+-Cf, --continue_from; Start from specified file (number)
+
+-D, --differential; Proceed only if average amplitude changed more than specified percent 
 
 For linux users:
 
