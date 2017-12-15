@@ -45,6 +45,7 @@ struct arguments
 	bool differential = false;
 	float change = 0;
 	bool continue_ = false;
+	int continue_from = -1;
 };
 
 extern arguments argu;
@@ -54,3 +55,4 @@ void prepare_input_parameters(int argc, char **argv);
 void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number);
 bool is_number(const std::string& s);
 int check_Directory(char *argv, string &output);
+int get_last(string path, string extension);
