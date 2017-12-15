@@ -21,7 +21,7 @@ const int iterations = 40;// length of sound = N * iterations
 
 int main(int argc, char **argv)
 {
-	//high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	arguments arg = prepare_input_parameters(argc, argv);
 
 	if (arg.code == -1)
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	}
 
 	string *files = new string[1];
-
+	
 	if (list_directory(&arg, files) == -1)
 	{
 		cout << "Input directory empty, ending..." << endl;
@@ -46,11 +46,6 @@ int main(int argc, char **argv)
 	real = new double[N];
 
 	int num = 1;
-
-	//real-complex dft
-	//NOTE: this is the most time consuming operation in program(so far), 
-	//create plan for 1600(100 ms of data) long array take 150 ms, and calculate dft for that data take less than 5 ms
-	//but once created plan can be used multiple times
 
 	double *in;
 	fftw_complex *out;
@@ -102,8 +97,8 @@ int main(int argc, char **argv)
 		delete[] samples;
 		delete[] real;
 		delete[] files;
-		//high_resolution_clock::time_point t2 = high_resolution_clock::now();
-		//cout << duration_cast<microseconds>(t2 - t1).count() << endl;
+		high_resolution_clock::time_point t2 = high_resolution_clock::now();
+		cout << duration_cast<microseconds>(t2 - t1).count() << endl;
 	}
 	return 0;
 }
@@ -163,6 +158,7 @@ arguments prepare_input_parameters(int argc, char **argv)
 
 int list_directory(arguments *arg, string *&files)
 {
+
 	int num = 0;
 	for (auto & p : fs::directory_iterator(arg->input))
 	{
