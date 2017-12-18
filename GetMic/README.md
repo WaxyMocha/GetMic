@@ -23,5 +23,7 @@ g++ WAV2CSV.cpp -o wav2csv -lfftw3 -std=c++17 -lstdc++fs
 #Examples
 
 wav2csv input output
+
 wav2csv -q input output
+
 wav2csv .\data\input .\data\output
