@@ -30,7 +30,7 @@ getmic arguments --audio path --csv path
 
 For linux users:
 
-<s>Program is in early development, and considering that I develop it under VS, I don't really care about compilling it under Linux, but porting WAV2CSV to Linux required only changing few header and adding preprocessor if's, code itself remained unchanged. So, if you really need it running under Linux now, there is (probably) not much to do.s</s>
+~~Program is in early development, and considering that I develop it under VS, I don't really care about compilling it under Linux, but porting WAV2CSV to Linux required only changing few header and adding preprocessor if's, code itself remained unchanged. So, if you really need it running under Linux now, there is (probably) not much to do.~~
 
 Now main obstacle is opus encoder which is separate program for windows, I need to focus on implementing opus from source. 
 
