@@ -39,14 +39,38 @@ int main(int argc, char** argv)
 	{
 		if (argu.continue_from == -1)
 		{
-			if (argu.folder_for_csv != "")
-				file_No = get_last(argu.folder_for_csv, ".csv");
-			else if (argu.folder_for_opus != "")
-				file_No = get_last(argu.folder_for_opus, ".opus");
-			else if (argu.folder_for_wav != "")
-				file_No = get_last(argu.folder_for_wav, ".wav");
+			if (argu.continue_position_of_ID != 0)
+			{
+				string tmp;
+				if (argu.folder_for_csv != "")
+				{
+					tmp = argu.folder_for_csv;
+					file_No = get_last(tmp.substr(argu.continue_position_of_ID, tmp.length() - argu.continue_position_of_ID), ".wav");
+				}
+				else if (argu.folder_for_opus != "")
+				{
+					tmp = argu.folder_for_opus;
+					file_No = get_last(tmp.substr(argu.continue_position_of_ID, tmp.length() - argu.continue_position_of_ID), ".wav");
+				}
+				else if (argu.folder_for_wav != "")
+				{
+					tmp = argu.folder_for_wav;
+					file_No = get_last(tmp.substr(argu.continue_position_of_ID, tmp.length() - argu.continue_position_of_ID), ".wav");
+				}
+				else
+					file_No = 0;
+			}
 			else
-				file_No = 0;
+			{
+				if (argu.folder_for_csv != "")
+					file_No = get_last(argu.folder_for_csv, ".csv");
+				else if (argu.folder_for_opus != "")
+					file_No = get_last(argu.folder_for_opus, ".opus");
+				else if (argu.folder_for_wav != "")
+					file_No = get_last(argu.folder_for_wav, ".wav");
+				else
+					file_No = 0;
+			}
 		}
 		else
 		{
@@ -195,15 +219,13 @@ void prepare_input_parameters(int argc, char **argv)
 	
 	for (int i = 1; i < argc; i++)
 	{
-		string tmp = argv[i];
-		tmp = tmp[0];
-		if (tmp == "-")
+		if (argv[i][0] == '-')
 		{
 			bool anything = true;
 
 			if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) argu.quiet = true;
 			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) argu.debug = true;
-			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) argu.continue_ = true;
+			//else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) argu.continue_ = true;
 			else if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--wav"))
 			{
 				i++;
@@ -229,14 +251,22 @@ void prepare_input_parameters(int argc, char **argv)
 				i++;
 				argu.sufix = argv[i];
 			}
+			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue"))
+			{
+				i++;
+				argu.continue_ = true;
+				if (is_number(argv[i]))
+				{
+					argu.continue_position_of_ID = stol(string(argv[i]));
+				}
+			}
 			else if (!strcmp(argv[i], "-D") || !strcmp(argv[i], "--differential"))
 			{
 				argu.differential = true;
 				i++;
-				string tmp = argv[i];
-				if (is_number(tmp))
+				if (is_number(string(argv[i])))
 				{
-					argu.change = stof(tmp);
+					argu.change = stof(string(argv[i]));
 				}
 				else
 				{
@@ -247,10 +277,9 @@ void prepare_input_parameters(int argc, char **argv)
 			{
 				argu.continue_ = true;
 				i++;
-				string tmp = argv[i];
-				if (is_number(tmp))
+				if (is_number(string(argv[i])))
 				{
-					argu.continue_from = stof(tmp);
+					argu.continue_from = stol(string(argv[i]));
 				}
 				else
 				{
@@ -260,10 +289,9 @@ void prepare_input_parameters(int argc, char **argv)
 			else if (!strcmp(argv[i], "-E") || !strcmp(argv[i], "--end_on"))
 			{
 				i++;
-				string tmp = argv[i];
-				if (is_number(tmp))
+				if (is_number(string(argv[i])))
 				{
-					argu.end_on = stof(tmp);
+					argu.end_on = stol(string(argv[i]));
 				}
 				else
 				{
@@ -416,6 +444,17 @@ int get_last(string path, string extension)
 		}
 	}
 	return max;
+}
+
+int find_lenght(string filename)
+{
+	for (int i = filename.length() - 1; i >= 0; i--)
+	{
+		if (is_number(to_string(filename[i])))
+		{
+			return i;
+		}
+	}
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)

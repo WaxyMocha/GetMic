@@ -43,6 +43,10 @@ struct arguments
 	string sufix = "";
 	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
 	long continue_from = -1;
+	long continue_position_of_ID = 0;//Ugh, if someone use prefix or sufix,
+									//there is no way to be certaintry if this is file number or some other number.
+									//For example, "File Nr. 8 of 100" how algorithm can be sure if 8 or 100 is file ID ?
+									//This parameter is for user to specify where in filename ID starts, in example above, 10th
 	long end_on = -1;
 	bool quiet = false;
 	bool debug = false;
@@ -59,4 +63,5 @@ void prepare_input_parameters(int argc, char **argv);
 void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number);
 bool is_number(const std::string& s);
 int check_Directory(char *argv, string &output);
+int find_lenght(string filename);
 int get_last(string path, string extension);
