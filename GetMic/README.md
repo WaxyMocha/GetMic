@@ -1,29 +1,45 @@
-# WAV2CSV
-Program that converts wav file (with time as x axis) to csv file (with frequency as x axis) 
+
+# GetMic
+Program that get microphone input and saves data in to audio file and, after processing to DFT, to .csv file
 
 How to use:
 
-wav2csv [-q] [input] [output]
+getmic arguments --audio path --csv path
 
--q - quiet, don't display progres
+-w, --wav; Output folder for audio files, if not specified, no audio files will be written
 
-input - folder with input files
+-c, --csv; Output folder for csv files, if not specified, no csv files will be written
 
-output - folder with output files
+-o, --opus; Output folder for opus files, if not specified, no opus files will be written
+
+-q, --quiet; Do not output any information about progress
+
+-d, --debug; Enable debug informaton
+
+-C, --continue; Start saving files from the last one
+
+-Cf, --continue_from; Start from specified file (number)
+
+-E, --end_on; Stop on this file (number)
+
+-D, --differential; Proceed only if average amplitude changed more than specified percent 
+
+-p, --prefix; Set file prefix
+
+-s, --sufix; Set file sufix
 
 For linux users:
 
-Requirements:
-FFTW 3 - http://www.fftw.org/
+<s>Program is in early development, and considering that I develop it under VS, I don't really care about compilling it under Linux, but porting WAV2CSV to Linux required only changing few header and adding preprocessor if's, code itself remained unchanged. So, if you really need it running under Linux now, there is (probably) not much to do.s</s>
 
-to compile, in WAV2CSV/WAV2CSV/ execute:
-
-g++ WAV2CSV.cpp -o wav2csv -lfftw3 -std=c++17 -lstdc++fs
+Now main obstacle is opus encoder which is separate program for windows, I need to focus on implementing opus from source. 
 
 # Examples
 
-wav2csv input output
+getmic -w audio -c data ;Saves .wav files to "audio" folder and .csv to "data" folder
 
-wav2csv -q input output
+getmic -C --csv .\output\data ;Saves .csv files to ".\output\data" and continue from last saved file
 
-wav2csv .\data\input .\data\output
+getmic -Cf 101 -E 200 --opus .\audio -p "Audio file Nr. " -s " of 1000" ;Saves audio from "Audio file Nr. 101 of 1000" to ""Audio file Nr. 200 of 1000"
+
+getmic -D 30 -c data ;Saves .csv to "data" only if sample different from previous more than 30% (in amplitude)
