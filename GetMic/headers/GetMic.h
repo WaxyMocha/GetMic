@@ -39,13 +39,17 @@ struct arguments
 	string folder_for_wav = "";
 	string folder_for_opus = "";
 	string folder_for_csv = "";
+	string prefix = "";
+	string sufix = "";
 	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
+	long continue_from = -1;
+	long end_on = -1;
 	bool quiet = false;
 	bool debug = false;
 	bool differential = false;
-	float change = 0;
 	bool continue_ = false;
-	int continue_from = -1;
+	float change = 0;
+
 };
 
 extern arguments argu;

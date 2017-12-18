@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 	}
 
 	if (argu.debug) cout << "Init completed" << endl;
-	while (1)
+	for (; file_No != argu.end_on + 1; file_No++)
 	{
 		while (data.frameIndex != NUM_OF_SAMPLES)//check if callback function buffer is full
 		{
@@ -204,7 +204,6 @@ void prepare_input_parameters(int argc, char **argv)
 			if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) argu.quiet = true;
 			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) argu.debug = true;
 			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) argu.continue_ = true;
-
 			else if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--wav"))
 			{
 				i++;
@@ -219,6 +218,16 @@ void prepare_input_parameters(int argc, char **argv)
 			{
 				i++;
 				check_Directory(argv[i], argu.folder_for_opus);
+			}
+			else if (!strcmp(argv[i], "-p") || !strcmp(argv[i], "--prefix"))
+			{
+				i++;
+				argu.prefix = argv[i];
+			}
+			else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--sufix"))
+			{
+				i++;
+				argu.sufix = argv[i];
 			}
 			else if (!strcmp(argv[i], "-D") || !strcmp(argv[i], "--differential"))
 			{
@@ -248,6 +257,19 @@ void prepare_input_parameters(int argc, char **argv)
 					argu.code = -1;
 				}
 			}
+			else if (!strcmp(argv[i], "-E") || !strcmp(argv[i], "--end_on"))
+			{
+				i++;
+				string tmp = argv[i];
+				if (is_number(tmp))
+				{
+					argu.end_on = stof(tmp);
+				}
+				else
+				{
+					argu.code = -1;
+				}
+			}
 
 			else anything = false;
 
@@ -258,8 +280,17 @@ void prepare_input_parameters(int argc, char **argv)
 					cout << "program <parameters> <audio> <csv>" << endl
 						<< "Audio and csv are folders for respective, audio files and results of DFT" << endl;
 					cout << "Avaiable parameters: " << endl
-						<< "-q, --quiet " << "Do not output any information about progress" << endl
-						<< "-d, --debug " << "Enable debug informaton" << endl;
+						<< "-q, --quiet"		<< " "	<< "Do not output any information about progress" << endl
+						<< "-d, --debug"		<< " "	<< "Enable debug informaton" << endl
+						<< "-w, --wav"			<< " "	<< "Output folder for audio files, if not specified, no audio files will be written" << endl
+						<< "-o, --opus"			<< " "	<< "Output folder for opus files, if not specified, no opus files will be written" << endl
+						<< "-c, --csv"			<< " "	<< "Output folder for csv files, if not specified, no csv files will be written" << endl
+						<< "-C, --continue"		<< " "	<< "Start saving files from the last one" << endl
+						<< "-Cf, --continue_from"<<" "	<< "Start from specified file (number)" << endl
+						<< "-E, --end_on"		<< " "	<< "Finish on specified file (number)" << endl
+						<< "-D, --differential"	<< " "	<< "Proceed only if average amplitude changed more than specified percent" << endl
+						<< "-p, --prefix"		<< " "	<< "Set file prefix" << endl
+						<< "-s, --sufix"		<< " "	<< "Set file sufix" << endl;
 				}
 				else
 				{
@@ -323,9 +354,8 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 
 	if (!argu.differential)
 	{
-		threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
+		threads = async(task, argu.prefix + to_string(No) + argu.sufix, plan, buff, in[thread_number], out[thread_number]);//New thread
 		if (!argu.quiet) cout << "Started No. " << No << endl;
-		No++;
 
 		if (argu.debug) cout << "New thread created on: " << thread_number << endl;
 		if (!argu.quiet) cout << "change: " << change << "%" << endl;
@@ -334,9 +364,8 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	{
 		if (change >= argu.change)
 		{
-			threads = async(task, to_string(No), plan, buff, in[thread_number], out[thread_number]);//New thread
+			threads = async(task, argu.prefix + to_string(No) + argu.sufix, plan, buff, in[thread_number], out[thread_number]);//New thread
 			if (!argu.quiet) cout << "Started No. " << No << endl;
-			No++;
 
 			if (argu.debug) cout << "New thread created on: " << thread_number << endl;
 			if (!argu.quiet) cout << "change: " << change << "%" << endl;

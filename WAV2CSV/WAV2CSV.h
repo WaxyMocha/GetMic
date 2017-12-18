@@ -14,14 +14,11 @@ struct arguments
 	bool quiet = false;
 };
 
-namespace WAV2CSV
-{
-	arguments prepare_input_parameters(int argc, char **argv);
-	int list_directory(arguments *arg, string *&files);
-	void fill_with_data(double *in, float *data);
-	void complex_2_real(fftw_complex *in, double *out);
-	int read_file(string filename, float **samples, int iterations);
-	void save_DFT(double *out, int num, arguments *arg, string filename);
-	void double2char(double in, char *out, int lenght);
-	void suprise();
-}
+arguments prepare_input_parameters(int argc, char **argv);
+int list_directory(arguments *arg, string *&files);
+void fill_with_data(double *in, float *data);
+void complex_2_real(fftw_complex *in, double *out);
+int read_file(string filename, float **samples, int iterations);
+void CSV(string path, string filename, double *out);
+void double2char(double in, char *out, int lenght);
+void suprise();
