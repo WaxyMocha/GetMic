@@ -1,8 +1,5 @@
-// WAV2CSV.cpp: Definiuje punkt wejścia dla aplikacji konsolowej.
-//
-
 #include "stdafx.h"
-#include "..\WAV2CSV.h"
+#include "WAV2CSV.h"
 
 using namespace std;
 using namespace std::chrono;
