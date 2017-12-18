@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "WAV2CSV\fftw3.h"
+#include "fftw3.h"
 
 using namespace std;
 
