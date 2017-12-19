@@ -1,76 +1,96 @@
-#include "..\stdafx.h"
+#include "stdafx.h"
+#include <GetMic.h>
 #include <thread.h>
 #include <WAV.h>
 #include <complex>
 
 using namespace std;
 using namespace std::chrono;
+namespace fs = std::experimental::filesystem;
 
-int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings Settings)
+void complex_2_real(fftw_complex *in, double *out);
+void fill_with_data(double *in, float *data);
+void CSV(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p);
+void save_CSV(string path, string filename, double *out);
+void OPUS(string path, string filename, float *samples);
+
+int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings settings)
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	thread wav, opus;
+	thread wav, opus, csv;
 
-	if (Settings.folder_for_opus != "")
+	if (settings.folder_for_opus != "")
 	{
-		opus = thread(OPUS, Settings.folder_for_opus, filename, buff);
+		opus = thread(OPUS, settings.folder_for_opus, filename, buff);
 	}
 
-	if (Settings.folder_for_wav != "")
+	if (settings.folder_for_wav != "")
 	{
-		wav = thread(WAV, Settings.folder_for_wav, filename, buff);
+		wav = thread(WAV, settings.folder_for_wav, filename, buff);
 	}
 
-	double *tmp = new double[DFT_SIZE];
-
-	for (int i = 0; i < ITERATIONS; i++)
+	if (settings.folder_for_csv != "")
 	{
-		copy(buff + ((DFT_SIZE / 2) * i), buff + ((DFT_SIZE / 2) * (i + 1)), in);
-		fftw_execute(p);
-		complex_2_real(out, tmp);
-		if (Settings.folder_for_csv != "")
-		{
-			CSV(Settings.folder_for_csv, filename, tmp);
-		}
+		csv = thread(CSV, settings.folder_for_csv, filename, buff, out, in, p);
 	}
 
 	if (opus.joinable())
 	{
 		opus.join();
 	}
-
 	if (wav.joinable())
 	{
 		wav.join();
 	}
+	if (csv.joinable())
+	{
+		csv.join();
+	}
 
-	delete[] tmp;
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	if (debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
 	return 0;
 }
 
-void CSV(string path, string filename, double *out)
+void CSV(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p)
+{
+	double *tmp = new double[DFT_SIZE * ITERATIONS];
+
+	for (int i = 0; i < ITERATIONS; i++)
+	{
+		copy(buff + ((DFT_SIZE / 2) * i), buff + ((DFT_SIZE / 2) * (i + 1)), in);
+		fftw_execute(p);
+		complex_2_real(out, tmp + (i * DFT_SIZE));
+	}
+	save_CSV(path, filename, tmp);
+	delete[] tmp;
+}
+
+void save_CSV(string path, string filename, double *out)
 {
 	fstream file;
 	file.open(path + slash + filename + ".csv", ios::app);
-
 	if (!file.good())
 	{
 		if (!quiet) cout << "Error while creating/opening file" << endl;
+		return;
 	}
-	string to_Save = "";
+
 	std::ostringstream s;
-	for (int j = 0; j < (DFT_SIZE / 2); j++)
+	for (int i = 0; i < ITERATIONS; i++)
 	{
-		s << out[j];
-		to_Save += s.str();
-		s.clear();
-		s.str("");
-		to_Save += ";";
+		string to_Save = "";
+		for (int j = (i * DFT_SIZE); j < (DFT_SIZE / 2) + (i * DFT_SIZE); j++)
+		{
+			s << out[j];
+			to_Save += s.str();
+			s.clear();
+			s.str("");
+			to_Save += ";";
+		}
+		file.write(to_Save.c_str(), to_Save.size());
+		file << "\n";
 	}
-	file.write(to_Save.c_str(), to_Save.size());
-	file << "\n";
 
 	file.close();
 
@@ -88,15 +108,6 @@ void OPUS(string path, string filename, float *samples)
 
 	tmp = "." + slash + path + slash + filename + ".wav";//delete created earlier .wav file
 	remove(tmp.c_str());
-}
-
-void fill_with_data(double *in, float *data)
-{
-	for (int i = 0; i < DFT_SIZE; i++)
-	{
-		in[i] = data[i];
-	}
-	return;
 }
 
 void complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers

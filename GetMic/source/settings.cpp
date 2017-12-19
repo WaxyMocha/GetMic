@@ -1,8 +1,10 @@
 
-#include "..\stdafx.h"
+#include "stdafx.h"
+#include <iostream>
 #include <string>
 #include "settings.h"
 
+using namespace std;
 namespace fs = std::experimental::filesystem;
 
 Settings::Settings(int argc, char** argv)
@@ -277,4 +279,10 @@ int Settings::get_last(string path, int offset)
 		}
 	}
 	return max;
+}
+
+bool Settings::is_number(const std::string& s)
+{
+	return !s.empty() && std::find_if(s.begin(),
+		s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
 }

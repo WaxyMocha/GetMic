@@ -1,7 +1,14 @@
 #include "stdafx.h"
 #include <WAV.h>
+#include <GetMic.h>
 
 using namespace std;
+
+void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES);
+void flip_Endian(char *in, char *out, int lenght);
+void num2char(int in, char *out, int lenght);
+void num2char(float &in, char *out, int lenght);
+
 
 int WAV(string path, string filename, float *samples)
 {

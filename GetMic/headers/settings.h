@@ -1,5 +1,7 @@
 #pragma once
-#include <string>
+#include <iostream>
+
+using namespace std;
 
 class Settings
 {
@@ -33,4 +35,5 @@ private:
 	void help();
 	void file_number(); 
 	int get_last(string path, int offset);
+	bool is_number(const std::string& s);
 };

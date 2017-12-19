@@ -1,9 +1,9 @@
-#include "..\stdafx.h"
+#include "stdafx.h"
 #include <math.h>
 #include <portaudio.h>
 #include <fftw3.h>
-#include <WAV.h>
 #include <thread.h>
+#include <GetMic.h>
 #include "settings.h"
 
 using namespace std;
@@ -23,20 +23,20 @@ static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned 
 
 int main(int argc, char** argv)
 {
-	Settings Settings(argc, argv);
+	Settings settings(argc, argv);
 
-	if (Settings.code == -1)
+	if (settings.code == -1)
 	{
 		return -1;
 	}
-	quiet = quiet;
-	debug = debug;
+	quiet = settings.quiet;
+	debug = settings.debug;
 	paTestData data;
 
 	future<int> threads[MAX_THREADS];//Threads handlers
 
 	bool create_New = false;
-	int file_No = Settings.file_No;
+	int file_No = settings.file_No;
 	
 	fftw_plan plans[MAX_THREADS];//Plans for FFT
 
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
 	if (debug) cout << "Init completed" << endl;
 	
-	for (; file_No < Settings.end_on; file_No++)
+	for (; file_No < settings.end_on; file_No++)
 	{
 		while (data.frameIndex != NUM_OF_SAMPLES)//check if callback function buffer is full
 		{
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 			{
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i);
+					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i, settings);
 				}
 				else
 				{
@@ -78,7 +78,7 @@ int main(int argc, char** argv)
 
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i);
+					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i, settings);
 				}
 			}
 			else
@@ -158,7 +158,7 @@ int Init(paTestData *data, fftw_plan *plans)
 	return 0;
 }
 
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings Settings)
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings settings)
 {
 	float val, max = 0;
 	double change, avg = 0;
@@ -180,9 +180,9 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 
 	change = abs((avg_Old - avg) / avg) * 100;
 
-	if (!Settings.differential)
+	if (!settings.differential)
 	{
-		threads = async(task, Settings.prefix + to_string(No) + Settings.sufix, plan, buff, in[thread_number], out[thread_number], Settings);//New thread
+		threads = async(task, settings.prefix + to_string(No) + settings.sufix, plan, buff, in[thread_number], out[thread_number], settings);//New thread
 		if (!quiet) cout << "Started No. " << No << endl;
 
 		if (debug) cout << "New thread created on: " << thread_number << endl;
@@ -190,9 +190,9 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	}
 	else
 	{
-		if (change >= Settings.change)
+		if (change >= settings.change)
 		{
-			threads = async(task, Settings.prefix + to_string(No) + Settings.sufix, plan, buff, in[thread_number], out[thread_number], Settings);//New thread
+			threads = async(task, settings.prefix + to_string(No) + settings.sufix, plan, buff, in[thread_number], out[thread_number], settings);//New thread
 			if (!quiet) cout << "Started No. " << No << endl;
 
 			if (debug) cout << "New thread created on: " << thread_number << endl;

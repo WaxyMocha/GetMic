@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\stdafx.h"
+#include "stdafx.h"
 #include "fftw3.h"
 #include "settings.h"
 
@@ -64,5 +64,5 @@ extern bool debug;
 //extern arguments argu;
 
 int Init(paTestData *data, fftw_plan *plans);
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings Settings);
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings settings);
 bool is_number(const std::string& s);
