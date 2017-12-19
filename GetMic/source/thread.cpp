@@ -62,6 +62,10 @@ void CSV(string path, string filename, float *buff, fftw_complex *out, double *i
 		fftw_execute(p);
 		complex_2_real(out, tmp + (i * DFT_SIZE));
 	}
+	if (fs::is_regular_file(path + slash + filename + ".csv"))
+	{
+		remove((path + slash + filename + ".csv").c_str());
+	}
 	save_CSV(path, filename, tmp);
 	delete[] tmp;
 }
@@ -103,10 +107,10 @@ void OPUS(string path, string filename, float *samples)
 
 	string tmp;
 
-	tmp = "opusenc.exe --quiet " + path + slash + filename + ".wav " + path + slash + filename + ".opus";//create command for generating .opus using opusenc.exe
+	tmp = "opusenc.exe --quiet \"" + path + slash + filename + ".wav\" \"" + path + slash + filename + ".opus\"";//create command for generating .opus using opusenc.exe
 	system(tmp.c_str());
 
-	tmp = "." + slash + path + slash + filename + ".wav";//delete created earlier .wav file
+	tmp = path + slash + filename + ".wav";//delete created earlier .wav file
 	remove(tmp.c_str());
 }
 
