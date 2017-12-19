@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include <math.h>
-#include "headers\portaudio.h"
-#include "headers\fftw3.h"
-#include "headers\WAV.h"
-#include "headers\thread.h"
+#include <portaudio.h>
+#include <fftw3.h>
+#include <WAV.h>
+#include <thread.h>
+#include <Input.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -23,7 +24,24 @@ static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned 
 
 int main(int argc, char** argv)
 {
-	prepare_input_parameters(argc, argv);
+	//prepare_input_parameters(argc, argv);
+	Input input(argc, argv);
+	{
+		argu.change = input.change;
+		argu.continue_ = input.continue_;
+		argu.continue_from = input.continue_from;
+		argu.continue_position_of_ID = input.continue_position_of_ID;
+		argu.debug = input.debug;
+		argu.differential = input.differential;
+		argu.end_on = input.end_on;
+		argu.folder_for_csv = input.folder_for_csv;
+		argu.folder_for_opus = input.folder_for_opus;
+		argu.folder_for_wav = input.folder_for_wav;
+		argu.prefix = input.prefix;
+		argu.quiet = input.quiet;
+		argu.sufix = input.sufix;
+		argu.code = input.code;
+	}
 
 	if (argu.code == -1)
 	{
@@ -91,7 +109,8 @@ int main(int argc, char** argv)
 	}
 
 	if (argu.debug) cout << "Init completed" << endl;
-	for (; file_No != argu.end_on + 1; file_No++)
+	
+	for (; file_No < argu.end_on; file_No++)
 	{
 		while (data.frameIndex != NUM_OF_SAMPLES)//check if callback function buffer is full
 		{
@@ -344,18 +363,19 @@ int check_Directory(char *argv, string &output)
 	if (fs::is_directory(argv))
 	{
 		output = argv;
+		return 0;
 	}
 	else if (fs::create_directory(argv))
 	{
 		if (argu.debug) cout << "Created output directory" << endl;
 		output = argv;
+		return 0;
 	}
 	else
 	{
 		cout << "Couldn't create output directory" << endl;
 		return -1;
 	}
-	return 1;
 }
 
 void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number)
@@ -448,13 +468,14 @@ int get_last(string path, string extension)
 
 int find_lenght(string filename)
 {
-	for (int i = filename.length() - 1; i >= 0; i--)
+	for (size_t i = filename.length() - 1; i >= 0; i--)
 	{
 		if (is_number(to_string(filename[i])))
 		{
-			return i;
+			return (int)i;
 		}
 	}
+	return 0;
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)

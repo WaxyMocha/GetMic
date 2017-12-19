@@ -1,8 +1,7 @@
 
 #include "stdafx.h"
-#include <iostream>
-#include "headers\thread.h"
-#include "headers\WAV.h"
+#include <thread.h>
+#include <WAV.h>
 #include <complex>
 
 using namespace std;
