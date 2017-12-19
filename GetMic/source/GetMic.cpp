@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 
 	if (Init(&data, plans) && !quiet)
 	{
-		cout << "Init failed, ending..." << endl;
+		if (!quiet) cout << "Init failed, ending..." << endl;
 		return 0;
 	}
 

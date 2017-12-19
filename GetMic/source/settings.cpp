@@ -24,7 +24,7 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 		{
 			if (!fs::create_directory("output"))
 			{
-				cout << "Couldn't create output directory" << endl;
+				if (!quiet) cout << "Couldn't create output directory" << endl;
 				code = -1;
 			}
 			folder_for_opus = "output";
@@ -52,7 +52,7 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 				}
 				else
 				{
-					cout << "see --help" << endl;
+					if (!quiet) cout << "see --help" << endl;
 				}
 				code = -1;
 				break;
@@ -61,7 +61,7 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 		else
 		{
 			code = -1;
-			cout << "see --help" << endl;
+			if (!quiet) cout << "see --help" << endl;
 
 			break;
 		}
@@ -71,9 +71,9 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 
 void Settings::help()//show help message
 {
-	cout << "getmic <parameters> <audio> <csv>" << endl
+	if (!quiet) cout << "getmic <parameters> <audio> <csv>" << endl
 		<< "Audio and csv are folders for respective, audio files and results of DFT" << endl;
-	cout << "Avaiable parameters: " << endl
+	if (!quiet) cout << "Avaiable parameters: " << endl
 		<< "-q, --quiet" << " " << "Do not output any information about progress" << endl
 		<< "-d, --debug" << " " << "Enable debug informaton" << endl
 		<< "-w, --wav" << " " << "Output folder for audio files, if not specified, no audio files will be written" << endl
@@ -196,7 +196,7 @@ int Settings::check_Directory(string directory)//checks if directory exist, if n
 	}
 	else
 	{
-		cout << "Couldn't create output directory" << endl;
+		if (!quiet) cout << "Couldn't create output directory" << endl;
 		return -1;
 	}
 }
@@ -256,7 +256,7 @@ int Settings::get_last(string path, int offset)
 		if (offset != 0)//count how long filenmuber is, "50" is 2 digit long, "1004" is 4
 		{
 			lenght = 0;
-			for (int i = offset; i < filename.length() - 1; i++)
+			for (unsigned int i = offset; i < filename.length() - 1; i++)
 			{
 				if (!isdigit(filename[i]))
 				{
