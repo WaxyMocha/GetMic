@@ -1,5 +1,4 @@
-
-#include "stdafx.h"
+#include "..\stdafx.h"
 #include <thread.h>
 #include <WAV.h>
 #include <complex>
@@ -7,19 +6,19 @@
 using namespace std;
 using namespace std::chrono;
 
-int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out)
+int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings Settings)
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	thread wav, opus;
 
-	if (argu.folder_for_opus != "")
+	if (Settings.folder_for_opus != "")
 	{
-		opus = thread(OPUS, argu.folder_for_opus, filename, buff);
+		opus = thread(OPUS, Settings.folder_for_opus, filename, buff);
 	}
 
-	if (argu.folder_for_wav != "")
+	if (Settings.folder_for_wav != "")
 	{
-		wav = thread(WAV, argu.folder_for_wav, filename, buff);
+		wav = thread(WAV, Settings.folder_for_wav, filename, buff);
 	}
 
 	double *tmp = new double[DFT_SIZE];
@@ -29,9 +28,9 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 		copy(buff + ((DFT_SIZE / 2) * i), buff + ((DFT_SIZE / 2) * (i + 1)), in);
 		fftw_execute(p);
 		complex_2_real(out, tmp);
-		if (argu.folder_for_csv != "")
+		if (Settings.folder_for_csv != "")
 		{
-			CSV(argu.folder_for_csv, filename, tmp);
+			CSV(Settings.folder_for_csv, filename, tmp);
 		}
 	}
 
@@ -47,7 +46,7 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 
 	delete[] tmp;
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	if (argu.debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
+	if (debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
 	return 0;
 }
 
@@ -58,7 +57,7 @@ void CSV(string path, string filename, double *out)
 
 	if (!file.good())
 	{
-		if (!argu.quiet) cout << "Error while creating/opening file" << endl;
+		if (!quiet) cout << "Error while creating/opening file" << endl;
 	}
 	string to_Save = "";
 	std::ostringstream s;
@@ -84,10 +83,10 @@ void OPUS(string path, string filename, float *samples)
 
 	string tmp;
 
-	tmp = "opusenc.exe --quiet " + argu.folder_for_opus + slash + filename + ".wav " + argu.folder_for_opus + slash + filename + ".opus";//create command for generating .opus using opusenc.exe
+	tmp = "opusenc.exe --quiet " + path + slash + filename + ".wav " + path + slash + filename + ".opus";//create command for generating .opus using opusenc.exe
 	system(tmp.c_str());
 
-	tmp = "." + slash + argu.folder_for_opus + slash + filename + ".wav";//delete created earlier .wav file
+	tmp = "." + slash + path + slash + filename + ".wav";//delete created earlier .wav file
 	remove(tmp.c_str());
 }
 

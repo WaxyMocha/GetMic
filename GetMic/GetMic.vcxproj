@@ -76,7 +76,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Guset\Downloads\Audio2Data\GetMic\headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\headers;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -89,7 +89,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj.enc;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
-    <IncludePath>C:\Users\Guset\Downloads\Audio2Data\GetMic\headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\headers;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -174,8 +174,8 @@
   <ItemGroup>
     <ClInclude Include="headers\fftw3.h" />
     <ClInclude Include="headers\GetMic.h" />
-    <ClInclude Include="headers\Input.h" />
     <ClInclude Include="headers\portaudio.h" />
+    <ClInclude Include="headers\settings.h" />
     <ClInclude Include="headers\thread.h" />
     <ClInclude Include="headers\WAV.h" />
     <ClInclude Include="stdafx.h" />
@@ -183,7 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GetMic.cpp" />
-    <ClCompile Include="source\Input.cpp" />
+    <ClCompile Include="source\settings.cpp" />
     <ClCompile Include="source\thread.cpp" />
     <ClCompile Include="source\WAV.cpp" />
     <ClCompile Include="stdafx.cpp">

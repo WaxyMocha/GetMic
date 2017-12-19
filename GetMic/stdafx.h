@@ -14,5 +14,3 @@
 #include <future>
 #include <cctype>
 #include <experimental/filesystem>
-#include "headers\GetMic.h"
-#include "headers\fftw3.h"

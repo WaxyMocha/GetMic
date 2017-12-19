@@ -36,7 +36,7 @@
     <ClInclude Include="headers\GetMic.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="headers\Input.h">
+    <ClInclude Include="headers\settings.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,8 +53,8 @@
     <ClCompile Include="source\WAV.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="source\Input.cpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClCompile Include="source\settings.cpp">
+      <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

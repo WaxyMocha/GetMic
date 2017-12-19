@@ -1,10 +1,11 @@
 
-#include "stdafx.h"
-#include "Input.h"
+#include "..\stdafx.h"
+#include <string>
+#include "settings.h"
 
 namespace fs = std::experimental::filesystem;
 
-Input::Input(int argc, char** argv)
+Settings::Settings(int argc, char** argv)
 {
 	prepare_input_parameters(argc, argv);
 	if (continue_)
@@ -13,7 +14,7 @@ Input::Input(int argc, char** argv)
 	}
 }
 
-void Input::prepare_input_parameters(int argc, char **argv)
+void Settings::prepare_input_parameters(int argc, char **argv)
 {
 	if (argc == 1)
 	{
@@ -66,7 +67,7 @@ void Input::prepare_input_parameters(int argc, char **argv)
 	return;
 }
 
-void Input::help()//show help message
+void Settings::help()//show help message
 {
 	cout << "getmic <parameters> <audio> <csv>" << endl
 		<< "Audio and csv are folders for respective, audio files and results of DFT" << endl;
@@ -84,7 +85,7 @@ void Input::help()//show help message
 		<< "-s, --sufix" << " " << "Set file sufix" << endl;
 }
 
-bool Input::choose_parameter(string parameter, string next, int &i)//compare passed argument to all possible cases, and sets the appropriate variables
+bool Settings::choose_parameter(string parameter, string next, int &i)//compare passed argument to all possible cases, and sets the appropriate variables
 {
 	if (parameter == "-q" || parameter == "--quiet") quiet = true;
 	else if (parameter ==  "-d" || parameter == "--debug") debug = true;
@@ -180,7 +181,7 @@ bool Input::choose_parameter(string parameter, string next, int &i)//compare pas
 	return false;
 }
 
-int Input::check_Directory(string directory)//checks if directory exist, if not, creates it
+int Settings::check_Directory(string directory)//checks if directory exist, if not, creates it
 {
 	if (fs::is_directory(directory))
 	{
@@ -198,7 +199,7 @@ int Input::check_Directory(string directory)//checks if directory exist, if not,
 	}
 }
 
-void Input::file_number()
+void Settings::file_number()
 {
 	string path;
 
@@ -218,16 +219,16 @@ void Input::file_number()
 	{
 		if (continue_position_of_ID != 0)
 		{
-			file_No = get_last(path, continue_position_of_ID);
+			file_No = get_last(path, continue_position_of_ID) + 1;
 		}
 		else
 		{
-			file_No = get_last(path, 0);
+			file_No = get_last(path, 0) + 1;
 		}
 	}
 }
 
-int Input::get_last(string path, int offset)
+int Settings::get_last(string path, int offset)
 {
 	int max = 0;
 	int lenght = 0;
@@ -253,9 +254,9 @@ int Input::get_last(string path, int offset)
 		if (offset != 0)//count how long filenmuber is, "50" is 2 digit long, "1004" is 4
 		{
 			lenght = 0;
-			for (int i = offset - 1; i < filename.length() - 1; i++)
+			for (int i = offset; i < filename.length() - 1; i++)
 			{
-				if (isdigit(filename[i]))
+				if (!isdigit(filename[i]))
 				{
 					break;
 				}

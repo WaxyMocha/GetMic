@@ -1,10 +1,10 @@
-#include "stdafx.h"
+#include "..\stdafx.h"
 #include <math.h>
 #include <portaudio.h>
 #include <fftw3.h>
 #include <WAV.h>
 #include <thread.h>
-#include <Input.h>
+#include "settings.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -15,102 +15,40 @@ double **in;
 fftw_complex **out;
 float **buff;
 
-float change = 0;
-
-arguments argu;
+bool quiet = false;
+bool debug = false;
 
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
 int main(int argc, char** argv)
 {
-	//prepare_input_parameters(argc, argv);
-	Input input(argc, argv);
-	{
-		argu.change = input.change;
-		argu.continue_ = input.continue_;
-		argu.continue_from = input.continue_from;
-		argu.continue_position_of_ID = input.continue_position_of_ID;
-		argu.debug = input.debug;
-		argu.differential = input.differential;
-		argu.end_on = input.end_on;
-		argu.folder_for_csv = input.folder_for_csv;
-		argu.folder_for_opus = input.folder_for_opus;
-		argu.folder_for_wav = input.folder_for_wav;
-		argu.prefix = input.prefix;
-		argu.quiet = input.quiet;
-		argu.sufix = input.sufix;
-		argu.code = input.code;
-	}
+	Settings Settings(argc, argv);
 
-	if (argu.code == -1)
+	if (Settings.code == -1)
 	{
 		return -1;
 	}
+	quiet = quiet;
+	debug = debug;
 	paTestData data;
 
 	future<int> threads[MAX_THREADS];//Threads handlers
 
 	bool create_New = false;
-	int file_No;
-	if (argu.continue_)
-	{
-		if (argu.continue_from == -1)
-		{
-			if (argu.continue_position_of_ID != 0)
-			{
-				string tmp;
-				if (argu.folder_for_csv != "")
-				{
-					tmp = argu.folder_for_csv;
-					file_No = get_last(tmp.substr(argu.continue_position_of_ID, tmp.length() - argu.continue_position_of_ID), ".wav");
-				}
-				else if (argu.folder_for_opus != "")
-				{
-					tmp = argu.folder_for_opus;
-					file_No = get_last(tmp.substr(argu.continue_position_of_ID, tmp.length() - argu.continue_position_of_ID), ".wav");
-				}
-				else if (argu.folder_for_wav != "")
-				{
-					tmp = argu.folder_for_wav;
-					file_No = get_last(tmp.substr(argu.continue_position_of_ID, tmp.length() - argu.continue_position_of_ID), ".wav");
-				}
-				else
-					file_No = 0;
-			}
-			else
-			{
-				if (argu.folder_for_csv != "")
-					file_No = get_last(argu.folder_for_csv, ".csv");
-				else if (argu.folder_for_opus != "")
-					file_No = get_last(argu.folder_for_opus, ".opus");
-				else if (argu.folder_for_wav != "")
-					file_No = get_last(argu.folder_for_wav, ".wav");
-				else
-					file_No = 0;
-			}
-		}
-		else
-		{
-			file_No = argu.continue_from;
-		}
-	}
-	else
-	{
-		file_No = 0;
-	}
-
+	int file_No = Settings.file_No;
+	
 	fftw_plan plans[MAX_THREADS];//Plans for FFT
 
-	if (Init(&data, plans) && !argu.quiet)
+	if (Init(&data, plans) && !quiet)
 	{
 		cout << "Init failed, ending..." << endl;
 		return 0;
 	}
 
-	if (argu.debug) cout << "Init completed" << endl;
+	if (debug) cout << "Init completed" << endl;
 	
-	for (; file_No < argu.end_on; file_No++)
+	for (; file_No < Settings.end_on; file_No++)
 	{
 		while (data.frameIndex != NUM_OF_SAMPLES)//check if callback function buffer is full
 		{
@@ -118,7 +56,7 @@ int main(int argc, char** argv)
 		}
 
 		create_New = true;
-		if (!argu.quiet || argu.debug) cout << endl;
+		if (!quiet || debug) cout << endl;
 
 		for (int i = 0; i < MAX_THREADS; i++)
 		{
@@ -145,15 +83,15 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				if (argu.quiet) cout << "Thread on: " << i << ", is still running" << endl;
+				if (!quiet) cout << "Thread on: " << i << ", is still running" << endl;
 			}
 			if (i == MAX_THREADS - 1 && create_New)
 			{
-				if (!argu.quiet) cout << "Out of free thread handlers, increase number of it." << endl;
+				if (!quiet) cout << "Out of free thread handlers, increase number of it." << endl;
 				return 1;
 			}
 		}
-		if (argu.debug) cout << "skipped samples: " << data.skipped_Frames << endl;
+		if (debug) cout << "skipped samples: " << data.skipped_Frames << endl;
 		data.skipped_Frames = 0;
 	}
 }
@@ -190,13 +128,13 @@ int Init(paTestData *data, fftw_plan *plans)
 	if (Pa_Initialize() != paNoError)
 	{
 		Pa_Terminate();
-		if (!argu.quiet) cout << "Cannot initialize PortAudio" << endl;
+		if (!quiet) cout << "Cannot initialize PortAudio" << endl;
 		return 1;
 	}
 
 	inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 	if (inputParameters.device == paNoDevice) {
-		if (!argu.quiet) cout << "Error: Cannot find microphone" << endl;
+		if (!quiet) cout << "Error: Cannot find microphone" << endl;
 		Pa_Terminate();
 		return 1;
 	}
@@ -208,177 +146,19 @@ int Init(paTestData *data, fftw_plan *plans)
 	if (Pa_OpenStream(&stream, &inputParameters, NULL, SAMPLE_RATE, FRAMES_PER_BUFFER, paClipOff, recordCallback, data) != paNoError)
 	{
 		Pa_Terminate();
-		if (!argu.quiet) cout << "Open stream failed" << endl;
+		if (!quiet) cout << "Open stream failed" << endl;
 		return 1;
 	}
 	if (Pa_StartStream(stream) != paNoError)
 	{
 		Pa_Terminate();
-		if (!argu.quiet) cout << "Start stream failed" << endl;
+		if (!quiet) cout << "Start stream failed" << endl;
 		return 1;
 	}
 	return 0;
 }
 
-void prepare_input_parameters(int argc, char **argv)
-{
-	if (argc == 1)
-	{
-		if (!fs::is_directory("output"))
-		{
-			if (!fs::create_directory("output"))
-			{
-				cout << "Couldn't create output directory" << endl;
-				argu.code = -1;
-			}
-			argu.folder_for_opus = "output";
-		}
-		return;
-	}
-	
-	for (int i = 1; i < argc; i++)
-	{
-		if (argv[i][0] == '-')
-		{
-			bool anything = true;
-
-			if (!strcmp(argv[i], "-q") || !strcmp(argv[i], "--quiet")) argu.quiet = true;
-			else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug")) argu.debug = true;
-			//else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue")) argu.continue_ = true;
-			else if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--wav"))
-			{
-				i++;
-				check_Directory(argv[i], argu.folder_for_wav);
-			}
-			else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--csv"))
-			{
-				i++;
-				check_Directory(argv[i], argu.folder_for_csv);
-			}
-			else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--opus"))
-			{
-				i++;
-				check_Directory(argv[i], argu.folder_for_opus);
-			}
-			else if (!strcmp(argv[i], "-p") || !strcmp(argv[i], "--prefix"))
-			{
-				i++;
-				argu.prefix = argv[i];
-			}
-			else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--sufix"))
-			{
-				i++;
-				argu.sufix = argv[i];
-			}
-			else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--continue"))
-			{
-				i++;
-				argu.continue_ = true;
-				if (is_number(argv[i]))
-				{
-					argu.continue_position_of_ID = stol(string(argv[i]));
-				}
-			}
-			else if (!strcmp(argv[i], "-D") || !strcmp(argv[i], "--differential"))
-			{
-				argu.differential = true;
-				i++;
-				if (is_number(string(argv[i])))
-				{
-					argu.change = stof(string(argv[i]));
-				}
-				else
-				{
-					argu.code = -1;
-				}
-			}
-			else if (!strcmp(argv[i], "-Cf") || !strcmp(argv[i], "--continue_from"))
-			{
-				argu.continue_ = true;
-				i++;
-				if (is_number(string(argv[i])))
-				{
-					argu.continue_from = stol(string(argv[i]));
-				}
-				else
-				{
-					argu.code = -1;
-				}
-			}
-			else if (!strcmp(argv[i], "-E") || !strcmp(argv[i], "--end_on"))
-			{
-				i++;
-				if (is_number(string(argv[i])))
-				{
-					argu.end_on = stol(string(argv[i]));
-				}
-				else
-				{
-					argu.code = -1;
-				}
-			}
-
-			else anything = false;
-
-			if (!anything && argc == 2)//no arguments match
-			{
-				if (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-?") || !strcmp(argv[1], "/help") || !strcmp(argv[1], "/?"))
-				{
-					cout << "program <parameters> <audio> <csv>" << endl
-						<< "Audio and csv are folders for respective, audio files and results of DFT" << endl;
-					cout << "Avaiable parameters: " << endl
-						<< "-q, --quiet"		<< " "	<< "Do not output any information about progress" << endl
-						<< "-d, --debug"		<< " "	<< "Enable debug informaton" << endl
-						<< "-w, --wav"			<< " "	<< "Output folder for audio files, if not specified, no audio files will be written" << endl
-						<< "-o, --opus"			<< " "	<< "Output folder for opus files, if not specified, no opus files will be written" << endl
-						<< "-c, --csv"			<< " "	<< "Output folder for csv files, if not specified, no csv files will be written" << endl
-						<< "-C, --continue"		<< " "	<< "Start saving files from the last one" << endl
-						<< "-Cf, --continue_from"<<" "	<< "Start from specified file (number)" << endl
-						<< "-E, --end_on"		<< " "	<< "Finish on specified file (number)" << endl
-						<< "-D, --differential"	<< " "	<< "Proceed only if average amplitude changed more than specified percent" << endl
-						<< "-p, --prefix"		<< " "	<< "Set file prefix" << endl
-						<< "-s, --sufix"		<< " "	<< "Set file sufix" << endl;
-				}
-				else
-				{
-					cout << "see --help" << endl;
-				}
-				argu.code = -1;
-				break;
-			}
-		}
-		else
-		{
-			argu.code = -1;
-			cout << "see --help" << endl;
-
-			break;
-		}
-	}
-	return;
-}
-
-int check_Directory(char *argv, string &output)
-{
-	if (fs::is_directory(argv))
-	{
-		output = argv;
-		return 0;
-	}
-	else if (fs::create_directory(argv))
-	{
-		if (argu.debug) cout << "Created output directory" << endl;
-		output = argv;
-		return 0;
-	}
-	else
-	{
-		cout << "Couldn't create output directory" << endl;
-		return -1;
-	}
-}
-
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number)
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings Settings)
 {
 	float val, max = 0;
 	double change, avg = 0;
@@ -400,35 +180,35 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 
 	change = abs((avg_Old - avg) / avg) * 100;
 
-	if (!argu.differential)
+	if (!Settings.differential)
 	{
-		threads = async(task, argu.prefix + to_string(No) + argu.sufix, plan, buff, in[thread_number], out[thread_number]);//New thread
-		if (!argu.quiet) cout << "Started No. " << No << endl;
+		threads = async(task, Settings.prefix + to_string(No) + Settings.sufix, plan, buff, in[thread_number], out[thread_number], Settings);//New thread
+		if (!quiet) cout << "Started No. " << No << endl;
 
-		if (argu.debug) cout << "New thread created on: " << thread_number << endl;
-		if (!argu.quiet) cout << "change: " << change << "%" << endl;
+		if (debug) cout << "New thread created on: " << thread_number << endl;
+		if (!quiet) cout << "change: " << change << "%" << endl;
 	}
 	else
 	{
-		if (change >= argu.change)
+		if (change >= Settings.change)
 		{
-			threads = async(task, argu.prefix + to_string(No) + argu.sufix, plan, buff, in[thread_number], out[thread_number]);//New thread
-			if (!argu.quiet) cout << "Started No. " << No << endl;
+			threads = async(task, Settings.prefix + to_string(No) + Settings.sufix, plan, buff, in[thread_number], out[thread_number], Settings);//New thread
+			if (!quiet) cout << "Started No. " << No << endl;
 
-			if (argu.debug) cout << "New thread created on: " << thread_number << endl;
-			if (!argu.quiet) cout << "change: " << change << "%" << endl;
+			if (debug) cout << "New thread created on: " << thread_number << endl;
+			if (!quiet) cout << "change: " << change << "%" << endl;
 		}
 		else
 		{
-			if (!argu.quiet) cout << "Sample has been skipped, change was: " << change << "%" << endl;
+			if (!quiet) cout << "Sample has been skipped, change was: " << change << "%" << endl;
 		}
 		
 	}
 	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
 	create_New = false;
 	
-	if (!argu.quiet) cout << "sample max amplitude = " << max << endl;
-	if (!argu.quiet) cout << "sample average = " << avg << endl;
+	if (!quiet) cout << "sample max amplitude = " << max << endl;
+	if (!quiet) cout << "sample average = " << avg << endl;
 
 	avg_Old = avg;
 }
@@ -437,45 +217,6 @@ bool is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
 		s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
-}
-
-int get_last(string path, string extension)
-{
-	int max = 0;
-	for (auto& p : fs::directory_iterator(path))
-	{
-		string filename = p.path().string();
-		filename = filename.substr(path.length() + 1, filename.length());
-
-		if (filename.substr(filename.length() - extension.length(), filename.length()) != extension)
-		{
-			continue;
-		}
-
-		filename = filename.substr(0, filename.length() - extension.length());
-		
-		int num;
-		istringstream iss(filename);
-		iss >> num;
-
-		if (num > max)
-		{
-			max = num;
-		}
-	}
-	return max;
-}
-
-int find_lenght(string filename)
-{
-	for (size_t i = filename.length() - 1; i >= 0; i--)
-	{
-		if (is_number(to_string(filename[i])))
-		{
-			return (int)i;
-		}
-	}
-	return 0;
 }
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)

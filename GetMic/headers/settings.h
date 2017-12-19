@@ -1,10 +1,10 @@
 #pragma once
-#include <limits.h>
+#include <string>
 
-class Input
+class Settings
 {
 public:
-	Input(int argc, char** argv);
+	Settings(int argc, char** argv);
 
 	string folder_for_wav = "";
 	string folder_for_opus = "";
@@ -17,7 +17,7 @@ public:
 									 //there is no way to be certaintry if this is file number or some other number.
 									 //For example, "File Nr. 8 of 100" how algorithm can be sure if 8 or 100 is file ID ?
 									 //This parameter is for user to specify where in filename ID starts, in example above, 9th
-	long end_on = LONG_MAX;
+	long end_on = 2147483647L;
 	bool quiet = false;
 	bool debug = false;
 	bool differential = false;
