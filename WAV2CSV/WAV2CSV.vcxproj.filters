@@ -27,7 +27,7 @@
     <ClInclude Include="fftw3.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="..\WAV2CSV.h">
+    <ClInclude Include="WAV2CSV.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

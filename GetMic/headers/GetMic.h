@@ -2,6 +2,7 @@
 
 #include "..\stdafx.h"
 #include "fftw3.h"
+#include "settings.h"
 
 using namespace std;
 
@@ -34,13 +35,21 @@ struct arguments
 	string folder_for_wav = "";
 	string folder_for_opus = "";
 	string folder_for_csv = "";
+	string prefix = "";
+	string sufix = "";
 	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
+	long continue_from = -1;
+	long continue_position_of_ID = 0;//Ugh, if someone use prefix or sufix,
+									//there is no way to be certaintry if this is file number or some other number.
+									//For example, "File Nr. 8 of 100" how algorithm can be sure if 8 or 100 is file ID ?
+									//This parameter is for user to specify where in filename ID starts, in example above, 9th
+	long end_on = -1;
 	bool quiet = false;
 	bool debug = false;
 	bool differential = false;
-	float change = 0;
 	bool continue_ = false;
-	int continue_from = -1;
+	float change = 0;
+
 };
 struct pointers
 {
@@ -49,11 +58,11 @@ struct pointers
 	float *buff;
 };
 
-extern arguments argu;
+extern bool quiet;
+extern bool debug;
 
-int Init(paTestData *data, fftw_plan *plans, double **in, fftw_complex **out, float **buff);
-void prepare_input_parameters(int argc, char **argv);
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, paTestData *data, bool &create_New, int thread_number, pointers *point);
+//extern arguments argu;
+
+int Init(paTestData *data, fftw_plan *plans);
+void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings Settings);
 bool is_number(const std::string& s);
-int check_Directory(char *argv, string &output);
-int get_last(string path, string extension);

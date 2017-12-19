@@ -1,13 +1,9 @@
-// WAV2CSV.cpp: Definiuje punkt wejścia dla aplikacji konsolowej.
-//
-
 #include "stdafx.h"
-#include "..\WAV2CSV.h"
+#include "WAV2CSV.h"
 
 using namespace std;
 using namespace std::chrono;
 
-using namespace WAV2CSV;
 
 namespace fs = std::experimental::filesystem;
 
@@ -22,7 +18,7 @@ const int iterations = 40;// length of sound = N * iterations
 
 int main(int argc, char **argv)
 {
-	//high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	arguments arg = prepare_input_parameters(argc, argv);
 
 	if (arg.code == -1)
@@ -31,7 +27,7 @@ int main(int argc, char **argv)
 	}
 
 	string *files = new string[1];
-
+	
 	if (list_directory(&arg, files) == -1)
 	{
 		cout << "Input directory empty, ending..." << endl;
@@ -47,11 +43,6 @@ int main(int argc, char **argv)
 	real = new double[N];
 
 	int num = 1;
-
-	//real-complex dft
-	//NOTE: this is the most time consuming operation in program(so far), 
-	//create plan for 1600(100 ms of data) long array take 150 ms, and calculate dft for that data take less than 5 ms
-	//but once created plan can be used multiple times
 
 	double *in;
 	fftw_complex *out;
@@ -85,7 +76,9 @@ int main(int argc, char **argv)
 			fill_with_data(in, samples[j]);
 			fftw_execute(p);
 			complex_2_real(out, real);
-			save_DFT(real, i, &arg, files[i]);
+			//save_DFT(real, i, &arg, files[i]);
+			CSV(argv[2], to_string(i), real);
+
 		}
 		if(!arg.quiet)
 			cout << "Done nr." << num << endl;
@@ -99,17 +92,15 @@ int main(int argc, char **argv)
 		for (int i = 0; i < iterations; i++)
 			delete[] samples[i];
 		delete[] samples;
-
 		delete[] real;
-
 		delete[] files;
-		//high_resolution_clock::time_point t2 = high_resolution_clock::now();
-		//cout << duration_cast<microseconds>(t2 - t1).count() << endl;
+		high_resolution_clock::time_point t2 = high_resolution_clock::now();
+		cout << duration_cast<microseconds>(t2 - t1).count() << endl;
 	}
 	return 0;
 }
 
-arguments WAV2CSV::prepare_input_parameters(int argc, char **argv)
+arguments prepare_input_parameters(int argc, char **argv)
 {
 	arguments arg;
 	if (argc == 1)
@@ -162,8 +153,9 @@ arguments WAV2CSV::prepare_input_parameters(int argc, char **argv)
 	return arg;
 }
 
-int WAV2CSV::list_directory(arguments *arg, string *&files)
+int list_directory(arguments *arg, string *&files)
 {
+
 	int num = 0;
 	for (auto & p : fs::directory_iterator(arg->input))
 	{
@@ -190,7 +182,7 @@ int WAV2CSV::list_directory(arguments *arg, string *&files)
 	return 0;
 }
 
-void WAV2CSV::fill_with_data(double *in, float *data)
+void fill_with_data(double *in, float *data)
 {
 	for (int i = 0; i < N; i++)
 	{
@@ -199,7 +191,7 @@ void WAV2CSV::fill_with_data(double *in, float *data)
 	return;
 }
 
-void WAV2CSV::complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers
+void complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers
 {
 	for (int i = 0; i < N / 2; i++)
 	{
@@ -210,7 +202,7 @@ void WAV2CSV::complex_2_real(fftw_complex *in, double *out)//dtf output complex 
 	return;
 }
 
-int WAV2CSV::read_file(string filename, float **samples, int iterations)
+int read_file(string filename, float **samples, int iterations)
 {
 	fstream file;
 	file.open(filename, ios::binary | ios::in);
@@ -279,80 +271,29 @@ int WAV2CSV::read_file(string filename, float **samples, int iterations)
 	return 0;
 }
 
-void WAV2CSV::save_DFT(double *out, int num, arguments *arg, string path)
+void CSV(string path, string filename, double *out)
 {
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	fstream file;
-
-	int prefix = 0;
-	int sufix = path.length() - 5;// .wav(4) plus one for array
-	{
-		int tmp = 0;
-		string tmp2;
-
-		while (1)//separate path from file name
-		{
-			tmp2 = path[tmp];
-			if (tmp2 == slash)
-			{
-				prefix = tmp + 1;
-				tmp++;
-			}
-			else if (tmp2 == ".")
-			{
-				tmp2 += path[tmp + 1];
-				tmp2 += path[tmp + 2];
-				tmp2 += path[tmp + 3];
-				if (tmp2 == ".wav")
-				{
-					break;
-				}
-				else
-				{
-					tmp++;
-					continue;
-				}
-			}
-			else
-			{
-				tmp++;
-			}
-		}
-	}
-	string filename;
-	for (int i = prefix; i <= sufix; i++)
-	{
-		filename += path.at(i);
-	}
-	
-	filename.append(".csv");
-	filename = arg->output + slash + filename;
-	file.open(filename, ios::app);
+	file.open(path + slash + filename + ".csv", ios::app);
 
 	if (!file.good())
 	{
-		cout << "creating/opening file" << endl;
+		cout << "Error while creating/opening file" << endl;
 	}
-
 	string to_Save = "";
 	std::ostringstream s;
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	for (int i = 0; i < N / 2; i += 2)
+	for (int j = 0; j < (N / 2); j++)
 	{
-		s << out[i];
+		s << out[j];
 		to_Save += s.str();
 		s.clear();
 		s.str("");
 		to_Save += ";";
 	}
-
-	file << to_Save;
+	file.write(to_Save.c_str(), to_Save.size());
 	file << "\n";
-	file.close();
-	high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
-	//cout << "one: " << duration_cast<microseconds>(t2 - t1).count() << endl;
-	//cout << "two: " << duration_cast<microseconds>(t3 - t2).count() << endl;
+	file.close();
 
 	return;
 }
@@ -373,7 +314,7 @@ void double2char(double in, char *out, int lenght)
 	return;
 }
 
-void  WAV2CSV::suprise()
+void  suprise()
 {
 	cout <<
 
