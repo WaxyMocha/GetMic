@@ -1,0 +1,85 @@
+\hypertarget{_get_mic_8cpp}{}\section{source/\+Get\+Mic.cpp File Reference}
+\label{_get_mic_8cpp}\index{source/\+Get\+Mic.\+cpp@{source/\+Get\+Mic.\+cpp}}
+{\ttfamily \#include \char`\"{}stdafx.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$portaudio.\+h$>$}\newline
+{\ttfamily \#include $<$fftw3.\+h$>$}\newline
+{\ttfamily \#include $<$thread.\+h$>$}\newline
+{\ttfamily \#include $<$Get\+Mic.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}settings.\+h\char`\"{}}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{_get_mic_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\item 
+int \hyperlink{_get_mic_8cpp_aebbdaf5d4798e201ccd18971ba136ccc}{Init} (\hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$data, fftw\+\_\+plan $\ast$plans)
+\item 
+void \hyperlink{_get_mic_8cpp_ab729f65f60ad178fc9a17cd845bf6088}{new\+\_\+\+Thread} (int \&No, fftw\+\_\+plan plan, future$<$ int $>$ \&threads, float $\ast$\hyperlink{_get_mic_8cpp_aa621af3ba2234c04a5f309a94576b011}{buff}, \hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$data, bool \&create\+\_\+\+New, int thread\+\_\+number, \hyperlink{class_settings}{Settings} settings)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+double $\ast$$\ast$ \hyperlink{_get_mic_8cpp_a5e0f598fffa03bb7026d3a2a168810db}{in}
+\item 
+fftw\+\_\+complex $\ast$$\ast$ \hyperlink{_get_mic_8cpp_a0ff8e98f72df2389143723d3b8e88ce2}{out}
+\item 
+float $\ast$$\ast$ \hyperlink{_get_mic_8cpp_aa621af3ba2234c04a5f309a94576b011}{buff}
+\item 
+bool \hyperlink{_get_mic_8cpp_ae4426f467d61ae456b95844d4d9c2dcd}{quiet} = false
+\item 
+bool \hyperlink{_get_mic_8cpp_a398527b3e9e358c345c5047b16871957}{debug} = false
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{_get_mic_8cpp_aebbdaf5d4798e201ccd18971ba136ccc}\label{_get_mic_8cpp_aebbdaf5d4798e201ccd18971ba136ccc}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!Init@{Init}}
+\index{Init@{Init}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{Init()}{Init()}}
+{\footnotesize\ttfamily int Init (\begin{DoxyParamCaption}\item[{\hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$}]{data,  }\item[{fftw\+\_\+plan $\ast$}]{plans }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{_get_mic_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{_get_mic_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!main@{main}}
+\index{main@{main}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{_get_mic_8cpp_ab729f65f60ad178fc9a17cd845bf6088}\label{_get_mic_8cpp_ab729f65f60ad178fc9a17cd845bf6088}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!new\+\_\+\+Thread@{new\+\_\+\+Thread}}
+\index{new\+\_\+\+Thread@{new\+\_\+\+Thread}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{new\+\_\+\+Thread()}{new\_Thread()}}
+{\footnotesize\ttfamily void new\+\_\+\+Thread (\begin{DoxyParamCaption}\item[{int \&}]{No,  }\item[{fftw\+\_\+plan}]{plan,  }\item[{future$<$ int $>$ \&}]{threads,  }\item[{float $\ast$}]{buff,  }\item[{\hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$}]{data,  }\item[{bool \&}]{create\+\_\+\+New,  }\item[{int}]{thread\+\_\+number,  }\item[{\hyperlink{class_settings}{Settings}}]{settings }\end{DoxyParamCaption})}
+
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{_get_mic_8cpp_aa621af3ba2234c04a5f309a94576b011}\label{_get_mic_8cpp_aa621af3ba2234c04a5f309a94576b011}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!buff@{buff}}
+\index{buff@{buff}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{buff}{buff}}
+{\footnotesize\ttfamily float$\ast$$\ast$ buff}
+
+\mbox{\Hypertarget{_get_mic_8cpp_a398527b3e9e358c345c5047b16871957}\label{_get_mic_8cpp_a398527b3e9e358c345c5047b16871957}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!debug@{debug}}
+\index{debug@{debug}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{debug}{debug}}
+{\footnotesize\ttfamily bool debug = false}
+
+\mbox{\Hypertarget{_get_mic_8cpp_a5e0f598fffa03bb7026d3a2a168810db}\label{_get_mic_8cpp_a5e0f598fffa03bb7026d3a2a168810db}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!in@{in}}
+\index{in@{in}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{in}{in}}
+{\footnotesize\ttfamily double$\ast$$\ast$ in}
+
+\mbox{\Hypertarget{_get_mic_8cpp_a0ff8e98f72df2389143723d3b8e88ce2}\label{_get_mic_8cpp_a0ff8e98f72df2389143723d3b8e88ce2}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!out@{out}}
+\index{out@{out}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{out}{out}}
+{\footnotesize\ttfamily fftw\+\_\+complex$\ast$$\ast$ out}
+
+\mbox{\Hypertarget{_get_mic_8cpp_ae4426f467d61ae456b95844d4d9c2dcd}\label{_get_mic_8cpp_ae4426f467d61ae456b95844d4d9c2dcd}} 
+\index{Get\+Mic.\+cpp@{Get\+Mic.\+cpp}!quiet@{quiet}}
+\index{quiet@{quiet}!Get\+Mic.\+cpp@{Get\+Mic.\+cpp}}
+\subsubsection{\texorpdfstring{quiet}{quiet}}
+{\footnotesize\ttfamily bool quiet = false}
+

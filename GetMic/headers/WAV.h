@@ -3,6 +3,7 @@
 
 using namespace std;
 
+//! WAV class is used to save recorded sound to .wav file
 class WAV
 {
 public:
