@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <complex>
 #include <GetMic.h>
 #include <thread.h>
 #include <WAV.h>
@@ -8,7 +7,6 @@
 
 using namespace std;
 using namespace std::chrono;
-namespace fs = std::experimental::filesystem;
 
 void WAV_bootstrap(string path, string filename, float *samples);
 void OPUS_bootstrap(string path, string filename, float *samples);
