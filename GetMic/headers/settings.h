@@ -17,8 +17,8 @@ public:
 	int code = 0;//-1 - end program, 0 - continue executing program without changes, 1 - in parameters is something useful
 	long continue_from = -1;
 	long continue_position_of_ID = 0;//Ugh, if someone use prefix or sufix,
-									 //there is no way to be certaintry if this is file number or some other number.
-									 //For example, "File Nr. 8 of 100" how algorithm can be sure if 8 or 100 is file ID ?
+									 //there is no way to be certaintry if first number in filename is file ID or some other number.
+									 //For example, "File Nr. 8 of 100", how algorithm can be sure if 8 or 100 is file ID ?
 									 //This parameter is for user to specify where in filename ID starts, in example above, 9th
 	long end_on = LONG_MAX;
 	bool quiet = false;
