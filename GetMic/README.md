@@ -1,6 +1,6 @@
 
 # GetMic
-Program that get microphone input and saves data in to audio file and, after processing to DFT, to .csv file
+Program that get microphone input and saves data in to audio file and, after processing to spectrum, to .csv file
 
 How to use:
 
