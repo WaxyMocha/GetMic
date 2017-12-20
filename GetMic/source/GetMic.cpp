@@ -101,11 +101,6 @@ int Init(paTestData *data, fftw_plan *plans)
 	PaStreamParameters inputParameters;
 	PaStream *stream;
 
-	/* For DFT with 320 points, there is no sense for using threads
-	fftw_init_threads();//Enable multi-threaded FFTW
-	fftw_plan_with_nthreads(2);//Number of threads for FFTW
-	*/
-
 	in = new double*[MAX_THREADS];
 	out = new fftw_complex*[MAX_THREADS];
 	buff = new float*[MAX_THREADS];
@@ -125,35 +120,37 @@ int Init(paTestData *data, fftw_plan *plans)
 	data->recordedSamples = new float[NUM_OF_SAMPLES];
 	memset(data->recordedSamples, 0, NUM_OF_SAMPLES * sizeof(*data->recordedSamples));
 
-	if (Pa_Initialize() != paNoError)
 	{
-		Pa_Terminate();
-		if (!quiet) cout << "Cannot initialize PortAudio" << endl;
-		return 1;
-	}
+		if (Pa_Initialize() != paNoError)
+		{
+			Pa_Terminate();
+			if (!quiet) cout << "Cannot initialize PortAudio" << endl;
+			return 1;
+		}
 
-	inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
-	if (inputParameters.device == paNoDevice) {
-		if (!quiet) cout << "Error: Cannot find microphone" << endl;
-		Pa_Terminate();
-		return 1;
-	}
-	inputParameters.channelCount = NUM_CHANNELS;                    /* stereo input */
-	inputParameters.sampleFormat = paFloat32;
-	inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
-	inputParameters.hostApiSpecificStreamInfo = NULL;
+		inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
+		if (inputParameters.device == paNoDevice) {
+			if (!quiet) cout << "Error: Cannot find microphone" << endl;
+			Pa_Terminate();
+			return 1;
+		}
+		inputParameters.channelCount = NUM_CHANNELS;                    /* stereo input */
+		inputParameters.sampleFormat = paFloat32;
+		inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
+		inputParameters.hostApiSpecificStreamInfo = NULL;
 
-	if (Pa_OpenStream(&stream, &inputParameters, NULL, SAMPLE_RATE, FRAMES_PER_BUFFER, paClipOff, recordCallback, data) != paNoError)
-	{
-		Pa_Terminate();
-		if (!quiet) cout << "Open stream failed" << endl;
-		return 1;
-	}
-	if (Pa_StartStream(stream) != paNoError)
-	{
-		Pa_Terminate();
-		if (!quiet) cout << "Start stream failed" << endl;
-		return 1;
+		if (Pa_OpenStream(&stream, &inputParameters, NULL, SAMPLE_RATE, FRAMES_PER_BUFFER, paClipOff, recordCallback, data) != paNoError)
+		{
+			Pa_Terminate();
+			if (!quiet) cout << "Open stream failed" << endl;
+			return 1;
+		}
+		if (Pa_StartStream(stream) != paNoError)
+		{
+			Pa_Terminate();
+			if (!quiet) cout << "Start stream failed" << endl;
+			return 1;
+		}
 	}
 	return 0;
 }
