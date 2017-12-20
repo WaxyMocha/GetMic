@@ -172,8 +172,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\CSV.h" />
     <ClInclude Include="headers\fftw3.h" />
     <ClInclude Include="headers\GetMic.h" />
+    <ClInclude Include="headers\OPUS.h" />
+    <ClInclude Include="headers\output.h" />
     <ClInclude Include="headers\portaudio.h" />
     <ClInclude Include="headers\settings.h" />
     <ClInclude Include="headers\thread.h" />
@@ -183,20 +186,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GetMic.cpp" />
+    <ClCompile Include="source\output\CSV.cpp" />
+    <ClCompile Include="source\output\OPUS.cpp" />
+    <ClCompile Include="source\output\WAV.cpp" />
     <ClCompile Include="source\settings.cpp" />
     <ClCompile Include="source\thread.cpp" />
-    <ClCompile Include="source\WAV.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WAV2CSV\WAV2CSV.vcxproj">
-      <Project>{36316723-7f83-4918-90e6-62e28916c582}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

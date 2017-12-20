@@ -1,50 +1,51 @@
 #include "stdafx.h"
+#include <complex>
 #include <GetMic.h>
 #include <thread.h>
 #include <WAV.h>
-#include <complex>
+#include <OPUS.h>
+#include <CSV.h>
 
 using namespace std;
 using namespace std::chrono;
 namespace fs = std::experimental::filesystem;
 
-void complex_2_real(fftw_complex *in, double *out);
-void fill_with_data(double *in, float *data);
-void CSV(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p);
-void save_CSV(string path, string filename, double *out);
-void OPUS(string path, string filename, float *samples);
+void WAV_bootstrap(string path, string filename, float *samples);
+void OPUS_bootstrap(string path, string filename, float *samples);
+void CSV_bootstrap(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p);
+
 
 int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings settings)
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	thread wav, opus, csv;
+	thread wav_h, opus_h, csv_h;
 
 	if (settings.folder_for_opus != "")
 	{
-		opus = thread(OPUS, settings.folder_for_opus, filename, buff);
+		opus_h = thread(OPUS_bootstrap, settings.folder_for_opus, filename, buff);//I really have no clue how to run object in thread, so i use bootstrap function, forgive me
 	}
 
 	if (settings.folder_for_wav != "")
 	{
-		wav = thread(WAV, settings.folder_for_wav, filename, buff);
+		wav_h = thread(WAV_bootstrap, settings.folder_for_wav, filename, buff);
 	}
 
 	if (settings.folder_for_csv != "")
 	{
-		csv = thread(CSV, settings.folder_for_csv, filename, buff, out, in, p);
+		csv_h = thread(CSV_bootstrap, settings.folder_for_csv, filename, buff, out, in, p);
 	}
 
-	if (opus.joinable())
+	if (opus_h.joinable())
 	{
-		opus.join();
+		opus_h.join();
 	}
-	if (wav.joinable())
+	if (wav_h.joinable())
 	{
-		wav.join();
+		wav_h.join();
 	}
-	if (csv.joinable())
+	if (csv_h.joinable())
 	{
-		csv.join();
+		csv_h.join();
 	}
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -52,76 +53,17 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 	return 0;
 }
 
-void CSV(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p)
+void WAV_bootstrap(string path, string filename, float * samples)
 {
-	double *tmp = new double[DFT_SIZE * ITERATIONS];
-
-	for (int i = 0; i < ITERATIONS; i++)
-	{
-		copy(buff + ((DFT_SIZE / 2) * i), buff + ((DFT_SIZE / 2) * (i + 1)), in);
-		fftw_execute(p);
-		complex_2_real(out, tmp + (i * DFT_SIZE));
-	}
-	if (fs::is_regular_file(path + slash + filename + ".csv"))
-	{
-		remove((path + slash + filename + ".csv").c_str());
-	}
-	save_CSV(path, filename, tmp);
-	delete[] tmp;
+	WAV wav(path, filename, samples);
 }
 
-void save_CSV(string path, string filename, double *out)
+void OPUS_bootstrap(string path, string filename, float *samples)
 {
-	fstream file;
-	file.open(path + slash + filename + ".csv", ios::app);
-	if (!file.good())
-	{
-		if (!quiet) cout << "Error while creating/opening file" << endl;
-		return;
-	}
-
-	std::ostringstream s;
-	for (int i = 0; i < ITERATIONS; i++)
-	{
-		string to_Save = "";
-		for (int j = (i * DFT_SIZE); j < (DFT_SIZE / 2) + (i * DFT_SIZE); j++)
-		{
-			s << out[j];
-			to_Save += s.str();
-			s.clear();
-			s.str("");
-			to_Save += ";";
-		}
-		file.write(to_Save.c_str(), to_Save.size());
-		file << "\n";
-	}
-
-	file.close();
-
-	return;
+	OPUS opus(path, filename, samples);
 }
 
-void OPUS(string path, string filename, float *samples)
+void CSV_bootstrap(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p)
 {
-	WAV(path, filename, samples);//create .wav file, this is necessary, for now, opusenc.exe require .wav file. In future, I probably inplement opus in-code.
-
-	string tmp;
-
-	tmp = "opusenc.exe --quiet \"" + path + slash + filename + ".wav\" \"" + path + slash + filename + ".opus\"";//create command for generating .opus using opusenc.exe
-	system(tmp.c_str());
-
-	tmp = path + slash + filename + ".wav";//delete created earlier .wav file
-	remove(tmp.c_str());
-}
-
-void complex_2_real(fftw_complex *in, double *out)//dtf output complex numbers, this function convert it to real numbers
-{
-	for (int i = 0; i < DFT_SIZE / 2; i++)
-	{
-		out[i] = sqrt(pow(in[i][0], 2) + pow(in[i][1], 2));
-		out[i] *= 2;
-		out[i] /= NUM_OF_SAMPLES;
-	}
-	
-	return;
+	CSV csv(path, filename, buff, out, in, p);
 }

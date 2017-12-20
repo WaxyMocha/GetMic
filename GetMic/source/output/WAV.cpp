@@ -4,28 +4,19 @@
 
 using namespace std;
 
-void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES);
-void flip_Endian(char *in, char *out, int lenght);
-void num2char(int in, char *out, int lenght);
-void num2char(float &in, char *out, int lenght);
-
-
-int WAV(string path, string filename, float *samples)
+WAV::WAV(string path, string filename, float *samples)
 {
-	fstream file;
 	file.open(path + slash + filename + ".wav", ios::binary | ios::out);
-
 	if (!file.good())
 	{
 		if (quiet) cout << "Error while loading file" << endl;
 		file.close();
-		return 1;
+		return;
 	}
 
-	char *buff = new char[16];
-	int pos = 0;
+	buff = new char[16];
 
-	create_wav_header(file, pos, NUM_OF_SAMPLES);
+	create_wav_header();
 	for (int i = 0; i < NUM_OF_SAMPLES; i++)
 	{
 		num2char(samples[i], buff, 4);
@@ -34,13 +25,15 @@ int WAV(string path, string filename, float *samples)
 		file.write(buff, 4);
 		pos += 4;
 	}
-	delete[] buff;
-	file.close();
-
-	return 0;
 }
 
-void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES)
+WAV::~WAV()
+{
+	delete[] buff;
+	file.close();
+}
+
+void WAV::create_wav_header()
 {
 	char buff[16] = { 0 };
 
@@ -115,7 +108,7 @@ void create_wav_header(fstream &file, int &pos, int NUM_OF_SAMPLES)
 	pos += 4;
 }
 
-void flip_Endian(char *in, char *out, int lenght)
+void WAV::flip_Endian(char *in, char *out, int lenght)
 {
 	char *tmp = new char[lenght];
 
@@ -135,7 +128,7 @@ void flip_Endian(char *in, char *out, int lenght)
 	return;
 }
 
-void num2char(int in, char *out, int lenght)
+void WAV::num2char(int in, char *out, int lenght)
 {
 	int shift = (lenght * 8) - 8;
 
@@ -147,7 +140,7 @@ void num2char(int in, char *out, int lenght)
 	return;
 }
 
-void num2char(float &in, char *out, int lenght)
+void WAV::num2char(float &in, char *out, int lenght)
 {
 	int tmp = 0;
 

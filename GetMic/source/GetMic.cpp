@@ -213,12 +213,6 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 	avg_Old = avg;
 }
 
-bool is_number(const std::string& s)
-{
-	return !s.empty() && std::find_if(s.begin(),
-		s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
-}
-
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
 {
 	paTestData *data = (paTestData*)userData;
