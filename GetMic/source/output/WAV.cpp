@@ -25,12 +25,12 @@ WAV::WAV(string path, string filename, float *samples)
 		file.write(buff, 4);
 		pos += 4;
 	}
+	file.close();
 }
 
 WAV::~WAV()
 {
 	delete[] buff;
-	file.close();
 }
 
 void WAV::create_wav_header()
