@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -38,9 +35,5 @@
     <ClCompile Include="WAV2CSV.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="libfftw3-3_x64.lib" />
-    <Library Include="libfftw3-3_x86.lib" />
   </ItemGroup>
 </Project>

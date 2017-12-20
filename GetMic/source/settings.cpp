@@ -241,7 +241,7 @@ int Settings::get_last(string path, int offset)
 
 		{//get rid off extension
 			lenght = 0;
-			for (int i = filename.length() - 1; i > 0; i--)
+			for (unsigned int i = filename.length() - 1; i > 0; i--)
 			{
 				if (filename[i] == '.')
 				{
