@@ -30,8 +30,16 @@ int main(int argc, char **argv)
 	
 	if (list_directory(&arg, files) == -1)
 	{
-		cout << "Input directory empty, ending..." << endl;
-		return -1;
+		if (fs::is_regular_file(arg.input))
+		{
+			files = new string[1];
+			files[0] = arg.input;
+		}
+		else
+		{
+			cout << "Input directory empty, ending..." << endl;
+			return -1;
+		}
 	}
 
 	float **samples;

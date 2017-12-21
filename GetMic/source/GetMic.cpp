@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 		data.skipped_Frames = 0;
 	}
 }
-//!Init allocate memory for few variables, create action plan for FFTW, and initialize portaudio for microphone harvesting
+//!Allocate memory for few variables, create action plan for FFTW, and initialize portaudio for microphone harvesting
 int Init(paTestData *data, fftw_plan *plans)
 {
 	PaStreamParameters inputParameters;
