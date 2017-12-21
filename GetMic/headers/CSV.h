@@ -3,7 +3,7 @@
 #include "fftw3.h"
 
 using namespace std;
-
+//! CSV class is used to save soound spectrum to .csv file
 class CSV
 {
 public:

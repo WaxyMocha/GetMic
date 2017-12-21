@@ -7,6 +7,9 @@
 using namespace std;
 namespace fs = std::experimental::filesystem;
 
+/*!
+Pass to constructor argc and argv from main
+*/
 Settings::Settings(int argc, char** argv)
 {
 	prepare_input_parameters(argc, argv);
@@ -15,10 +18,13 @@ Settings::Settings(int argc, char** argv)
 		file_number();
 	}
 }
-
+//!Loop that's checking every element in argv
+/*!
+This method basically contain only loop that call <choose_parameter>() and  <help>() if something gone wrong
+*/
 void Settings::prepare_input_parameters(int argc, char **argv)
 {
-	if (argc == 1)
+	if (argc == 1)//!<If there is no parameters from users, just start writing .opus to output dir
 	{
 		if (!fs::is_directory("output"))
 		{
@@ -27,7 +33,7 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 				if (!quiet) cout << "Couldn't create output directory" << endl;
 				code = -1;
 			}
-			folder_for_opus = "output";
+			folder_for_opus = "output";//!<Why opus? 30 000 files weight about 100-150 MB
 		}
 		return;
 	}
@@ -36,7 +42,7 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 		if (argv[i][0] == '-')
 		{
 			string tmp;
-			if (argv[i + 1] == NULL)//string constructor will go mad if I pass NULL to it
+			if (argv[i + 1] == NULL)//!<string constructor will go mad if I pass NULL to it
 			{
 				tmp = "";
 			}
@@ -44,7 +50,7 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 			{
 				tmp = string(argv[i + 1]);
 			}
-			if (choose_parameter(string(argv[i]), tmp, i))//pass argument and check if it match with something
+			if (choose_parameter(string(argv[i]), tmp, i))//!<pass argument and check if it match with something
 			{
 				if (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-?") || !strcmp(argv[1], "/help") || !strcmp(argv[1], "/?"))
 				{
@@ -68,8 +74,8 @@ void Settings::prepare_input_parameters(int argc, char **argv)
 	}
 	return;
 }
-
-void Settings::help()//show help message
+//!This prints help message
+void Settings::help()
 {
 	if (!quiet) cout << "getmic <parameters> <audio> <csv>" << endl
 		<< "Audio and csv are folders for respective, audio files and results of DFT" << endl;
@@ -86,7 +92,15 @@ void Settings::help()//show help message
 		<< "-p, --prefix" << " " << "Set file prefix" << endl
 		<< "-s, --sufix" << " " << "Set file sufix" << endl;
 }
+//!Compare passed string against all possible cases
+/*!
+Call it with:
+	- parameter, parameter to check
+	- next, next value e.g. if users use -w to save .wav next thing will be obviously directory. This is just next value in argv after parameter.
+	- i, pointer to loop index, if I you use %next, you should increment it, if you don't next call will be with e.g. path as %parameter
 
+To add something you should just add next if (if you want to set boolean use one line if) and define variable in settings.h in public  
+*/
 bool Settings::choose_parameter(string parameter, string next, int &i)//compare passed argument to all possible cases, and sets the appropriate variables
 {
 	if (parameter == "-q" || parameter == "--quiet") quiet = true;
@@ -178,12 +192,12 @@ bool Settings::choose_parameter(string parameter, string next, int &i)//compare 
 	}
 	else
 	{
-		return true;//no match
+		return true;//!<no match
 	}
 	return false;
 }
-
-int Settings::check_Directory(string directory)//checks if directory exist, if not, creates it
+//!Checks if directory exist, if not, creates it
+int Settings::check_Directory(string directory)
 {
 	if (fs::is_directory(directory))
 	{
@@ -200,7 +214,7 @@ int Settings::check_Directory(string directory)//checks if directory exist, if n
 		return -1;
 	}
 }
-
+//!Calling this method will result with filled %file_No variable.
 void Settings::file_number()
 {
 	string path;
@@ -211,6 +225,13 @@ void Settings::file_number()
 		path = folder_for_opus;
 	else if (folder_for_wav != "")
 		path = folder_for_wav;
+	else
+	{
+		file_No = 0;
+		return;
+	}
+		
+		
 
 	
 	if (continue_from != -1)
@@ -229,7 +250,11 @@ void Settings::file_number()
 		}
 	}
 }
-
+//!Scans path and returns ID of last file
+/*!
+	- path, directory to scan
+	- offset, on which position in filename program should expect ID, e.g. "Nr. 0.wav" 4th
+*/
 int Settings::get_last(string path, int offset)
 {
 	int max = 0;
@@ -280,7 +305,7 @@ int Settings::get_last(string path, int offset)
 	}
 	return max;
 }
-
+//!By StackOverflow. But seriously, I don't know how it works, BUT it returns true if string is number e.g. "69" - true
 bool Settings::is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
