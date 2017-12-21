@@ -12,7 +12,7 @@ void WAV_bootstrap(string path, string filename, float *samples);
 void OPUS_bootstrap(string path, string filename, float *samples);
 void CSV_bootstrap(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p);
 
-
+//!This will start threads to save appropriate files in to appropriate directories
 int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings settings)
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -50,17 +50,17 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 	if (debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
 	return 0;
 }
-
+//!Bootsratp function, only function it have is to create object, why? Because I have no clue how to directly pass object to thread()
 void WAV_bootstrap(string path, string filename, float * samples)
 {
 	WAV wav(path, filename, samples);
 }
-
+//!Bootsratp function, only function it have is to create object, why? Because I have no clue how to directly pass object to thread()
 void OPUS_bootstrap(string path, string filename, float *samples)
 {
 	OPUS opus(path, filename, samples);
 }
-
+//!Bootsratp function, only function it have is to create object, why? Because I have no clue how to directly pass object to thread()
 void CSV_bootstrap(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p)
 {
 	CSV csv(path, filename, buff, out, in, p);
