@@ -34,6 +34,8 @@ WAV::WAV(string path, string filename, float *samples)
 		pos += 4;
 	}
 	file.close();
+
+	if (!quiet) cout << "File saved in " << path + slash + filename + ".wav" << endl;
 }
 
 WAV::~WAV()

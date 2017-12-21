@@ -73,6 +73,8 @@ void CSV::save_CSV(string path, string filename, double *out)
 
 	file.close();
 
+	if (!quiet) cout << "File saved in " << path + slash + filename + ".csv" << endl;
+
 	return;
 }
 //!Use it to convert complex numbers in to real numbers. Both of us will gain from the fact that I will not try to explain how it works

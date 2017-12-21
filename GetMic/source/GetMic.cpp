@@ -64,7 +64,8 @@ int main(int argc, char** argv)
 			{
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i, settings);
+					new_Thread(plans[i], threads[i], buff[i], &data, i, settings);
+					create_New = false;
 				}
 				else
 				{
@@ -78,7 +79,8 @@ int main(int argc, char** argv)
 
 				if (create_New)//if handle is empty and flag create_New is set, create new thread
 				{
-					new_Thread(file_No, plans[i], threads[i], buff[i], &data, create_New, i, settings);
+					new_Thread(plans[i], threads[i], buff[i], &data, i, settings);
+					create_New = false;
 				}
 			}
 			else
@@ -95,7 +97,7 @@ int main(int argc, char** argv)
 		data.skipped_Frames = 0;
 	}
 }
-
+//!Init allocate memory for few variables, create action plan for FFTW, and initialize portaudio for microphone harvesting
 int Init(paTestData *data, fftw_plan *plans)
 {
 	PaStreamParameters inputParameters;
@@ -154,9 +156,19 @@ int Init(paTestData *data, fftw_plan *plans)
 	}
 	return 0;
 }
-
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings settings)
+//!Calculate max, average and change from last sample, also call <task>()
+/*!
+	- plan, action plan for FFTW
+	- threads, thread handle
+	- buff, buffer for audio samples
+	- data, struct used by port audio, contains, among others, samples from microphone
+	- thread_number, thread number, used as array index
+	- settings, object with settings for program
+*/
+void new_Thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *data, int thread_number, Settings settings)
 {
+	static int No;
+
 	float val, max = 0;
 	double change, avg = 0;
 	static double avg_Old;
@@ -184,6 +196,7 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 
 		if (debug) cout << "New thread created on: " << thread_number << endl;
 		if (!quiet) cout << "change: " << change << "%" << endl;
+		No++;
 	}
 	else
 	{
@@ -194,6 +207,7 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 
 			if (debug) cout << "New thread created on: " << thread_number << endl;
 			if (!quiet) cout << "change: " << change << "%" << endl;
+			No++;
 		}
 		else
 		{
@@ -202,7 +216,6 @@ void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTe
 		
 	}
 	data->frameIndex = 0;//Clean index, this will trigger callback function to refill buffer
-	create_New = false;
 	
 	if (!quiet) cout << "sample max amplitude = " << max << endl;
 	if (!quiet) cout << "sample average = " << avg << endl;

@@ -16,4 +16,6 @@ OPUS::OPUS(string path, string filename, float *samples)
 
 	tmp = path + slash + filename + ".wav";//delete created earlier .wav file
 	remove(tmp.c_str());
+
+	if (!quiet) cout << "File saved in " << path + slash + filename + ".opus" << endl;
 }

@@ -25,7 +25,7 @@ const string slash = "/";
 
 struct paTestData
 {
-	int frameIndex = 0;  /* Index into sample array. */
+	int frameIndex = 0; 
 	int  maxFrameIndex = NUM_OF_SAMPLES;
 	float *recordedSamples;
 	long skipped_Frames = 0;
@@ -35,4 +35,4 @@ extern bool quiet;
 extern bool debug;
 
 int Init(paTestData *data, fftw_plan *plans);
-void new_Thread(int &No, fftw_plan plan, future<int> &threads, float *buff, paTestData *data, bool &create_New, int thread_number, Settings settings);
+void new_Thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *data, int thread_number, Settings settings);
