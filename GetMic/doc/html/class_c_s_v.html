@@ -87,16 +87,22 @@ $(document).ready(function(){initNavTree('class_c_s_v.html','');});
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="class_c_s_v.html" title="CSV class is used to save sound spectrum to .csv file. ">CSV</a> class is used to save sound spectrum to .csv file.  
+ <a href="class_c_s_v.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_c_s_v_8h_source.html">CSV.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ba492a7aea573fdce5280c1b1f76d62"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_v.html#a7ba492a7aea573fdce5280c1b1f76d62">CSV</a> (string path, string filename, float *<a class="el" href="_get_mic_8cpp.html#aa621af3ba2234c04a5f309a94576b011">buff</a>, fftw_complex *<a class="el" href="_get_mic_8cpp.html#a0ff8e98f72df2389143723d3b8e88ce2">out</a>, double *<a class="el" href="_get_mic_8cpp.html#a5e0f598fffa03bb7026d3a2a168810db">in</a>, fftw_plan p)</td></tr>
+<tr class="memdesc:a7ba492a7aea573fdce5280c1b1f76d62"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor should be same as <a class="el" href="class_w_a_v.html" title="WAV class is used to save recorded sound to .wav file. ">WAV</a> or <a class="el" href="class_o_p_u_s.html" title="OPUS class is used to save recorded sound to .opus file. ">OPUS</a>, in future I will move process of creating DFT outside of class.  <a href="#a7ba492a7aea573fdce5280c1b1f76d62">More...</a><br /></td></tr>
 <tr class="separator:a7ba492a7aea573fdce5280c1b1f76d62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1b0cfd98d62cf81004462320848c665"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_v.html#ae1b0cfd98d62cf81004462320848c665">~CSV</a> ()</td></tr>
 <tr class="separator:ae1b0cfd98d62cf81004462320848c665"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="class_c_s_v.html" title="CSV class is used to save sound spectrum to .csv file. ">CSV</a> class is used to save sound spectrum to .csv file. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7ba492a7aea573fdce5280c1b1f76d62"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ba492a7aea573fdce5280c1b1f76d62">&#9670;&nbsp;</a></span>CSV()</h2>
 
@@ -146,6 +152,17 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>This constructor should be same as <a class="el" href="class_w_a_v.html" title="WAV class is used to save recorded sound to .wav file. ">WAV</a> or <a class="el" href="class_o_p_u_s.html" title="OPUS class is used to save recorded sound to .opus file. ">OPUS</a>, in future I will move process of creating DFT outside of class. </p>
+<ul>
+<li>path, directory to save file</li>
+<li>filename, filename</li>
+<li>buff, array with data from microphone</li>
+<li>out, output of FFTW</li>
+<li>in, input to FFTW</li>
+<li>p, plan for FFTW</li>
+</ul>
+<p>About last 3 arguments, out and in are containers for libary, they are created in &lt;Init&gt;(), in this method in is filed with data from buff and p is used to run FFTW, all three shoudn't be here, but for sake of cleanliness I dont' wanna put it in <a class="el" href="thread_8cpp.html">thread.cpp</a> for now. In future constructor will change to be same as <a class="el" href="class_w_a_v.html" title="WAV class is used to save recorded sound to .wav file. ">WAV</a> or <a class="el" href="class_o_p_u_s.html" title="OPUS class is used to save recorded sound to .opus file. ">OPUS</a>. </p>
 
 </div>
 </div>

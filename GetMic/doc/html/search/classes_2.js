@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['opus',['OPUS',['../class_o_p_u_s.html',1,'']]]
+  ['settings',['Settings',['../class_settings.html',1,'']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['settings',['Settings',['../class_settings.html',1,'']]]
+  ['wav',['WAV',['../class_w_a_v.html',1,'']]]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['task',['task',['../thread_8h.html#a0a96811c364750b481fb01d075348ab4',1,'task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings settings):&#160;thread.cpp'],['../thread_8cpp.html#a0a96811c364750b481fb01d075348ab4',1,'task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings settings):&#160;thread.cpp']]]
+  ['wav',['WAV',['../class_w_a_v.html#a880dc49a874ddd85f7404ed772415da4',1,'WAV']]],
+  ['wav_5fbootstrap',['WAV_bootstrap',['../thread_8cpp.html#a7bcce5c44336160d41fe57f0e5b08286',1,'thread.cpp']]]
 ];

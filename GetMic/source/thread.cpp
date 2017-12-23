@@ -10,10 +10,10 @@ using namespace std::chrono;
 
 void WAV_bootstrap(string path, string filename, float *samples);
 void OPUS_bootstrap(string path, string filename, float *samples);
-void CSV_bootstrap(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p);
+void CSV_bootstrap(string path, string filename, double *spectrum);
 
 //!This will start threads to save appropriate files in to appropriate directories
-int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings settings)
+int task(string filename, float *buff, double *spectrum, Settings settings)
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	thread wav_h, opus_h, csv_h;
@@ -30,7 +30,7 @@ int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *ou
 
 	if (settings.folder_for_csv != "")
 	{
-		csv_h = thread(CSV_bootstrap, settings.folder_for_csv, filename, buff, out, in, p);
+		csv_h = thread(CSV_bootstrap, settings.folder_for_csv, filename, spectrum);
 	}
 
 	if (opus_h.joinable())
@@ -61,7 +61,7 @@ void OPUS_bootstrap(string path, string filename, float *samples)
 	OPUS opus(path, filename, samples);
 }
 //!Bootsratp function, only function it have is to create object, why? Because I have no clue how to directly pass object to thread()
-void CSV_bootstrap(string path, string filename, float *buff, fftw_complex *out, double *in, fftw_plan p)
+void CSV_bootstrap(string path, string filename, double *spectrum)
 {
-	CSV csv(path, filename, buff, out, in, p);
+	CSV csv(path, filename, spectrum);
 }

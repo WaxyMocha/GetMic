@@ -3,18 +3,13 @@
 {\ttfamily \#include \char`\"{}stdafx.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}fftw3.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}settings.\+h\char`\"{}}\newline
-\subsection*{Classes}
-\begin{DoxyCompactItemize}
-\item 
-struct \hyperlink{structpa_test_data}{pa\+Test\+Data}
-\end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-int \hyperlink{_get_mic_8h_aebbdaf5d4798e201ccd18971ba136ccc}{Init} (\hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$data, fftw\+\_\+plan $\ast$plans)
-\item 
-void \hyperlink{_get_mic_8h_ab729f65f60ad178fc9a17cd845bf6088}{new\+\_\+\+Thread} (int \&No, fftw\+\_\+plan plan, future$<$ int $>$ \&threads, float $\ast$\hyperlink{_get_mic_8cpp_aa621af3ba2234c04a5f309a94576b011}{buff}, \hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$data, bool \&create\+\_\+\+New, int thread\+\_\+number, \hyperlink{class_settings}{Settings} settings)
-\end{DoxyCompactItemize}
+int \hyperlink{_get_mic_8h_aebbdaf5d4798e201ccd18971ba136ccc}{Init} (pa\+Test\+Data $\ast$data, fftw\+\_\+plan $\ast$plans)
+\begin{DoxyCompactList}\small\item\em Allocate memory for few variables, create action plan for F\+F\+TW, and initialize portaudio for microphone harvesting. \end{DoxyCompactList}\item 
+void \hyperlink{_get_mic_8h_ac69173847c3ef143b20d6f7e1f4828f0}{new\+\_\+\+Thread} (fftw\+\_\+plan plan, future$<$ int $>$ \&threads, float $\ast$\hyperlink{_get_mic_8cpp_aa621af3ba2234c04a5f309a94576b011}{buff}, pa\+Test\+Data $\ast$data, int thread\+\_\+number, \hyperlink{class_settings}{Settings} settings)
+\begin{DoxyCompactList}\small\item\em Calculate max, average and change from last sample, also call $<$task$>$() \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
@@ -47,15 +42,31 @@ bool \hyperlink{_get_mic_8h_a398527b3e9e358c345c5047b16871957}{debug}
 \index{Get\+Mic.\+h@{Get\+Mic.\+h}!Init@{Init}}
 \index{Init@{Init}!Get\+Mic.\+h@{Get\+Mic.\+h}}
 \subsubsection{\texorpdfstring{Init()}{Init()}}
-{\footnotesize\ttfamily int Init (\begin{DoxyParamCaption}\item[{\hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$}]{data,  }\item[{fftw\+\_\+plan $\ast$}]{plans }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int Init (\begin{DoxyParamCaption}\item[{pa\+Test\+Data $\ast$}]{data,  }\item[{fftw\+\_\+plan $\ast$}]{plans }\end{DoxyParamCaption})}
 
-\mbox{\Hypertarget{_get_mic_8h_ab729f65f60ad178fc9a17cd845bf6088}\label{_get_mic_8h_ab729f65f60ad178fc9a17cd845bf6088}} 
+
+
+Allocate memory for few variables, create action plan for F\+F\+TW, and initialize portaudio for microphone harvesting. 
+
+\mbox{\Hypertarget{_get_mic_8h_ac69173847c3ef143b20d6f7e1f4828f0}\label{_get_mic_8h_ac69173847c3ef143b20d6f7e1f4828f0}} 
 \index{Get\+Mic.\+h@{Get\+Mic.\+h}!new\+\_\+\+Thread@{new\+\_\+\+Thread}}
 \index{new\+\_\+\+Thread@{new\+\_\+\+Thread}!Get\+Mic.\+h@{Get\+Mic.\+h}}
 \subsubsection{\texorpdfstring{new\+\_\+\+Thread()}{new\_Thread()}}
-{\footnotesize\ttfamily void new\+\_\+\+Thread (\begin{DoxyParamCaption}\item[{int \&}]{No,  }\item[{fftw\+\_\+plan}]{plan,  }\item[{future$<$ int $>$ \&}]{threads,  }\item[{float $\ast$}]{buff,  }\item[{\hyperlink{structpa_test_data}{pa\+Test\+Data} $\ast$}]{data,  }\item[{bool \&}]{create\+\_\+\+New,  }\item[{int}]{thread\+\_\+number,  }\item[{\hyperlink{class_settings}{Settings}}]{settings }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void new\+\_\+\+Thread (\begin{DoxyParamCaption}\item[{fftw\+\_\+plan}]{plan,  }\item[{future$<$ int $>$ \&}]{threads,  }\item[{float $\ast$}]{buff,  }\item[{pa\+Test\+Data $\ast$}]{data,  }\item[{int}]{thread\+\_\+number,  }\item[{\hyperlink{class_settings}{Settings}}]{settings }\end{DoxyParamCaption})}
 
 
+
+Calculate max, average and change from last sample, also call $<$task$>$() 
+
+
+\begin{DoxyItemize}
+\item plan, action plan for F\+F\+TW
+\item threads, thread handle
+\item buff, buffer for audio samples
+\item data, struct used by port audio, contains, among others, samples from microphone
+\item thread\+\_\+number, thread number, used as array index
+\item settings, object with settings for program 
+\end{DoxyItemize}
 
 \subsection{Variable Documentation}
 \mbox{\Hypertarget{_get_mic_8h_a398527b3e9e358c345c5047b16871957}\label{_get_mic_8h_a398527b3e9e358c345c5047b16871957}} 

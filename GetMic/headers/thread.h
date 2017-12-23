@@ -10,4 +10,4 @@ extern const int NUM_OF_SAMPLES;
 extern const int ITERATIONS;
 extern const string slash;
 
-int task(string filename, fftw_plan p, float *buff, double *in, fftw_complex *out, Settings settings);
+int task(string filename, float *buff, double *spectrum, Settings settings);

@@ -1,8 +1,7 @@
 var _get_mic_8h =
 [
-    [ "paTestData", "structpa_test_data.html", "structpa_test_data" ],
     [ "Init", "_get_mic_8h.html#aebbdaf5d4798e201ccd18971ba136ccc", null ],
-    [ "new_Thread", "_get_mic_8h.html#ab729f65f60ad178fc9a17cd845bf6088", null ],
+    [ "new_Thread", "_get_mic_8h.html#ac69173847c3ef143b20d6f7e1f4828f0", null ],
     [ "debug", "_get_mic_8h.html#a398527b3e9e358c345c5047b16871957", null ],
     [ "DFT_SIZE", "_get_mic_8h.html#a2fdfcb2b860ade78e0e8bcea7bc28b98", null ],
     [ "FRAMES_PER_BUFFER", "_get_mic_8h.html#a0ba5ca6cf467f019cb933a2f8bbaeb58", null ],

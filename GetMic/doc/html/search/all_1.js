@@ -1,7 +1,6 @@
 var searchData=
 [
   ['change',['change',['../class_settings.html#a139c6c8d809e18fec0b3aae2b6286baa',1,'Settings']]],
-  ['channelcount',['channelCount',['../struct_pa_stream_parameters.html#a861ff361da71fc2572dd356c9c9878ca',1,'PaStreamParameters']]],
   ['code',['code',['../class_settings.html#a059440ec7c5feac6874fa8836a825da5',1,'Settings']]],
   ['continue_5f',['continue_',['../class_settings.html#a9ba1ae6d93fad667c597fff4e723025b',1,'Settings']]],
   ['continue_5ffrom',['continue_from',['../class_settings.html#a1ff22226652e146e1511d9d17deefa1f',1,'Settings']]],
@@ -9,6 +8,5 @@ var searchData=
   ['csv',['CSV',['../class_c_s_v.html',1,'CSV'],['../class_c_s_v.html#a7ba492a7aea573fdce5280c1b1f76d62',1,'CSV::CSV()']]],
   ['csv_2ecpp',['CSV.cpp',['../_c_s_v_8cpp.html',1,'']]],
   ['csv_2eh',['CSV.h',['../_c_s_v_8h.html',1,'']]],
-  ['csv_5fbootstrap',['CSV_bootstrap',['../thread_8cpp.html#aa14c1d3a506366088ba33f2427c7c170',1,'thread.cpp']]],
-  ['currenttime',['currentTime',['../struct_pa_stream_callback_time_info.html#af21eb5482cadb212dae38fdbbd9bebfb',1,'PaStreamCallbackTimeInfo']]]
+  ['csv_5fbootstrap',['CSV_bootstrap',['../thread_8cpp.html#aa14c1d3a506366088ba33f2427c7c170',1,'thread.cpp']]]
 ];

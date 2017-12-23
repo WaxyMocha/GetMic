@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['quiet',['quiet',['../class_settings.html#a1c533c67c68ec619c34adbf2ae70bfb6',1,'Settings::quiet()'],['../_get_mic_8h.html#ae4426f467d61ae456b95844d4d9c2dcd',1,'quiet():&#160;GetMic.cpp'],['../_get_mic_8cpp.html#ae4426f467d61ae456b95844d4d9c2dcd',1,'quiet():&#160;GetMic.cpp']]]
+  ['sample_5frate',['SAMPLE_RATE',['../_get_mic_8h.html#a7edeabaed4688e071a2c360f4d42dd89',1,'GetMic.h']]],
+  ['sample_5fsilence',['SAMPLE_SILENCE',['../_get_mic_8h.html#ab5d9945514caebd9e50958dab1dec76e',1,'GetMic.h']]],
+  ['slash',['slash',['../thread_8h.html#a9acbea9d0888343590fe97e844e8b314',1,'thread.h']]],
+  ['sufix',['sufix',['../class_settings.html#a784e2b16e9280cc9250b3c4306573b16',1,'Settings']]]
 ];
