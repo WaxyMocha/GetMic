@@ -18,7 +18,6 @@ float **buff;
 bool quiet = false;
 bool debug = false;
 
-void complex_2_real(fftw_complex *in, double *out);
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData);
 
 int main(int argc, char** argv)
@@ -189,20 +188,9 @@ void new_Thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *d
 
 	change = abs((avg_Old - avg) / avg) * 100;
 
-
-	double *spectrum = new double[DFT_SIZE * ITERATIONS];
-
-	for (int i = 0; i < ITERATIONS; i++)
-	{
-		copy(buff + ((DFT_SIZE / 2) * i), buff + ((DFT_SIZE / 2) * (i + 1)), in[thread_number]);
-		fftw_execute(plan);
-		complex_2_real(out[thread_number], spectrum + (i * DFT_SIZE));
-	}
-
-
 	if (!settings.differential)
 	{
-		threads = async(task, settings.prefix + to_string(No) + settings.sufix, buff, spectrum, settings);//New thread
+		threads = async(task, settings.prefix + to_string(No) + settings.sufix, plan, buff, in[thread_number], out[thread_number], settings);//New thread
 		if (!quiet) cout << "Started No. " << No << endl;
 
 		if (debug) cout << "New thread created on: " << thread_number << endl;
@@ -213,7 +201,7 @@ void new_Thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *d
 	{
 		if (change >= settings.change)
 		{
-			threads = async(task, settings.prefix + to_string(No) + settings.sufix, buff, spectrum, settings);//New thread
+			threads = async(task, settings.prefix + to_string(No) + settings.sufix, plan, buff, in[thread_number], out[thread_number], settings);//New thread
 			if (!quiet) cout << "Started No. " << No << endl;
 
 			if (debug) cout << "New thread created on: " << thread_number << endl;
@@ -233,25 +221,7 @@ void new_Thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *d
 
 	avg_Old = avg;
 
-	delete[] spectrum;
 }
-//!Use it to convert complex numbers in to real numbers. Both of us will gain from the fact that I will not try to explain how it works
-/*!
-- in, complex number in form of fftw_complex, you can get one from <fftw_execute>()
-- out, array of real numbers. NOTE: one complex = one real
-*/
-void complex_2_real(fftw_complex *in, double *out)
-{
-	for (int i = 0; i < DFT_SIZE / 2; i++)
-	{
-		out[i] = sqrt(pow(in[i][0], 2) + pow(in[i][1], 2));
-		out[i] *= 2;
-		out[i] /= NUM_OF_SAMPLES;
-	}
-
-	return;
-}
-
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
 {
 	paTestData *data = (paTestData*)userData;

@@ -14,7 +14,7 @@ private:
 	void create_wav_header();
 	void flip_Endian(char *in, char *out, int lenght);
 	void num2char(int in, char *out, int lenght);
-	void num2char(float &in, char *out, int lenght);
+	void num2char(float *in, char *out, int lenght);
 
 	fstream file;
 	char *buff;

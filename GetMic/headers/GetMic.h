@@ -12,9 +12,9 @@ const int NUM_SECONDS = 1;
 const int NUM_CHANNELS = 1;
 const float SAMPLE_SILENCE = 0.0;
 
-const int NUM_OF_SAMPLES = SAMPLE_RATE * NUM_CHANNELS;
+const int NUM_OF_SAMPLES = SAMPLE_RATE * NUM_CHANNELS * NUM_SECONDS;
 const int DFT_SIZE = 320;
-const int ITERATIONS = SAMPLE_RATE / DFT_SIZE;
+const int ITERATIONS = (SAMPLE_RATE / DFT_SIZE) * NUM_SECONDS;
 const int MAX_THREADS = 4;
 
 #ifdef _WIN32

@@ -22,17 +22,14 @@ WAV::WAV(string path, string filename, float *samples)
 		return;
 	}
 
-	buff = new char[16];
+	buff = new char[NUM_OF_SAMPLES * sizeof(int)];
 
 	create_wav_header();
-	for (int i = 0; i < NUM_OF_SAMPLES; i++)
-	{
-		num2char(samples[i], buff, 4);
-		flip_Endian(buff, buff, 4);
-		file.seekg(pos);
-		file.write(buff, 4);
-		pos += 4;
-	}
+	num2char(samples, buff, NUM_OF_SAMPLES);
+	flip_Endian(buff, buff, NUM_OF_SAMPLES * 4);
+
+	file.seekg(pos);
+	file.write(buff, (4 * NUM_OF_SAMPLES));
 	file.close();
 
 	if (!quiet) cout << "File saved in " << path + slash + filename + ".wav" << endl;
@@ -136,13 +133,14 @@ void WAV::flip_Endian(char *in, char *out, int lenght)
 {
 	char *tmp = new char[lenght];
 
-	int j = 0;
-	for (int i = lenght - 1; i >= 0; i--)
+	for (int k = 0; k < lenght - 4; k++)
 	{
-		tmp[i] = in[j];
-
-		j++;
+		for (int i = 3, j = 0; i >= 0; i--, j++)
+		{
+			tmp[i + (k * 4)] = in[j + (k * 4)];
+		}
 	}
+	
 	for (int i = lenght - 1; i >= 0; i--)
 	{
 		out[i] = tmp[i];
@@ -164,18 +162,22 @@ void WAV::num2char(int in, char *out, int lenght)
 	return;
 }
 //!Converts 0.5 to '0.5'
-void WAV::num2char(float &in, char *out, int lenght)
+void WAV::num2char(float *in, char *out, int lenght)
 {
-	int tmp = 0;
+	int *tmp = new int[lenght];
 
-	memcpy(&tmp, &in, sizeof(tmp));
-
-	int shift = (lenght * 8) - 8;
+	memcpy(tmp, in, sizeof(int) * lenght);
 
 	for (int i = 0; i < lenght; i++)
 	{
-		out[i] = (tmp >> shift) & 0xFF;
-		shift -= 8;
+		int shift = 24;
+
+		for (int j = 0; j < 4; j++)
+		{
+			out[j + (4 * i)] = (tmp[i] >> shift) & 0xFF;
+			shift -= 8;
+		}
 	}
+	
 	return;
 }
