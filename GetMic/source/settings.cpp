@@ -107,7 +107,6 @@ bool Settings::choose_parameter(string parameter, string next, int &i)//compare 
 	else if (parameter ==  "-d" || parameter == "--debug") debug = true;
 	else if (parameter == "-w" || parameter == "--wav")
 	{
-
 		if (check_Directory(next))
 		{
 			code = -1;
@@ -219,20 +218,17 @@ void Settings::file_number()
 {
 	string path;
 
-	if (folder_for_csv != "")
+	if (folder_for_csv.empty())
 		path = folder_for_csv;
-	else if (folder_for_opus != "")
+	else if (folder_for_opus.empty())
 		path = folder_for_opus;
-	else if (folder_for_wav != "")
+	else if (folder_for_wav.empty())
 		path = folder_for_wav;
 	else
 	{
 		file_No = 0;
 		return;
 	}
-		
-		
-
 	
 	if (continue_from != -1)
 	{

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <math.h>
 #include <portaudio.h>
 #include <fftw3.h>
 #include <thread.h>
@@ -8,8 +7,6 @@
 
 using namespace std;
 using namespace std::chrono;
-
-namespace fs = std::experimental::filesystem;
 
 double **in;
 fftw_complex **out;

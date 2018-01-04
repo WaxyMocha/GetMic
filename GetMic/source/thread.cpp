@@ -28,17 +28,17 @@ int task(string filename, fftw_plan plan, float *buff, double *in, fftw_complex 
 		complex_2_real(out, spectrum + (i * DFT_SIZE));
 	}
 
-	if (settings.folder_for_opus != "")
+	if (settings.folder_for_opus.empty())
 	{
 		opus_h = thread(OPUS_bootstrap, settings.folder_for_opus, filename, buff);//I really have no clue how to run object in thread, so i use bootstrap function, forgive me
 	}
 
-	if (settings.folder_for_wav != "")
+	if (settings.folder_for_wav.empty())
 	{
 		wav_h = thread(WAV_bootstrap, settings.folder_for_wav, filename, buff);
 	}
 
-	if (settings.folder_for_csv != "")
+	if (settings.folder_for_csv.empty())
 	{
 		csv_h = thread(CSV_bootstrap, settings.folder_for_csv, filename, spectrum);
 	}
