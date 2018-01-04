@@ -10,6 +10,6 @@ public:
 	CSV(string path, string filename, double *spectrum);
 
 private:
-	void save_CSV(string path, string filename, double *out);
+	void save_CSV(const string& path, const string& filename, double* out);
 };
 

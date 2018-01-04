@@ -16,16 +16,16 @@ void CSV_bootstrap(string path, string filename, double *spectrum);
 //!This will start threads to save appropriate files in to appropriate directories
 int task(string filename, fftw_plan plan, float *buff, double *in, fftw_complex *out, Settings settings)
 {
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	auto t1 = high_resolution_clock::now();
 	thread wav_h, opus_h, csv_h;
 
-	double *spectrum = new double[NUM_OF_SAMPLES];
+	auto *spectrum = new double[num_of_samples];
 
-	for (int i = 0; i < ITERATIONS; i++)
+	for (auto i = 0; i < iterations; i++)
 	{
-		copy(buff + ((DFT_SIZE / 2) * i), buff + ((DFT_SIZE / 2) * (i + 1)), in);
+		copy(buff + ((dft_size / 2) * i), buff + ((dft_size / 2) * (i + 1)), in);
 		fftw_execute(plan);
-		complex_2_real(out, spectrum + (i * DFT_SIZE));
+		complex_2_real(out, spectrum + (i * dft_size));
 	}
 
 	if (settings.folder_for_opus.empty())
@@ -58,7 +58,7 @@ int task(string filename, fftw_plan plan, float *buff, double *in, fftw_complex 
 
 	delete[] spectrum;
 
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	auto t2 = high_resolution_clock::now();
 	if (debug) cout << "Thread exec time: " << (duration_cast<microseconds>(t2 - t1).count()) / 1000 << endl;
 	return 0;
 }
@@ -69,11 +69,11 @@ int task(string filename, fftw_plan plan, float *buff, double *in, fftw_complex 
 */
 void complex_2_real(fftw_complex *in, double *out)
 {
-	for (int i = 0; i < DFT_SIZE / 2; i++)
+	for (int i = 0; i < dft_size / 2; i++)
 	{
 		out[i] = sqrt(pow(in[i][0], 2) + pow(in[i][1], 2));
 		out[i] *= 2;
-		out[i] /= NUM_OF_SAMPLES;
+		out[i] /= num_of_samples;
 	}
 
 	return;

@@ -6,16 +6,16 @@
 
 using namespace std;
 
-const int SAMPLE_RATE = 16000;
-const int FRAMES_PER_BUFFER = 320;
-const int NUM_SECONDS = 1;
-const int NUM_CHANNELS = 1;
-const float SAMPLE_SILENCE = 0.0;
+const int sample_rate = 16000;
+const int frames_per_buffer = 320;
+const int num_seconds = 1;
+const int num_channel = 1;
+const float sample_silence = 0.0;
 
-const int NUM_OF_SAMPLES = SAMPLE_RATE * NUM_CHANNELS * NUM_SECONDS;
-const int DFT_SIZE = 320;
-const int ITERATIONS = (SAMPLE_RATE / DFT_SIZE) * NUM_SECONDS;
-const int MAX_THREADS = 4;
+const int num_of_samples = sample_rate * num_channel * num_seconds;
+const int dft_size = 320;
+const int iterations = (sample_rate / dft_size) * num_seconds;
+const int max_threads = 4;
 
 #ifdef _WIN32
 const string slash = "\\";
@@ -26,7 +26,7 @@ const string slash = "/";
 struct paTestData
 {
 	int frameIndex = 0; 
-	int  maxFrameIndex = NUM_OF_SAMPLES;
+	int  maxFrameIndex = num_of_samples;
 	float *recordedSamples;
 	long skipped_Frames = 0;
 };
@@ -34,5 +34,5 @@ struct paTestData
 extern bool quiet;
 extern bool debug;
 
-int Init(paTestData *data, fftw_plan *plans);
-void new_Thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *data, int thread_number, Settings settings);
+int init(paTestData *data, fftw_plan *plans);
+void new_thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *data, int thread_number, Settings settings);

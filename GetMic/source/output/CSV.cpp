@@ -10,12 +10,12 @@ namespace fs = std::experimental::filesystem;
 	- filename, filename
 	- spectrum. array with data from FFTW libary
 
-About last 3 arguments, out and in are containers for libary, they are created in <Init>(), 
-in this method in is filed with data from buff and p is used to run FFTW, 
+About last 3 arguments, out and in are containers for libary, they are created in <init>(), 
+in this method in is filed with data from buff_ and p is used to run FFTW, 
 all three shoudn't be here, but for sake of cleanliness I dont' wanna put it in thread.cpp for now.
 In future constructor will change to be same as WAV or OPUS.
 */
-CSV::CSV(string path, string filename, double *spectrum)
+CSV::CSV(string path, string filename, double* spectrum)
 {
 	if (fs::is_regular_file(path + slash + filename + ".csv"))
 	{
@@ -23,13 +23,14 @@ CSV::CSV(string path, string filename, double *spectrum)
 	}
 	save_CSV(path, filename, spectrum);
 }
+
 //!Save array of real numbers in to "comma-separated values" file. Plot twist, I used semicolon insted of comma.
 /*!
 	- path, directory to save file
 	- filename, ...
 	- out, array with data
 */
-void CSV::save_CSV(string path, string filename, double *out)
+void CSV::save_CSV(const string& path, const string& filename, double* out)
 {
 	fstream file;
 	file.open(path + slash + filename + ".csv", ios::app);
@@ -39,25 +40,19 @@ void CSV::save_CSV(string path, string filename, double *out)
 		return;
 	}
 
-	std::ostringstream s;
-	for (int i = 0; i < ITERATIONS; i++)
+	for (auto i = 0; i < iterations; i++)
 	{
-		string to_Save = "";
-		for (int j = (i * DFT_SIZE); j < (DFT_SIZE / 2) + (i * DFT_SIZE); j++)
+		string to_save;
+		for (auto j = (i * dft_size); j < (dft_size / 2) + (i * dft_size); j++)
 		{
-			s << out[j];
-			to_Save += s.str();
-			s.clear();
-			s.str("");
-			to_Save += ";";
+			to_save += to_string(out[j]);
+			to_save += ";";
 		}
-		file.write(to_Save.c_str(), to_Save.size());
+		file.write(to_save.c_str(), to_save.size());
 		file << "\n";
 	}
 
 	file.close();
 
 	if (!quiet) cout << "File saved in " << path + slash + filename + ".csv" << endl;
-
-	return;
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <limits>
 
 using namespace std;
@@ -20,7 +19,7 @@ public:
 	string sufix = "";//!<Sufix of file, e.g. " of 10 000"
 	int code = 0;//!<1 end program, 0 continue executing program
 	long continue_from = -1;//!<Start saving files from specified file, e.g. after using parameter: "-C 100 -c .", first file will be "100.csv"
-	long continue_position_of_ID = 0;//!<If someone use prefix or sufix,
+	long continue_position_of_id = 0;//!<If someone use prefix or sufix,
 									 //!<there is no way to be certaintry if first number in filename is file ID or some other number.
 									 //!<For example, "File Nr. 8 of 100", how algorithm can be sure if 8 or 100 is file ID ?
 									 //!<This parameter is for user to specify where in filename ID starts, in example above, 9th
@@ -28,17 +27,17 @@ public:
 	bool quiet = false;//!<Do not output any information (excluding debug (if enabled))
 	bool debug = false;//!<Output little more info
 	bool differential = false;//!<Save sample only if average amplitude of last second has changed by #change %
-	bool continue_ = false;//!<Continue from last file(if using prefix see continue_position_of_ID)
+	bool continue_ = false;//!<Continue from last file(if using prefix see continue_position_of_id)
 	float change = 0;//!<See #differential
 
-	int file_No = 0;//!<Just contain ID of last file, used at beggining of main()
+	int file_no = 0;//!<Just contain ID of last file, used at beggining of main()
 
 private:
 	void prepare_input_parameters(int argc, char **argv);
-	bool choose_parameter(string parameter, string next, int &i);
-	int check_Directory(string directory);
-	void help();
+	bool choose_parameter(const string& parameter, const string& next, int& i);
+	int check_directory(const string& directory) const;
+	void help() const;
 	void file_number(); 
-	int get_last(string path, int offset);
-	bool is_number(const std::string& s);
+	int get_last(const string& path, int offset) const;
+	bool is_number(const std::string& s) const;
 };

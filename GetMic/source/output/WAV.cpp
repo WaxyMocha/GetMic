@@ -14,30 +14,27 @@ I didn't make posible to create files with diffrent lenght, output will be alway
 */
 WAV::WAV(string path, string filename, float *samples)
 {
-	file.open(path + slash + filename + ".wav", ios::binary | ios::out);
-	if (!file.good())
+	file_.open(path + slash + filename + ".wav", ios::binary | ios::out);
+	if (!file_.good())
 	{
 		if (quiet) cout << "Error while loading file" << endl;
-		file.close();
+		file_.close();
 		return;
 	}
 
-	buff = new char[NUM_OF_SAMPLES * sizeof(int)];
+	buff_ = new char[num_of_samples * sizeof(int)];
 
 	create_wav_header();
-	num2char(samples, buff, NUM_OF_SAMPLES);
-	flip_Endian(buff, buff, NUM_OF_SAMPLES * 4);
+	num2char(samples, buff_, num_of_samples);
+	flip_endian(buff_, buff_, num_of_samples * 4);
 
-	file.seekg(pos);
-	file.write(buff, (4 * NUM_OF_SAMPLES));
-	file.close();
+	file_.seekg(pos_);
+	file_.write(buff_, (4 * num_of_samples));
+	file_.close();
 
 	if (!quiet) cout << "File saved in " << path + slash + filename + ".wav" << endl;
-}
 
-WAV::~WAV()
-{
-	delete[] buff;
+	delete[] buff_;
 }
 //!Simple method to create .wav header
 /*!
@@ -54,82 +51,82 @@ void WAV::create_wav_header()
 {
 	char buff[16] = { 0 };
 
-	file.write("RIFF", 4);
-	pos += 4;
+	file_.write("RIFF", 4);
+	pos_ += 4;
 
-	num2char(((NUM_OF_SAMPLES * 4) + 44), buff, 4);//File size
-	flip_Endian(buff, buff, 4);
-	file.seekg(pos);
-	file.write(buff, 4);
-	pos += 4;
+	num2char(((num_of_samples * 4) + 44), buff, 4);//File size
+	flip_endian(buff, buff, 4);
+	file_.seekg(pos_);
+	file_.write(buff, 4);
+	pos_ += 4;
 
-	file.seekg(pos);
-	file.write("WAVE", 4);
-	pos += 4;
+	file_.seekg(pos_);
+	file_.write("WAVE", 4);
+	pos_ += 4;
 
-	file.seekg(pos);
-	file.write("fmt ", 4);
-	pos += 4;
+	file_.seekg(pos_);
+	file_.write("fmt ", 4);
+	pos_ += 4;
 
 	num2char(0x10, buff, 4);
-	flip_Endian(buff, buff, 4);
-	file.seekg(pos);
-	file.write(buff, 4);
-	pos += 4;
+	flip_endian(buff, buff, 4);
+	file_.seekg(pos_);
+	file_.write(buff, 4);
+	pos_ += 4;
 
 	num2char(0x3, buff, 2);
-	flip_Endian(buff, buff, 2);
-	file.seekg(pos);
-	file.write(buff, 2);
-	pos += 2;
+	flip_endian(buff, buff, 2);
+	file_.seekg(pos_);
+	file_.write(buff, 2);
+	pos_ += 2;
 
 	num2char(0x1, buff, 2);//Number of chanels
-	flip_Endian(buff, buff, 2);
-	file.seekg(pos);
-	file.write(buff, 2);
-	pos += 2;
+	flip_endian(buff, buff, 2);
+	file_.seekg(pos_);
+	file_.write(buff, 2);
+	pos_ += 2;
 
 	num2char(0x3E80, buff, 4);//Sample rate
-	flip_Endian(buff, buff, 4);
-	file.seekg(pos);
-	file.write(buff, 4);
-	pos += 4;
+	flip_endian(buff, buff, 4);
+	file_.seekg(pos_);
+	file_.write(buff, 4);
+	pos_ += 4;
 
 
 	num2char(0xFA00, buff, 4);//(Sample Rate * BitsPerSample * Channels) / 8.
-	flip_Endian(buff, buff, 4);
-	file.seekg(pos);
-	file.write(buff, 4);
-	pos += 4;
+	flip_endian(buff, buff, 4);
+	file_.seekg(pos_);
+	file_.write(buff, 4);
+	pos_ += 4;
 
 	num2char(0x4, buff, 2);//(BitsPerSample * Channels) / 8 = (32 * 1)/8 = 4
-	flip_Endian(buff, buff, 2);
-	file.seekg(pos);
-	file.write(buff, 2);
-	pos += 2;
+	flip_endian(buff, buff, 2);
+	file_.seekg(pos_);
+	file_.write(buff, 2);
+	pos_ += 2;
 
 	num2char(0x20, buff, 2);//Bits per sample
-	flip_Endian(buff, buff, 2);
-	file.seekg(pos);
-	file.write(buff, 2);
-	pos += 2;
+	flip_endian(buff, buff, 2);
+	file_.seekg(pos_);
+	file_.write(buff, 2);
+	pos_ += 2;
 
-	file.seekg(pos);
-	file.write("data", 4);
-	pos += 4;
+	file_.seekg(pos_);
+	file_.write("data", 4);
+	pos_ += 4;
 
-	num2char((NUM_OF_SAMPLES * 4), buff, 4);
-	flip_Endian(buff, buff, 4);
-	file.seekg(pos);
-	file.write(buff, 4);
-	pos += 4;
+	num2char((num_of_samples * 4), buff, 4);
+	flip_endian(buff, buff, 4);
+	file_.seekg(pos_);
+	file_.write(buff, 4);
+	pos_ += 4;
 }
 //!Put 250 get 24320!
 /*!
 	- in, out input and output data
 	- lenght, lenght of data in bytes
 */
-void WAV::flip_Endian(char *in, char *out, int lenght)
+void WAV::flip_endian(char *in, char *out, int lenght)
 {
 	char *tmp = new char[lenght];
 
