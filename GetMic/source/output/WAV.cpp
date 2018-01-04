@@ -22,11 +22,12 @@ WAV::WAV(string path, string filename, float *samples)
 		return;
 	}
 
-	buff_ = new char[num_of_samples * sizeof(int)];
+	buff_ = new char[num_of_samples * 4];
 
 	create_wav_header();
 	num2char(samples, buff_, num_of_samples);
-	flip_endian(buff_, buff_, num_of_samples * 4);
+	for (long i = 0; i < (num_of_samples * 4) - 4; i += 4)
+		flip_endian(buff_ + i, buff_ + i, 4);
 
 	file_.seekg(pos_);
 	file_.write(buff_, (4 * num_of_samples));
@@ -130,12 +131,9 @@ void WAV::flip_endian(char *in, char *out, int lenght)
 {
 	char *tmp = new char[lenght];
 
-	for (int k = 0; k < lenght - 4; k++)
+	for (int i = lenght - 1, j = 0; i >= 0; i--, j++)
 	{
-		for (int i = 3, j = 0; i >= 0; i--, j++)
-		{
-			tmp[i + (k * 4)] = in[j + (k * 4)];
-		}
+		tmp[i] = in[j];
 	}
 	
 	for (int i = lenght - 1; i >= 0; i--)
@@ -144,7 +142,6 @@ void WAV::flip_endian(char *in, char *out, int lenght)
 	}
 
 	delete[] tmp;
-	return;
 }
 //!Converts 5 to '5' 
 void WAV::num2char(int in, char *out, int lenght)
@@ -156,7 +153,6 @@ void WAV::num2char(int in, char *out, int lenght)
 		out[i] = (in >> shift) & 0xFF;
 		shift -= 8;
 	}
-	return;
 }
 //!Converts 0.5 to '0.5'
 void WAV::num2char(float *in, char *out, int lenght)
@@ -175,6 +171,6 @@ void WAV::num2char(float *in, char *out, int lenght)
 			shift -= 8;
 		}
 	}
-	
-	return;
+
+	delete[] tmp;
 }

@@ -221,11 +221,11 @@ void Settings::file_number()
 {
 	string path;
 
-	if (folder_for_csv.empty())
+	if (!folder_for_csv.empty())
 		path = folder_for_csv;
-	else if (folder_for_opus.empty())
+	else if (!folder_for_opus.empty())
 		path = folder_for_opus;
-	else if (folder_for_wav.empty())
+	else if (!folder_for_wav.empty())
 		path = folder_for_wav;
 	else
 	{
