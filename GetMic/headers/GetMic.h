@@ -8,7 +8,7 @@ using namespace std;
 
 const int sample_rate = 16000;
 const int frames_per_buffer = 320;
-const int num_seconds = 600;
+const int num_seconds = 1;
 const int num_channel = 1;
 const float sample_silence = 0.0;
 
