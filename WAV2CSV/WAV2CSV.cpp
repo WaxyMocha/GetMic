@@ -7,12 +7,6 @@ using namespace std::chrono;
 
 namespace fs = std::experimental::filesystem;
 
-#ifdef _WIN32
-const string slash = "\\";
-#elif __linux__
-const string slash = "/";
-#endif
-
 const int N = 320;//number of samples
 const int iterations = 40;// length of sound = N * iterations
 
@@ -282,7 +276,7 @@ int read_file(string filename, float **samples, int iterations)
 void CSV(string path, string filename, double *out)
 {
 	fstream file;
-	file.open(path + slash + filename + ".csv", ios::app);
+	file.open(path + "/" + filename + ".csv", ios::app);
 
 	if (!file.good())
 	{

@@ -20,7 +20,7 @@ static int recordCallback(const void* inputBuffer, void* outputBuffer, unsigned 
 
 int main(int argc, char** argv)
 {
-	const Settings settings(argc, argv);
+	const settings settings(argc, argv);
 
 	if (settings.code == -1)
 	{
@@ -166,8 +166,8 @@ int init(paTestData* data, fftw_plan* plans)
 	- thread_number, thread number, used as array index
 	- settings, object with settings for program
 */
-void new_thread(fftw_plan plan, future<int>& threads, float* buff, paTestData* data, int thread_number,
-                Settings settings)
+void new_thread(fftw_plan plan, future<int>& threads, float* buff, paTestData* data, const int thread_number,
+                settings settings)
 {
 	static int no;
 
@@ -197,7 +197,6 @@ void new_thread(fftw_plan plan, future<int>& threads, float* buff, paTestData* d
 		if (!quiet) cout << "Started No. " << no << endl;
 
 		if (debug) cout << "New thread created on: " << thread_number << endl;
-		if (!quiet) cout << "change: " << change << "%" << endl;
 		no++;
 	}
 	else
@@ -219,8 +218,8 @@ void new_thread(fftw_plan plan, future<int>& threads, float* buff, paTestData* d
 	}
 	data->frameIndex = 0; //Clean index, this will trigger callback function to refill buffer
 
-	if (!quiet) cout << "sample max amplitude = " << max << endl;
-	if (!quiet) cout << "sample average = " << avg << endl;
+	if (debug) cout << "sample max amplitude = " << max << endl;
+	if (debug) cout << "sample average = " << avg << endl;
 
 	avg_old = avg;
 }

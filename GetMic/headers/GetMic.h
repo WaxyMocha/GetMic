@@ -17,12 +17,6 @@ const int dft_size = 320;
 const int iterations = (sample_rate / dft_size) * num_seconds;
 const int max_threads = 4;
 
-#ifdef _WIN32
-const string slash = "\\";
-#elif __linux__
-const string slash = "/";
-#endif
-
 struct paTestData
 {
 	int frameIndex = 0; 
@@ -35,4 +29,4 @@ extern bool quiet;
 extern bool debug;
 
 int init(paTestData *data, fftw_plan *plans);
-void new_thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *data, int thread_number, Settings settings);
+void new_thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *data, int thread_number, settings settings);

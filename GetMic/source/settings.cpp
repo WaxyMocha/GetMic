@@ -9,7 +9,7 @@ namespace fs = std::experimental::filesystem;
 /*!
 Pass to constructor argc and argv from main
 */
-Settings::Settings(const int argc, char** argv)
+settings::settings(const int argc, char** argv)
 {
 	prepare_input_parameters(argc, argv);
 	if (continue_)
@@ -22,7 +22,7 @@ Settings::Settings(const int argc, char** argv)
 /*!
 This method basically contain only loop that call <choose_parameter>() and  <help>() if something gone wrong
 */
-void Settings::prepare_input_parameters(const int argc, char** argv)
+void settings::prepare_input_parameters(const int argc, char** argv)
 {
 	if (argc == 1) //!<If there is no parameters from users, just start writing .opus to output dir
 	{
@@ -33,7 +33,7 @@ void Settings::prepare_input_parameters(const int argc, char** argv)
 				if (!quiet) cout << "Couldn't create output directory" << endl;
 				code = -1;
 			}
-			folder_for_opus = "output"; //!<Why opus? 30 000 one second files weight about 100-150 MB
+			opus = "output"; //!<Why opus? 30 000 one second files weight about 100-150 MB
 		}
 		return;
 	}
@@ -75,7 +75,7 @@ void Settings::prepare_input_parameters(const int argc, char** argv)
 }
 
 //!This prints help message
-void Settings::help() const
+void settings::help() const
 {
 	if (!quiet)
 		cout << "getmic <parameters> <audio> <csv>" << endl
@@ -104,7 +104,7 @@ Call it with:
 
 To add something you should just add next if (if you want to set boolean use one line if) and define variable in settings.h in public  
 */
-bool Settings::choose_parameter(const string& parameter, const string& next, int& i)
+bool settings::choose_parameter(const string& parameter, const string& next, int& i)
 //compare passed argument to all possible cases, and sets the appropriate variables
 {
 	if (parameter == "-q" || parameter == "--quiet") quiet = true;
@@ -115,7 +115,7 @@ bool Settings::choose_parameter(const string& parameter, const string& next, int
 		{
 			code = -1;
 		}
-		folder_for_wav = next;
+		wav = next;
 		i++;
 	}
 	else if (parameter == "-c" || parameter == "--csv")
@@ -124,7 +124,7 @@ bool Settings::choose_parameter(const string& parameter, const string& next, int
 		{
 			code = -1;
 		}
-		folder_for_csv = next;
+		csv = next;
 		i++;
 	}
 	else if (parameter == "-o" || parameter == "--opus")
@@ -133,7 +133,7 @@ bool Settings::choose_parameter(const string& parameter, const string& next, int
 		{
 			code = -1;
 		}
-		folder_for_opus = next;
+		opus = next;
 		i++;
 	}
 	else if (parameter == "-p" || parameter == "--prefix")
@@ -201,7 +201,7 @@ bool Settings::choose_parameter(const string& parameter, const string& next, int
 }
 
 //!Checks if directory exist, if not, creates it
-int Settings::check_directory(const string& directory) const
+int settings::check_directory(const string& directory) const
 {
 	if (fs::is_directory(directory))
 	{
@@ -217,21 +217,9 @@ int Settings::check_directory(const string& directory) const
 }
 
 //!Calling this method will result with filled %file_no variable.
-void Settings::file_number()
+void settings::file_number()
 {
-	string path;
-
-	if (!folder_for_csv.empty())
-		path = folder_for_csv;
-	else if (!folder_for_opus.empty())
-		path = folder_for_opus;
-	else if (!folder_for_wav.empty())
-		path = folder_for_wav;
-	else
-	{
-		file_no = 0;
-		return;
-	}
+	const auto path = get_path();
 
 	if (continue_from != -1)
 	{
@@ -255,7 +243,7 @@ void Settings::file_number()
 	- path, directory to scan
 	- offset, on which position in filename program should expect ID, e.g. "Nr. 0.wav" 4th
 */
-int Settings::get_last(const string& path, const int offset) const
+int settings::get_last(const string& path, const int offset) const
 {
 	auto max = 0;
 	auto lenght = 0;
@@ -267,7 +255,7 @@ int Settings::get_last(const string& path, const int offset) const
 		{
 			//get rid off extension
 			lenght = 0;
-			for (unsigned int i = filename.length() - 1; i > 0; i--)
+			for (unsigned int i = (unsigned int)filename.length() - 1; i > 0; i--)
 			{
 				if (filename[i] == '.')
 				{
@@ -305,7 +293,19 @@ int Settings::get_last(const string& path, const int offset) const
 }
 
 //!By StackOverflow. But seriously, I don't know how it works, BUT it returns true if string is number e.g. "69" - true
-bool Settings::is_number(const string& s) const
+bool settings::is_number(const string& s) const
 {
 	return !s.empty() && find_if(s.begin(), s.end(), [](char c) { return !isdigit(c); }) == s.end();
+}
+
+string path::get_path()
+{
+	if (!csv.empty())
+		return csv;
+	if (!opus.empty())
+		return opus;
+	if (!wav.empty())
+		return wav;
+	
+	return ".";
 }

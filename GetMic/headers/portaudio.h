@@ -855,7 +855,7 @@ typedef int PaStreamCallback(
  function, or the preferred block granularity for a blocking read/write stream.
  The special value paFramesPerBufferUnspecified (0) may be used to request that
  the stream callback will receive an optimal (and possibly varying) number of
- frames based on host requirements and the requested latency Settings.
+ frames based on host requirements and the requested latency settings.
  Note: With some host APIs, the use of non-zero framesPerBuffer for a callback
  stream may introduce an additional layer of buffering which could introduce
  additional latency. PortAudio guarantees that the additional latency

@@ -14,7 +14,7 @@ I didn't make posible to create files with diffrent lenght, output will be alway
 */
 WAV::WAV(string path, string filename, float *samples)
 {
-	file_.open(path + slash + filename + ".wav", ios::binary | ios::out);
+	file_.open(path + "/" + filename + ".wav", ios::binary | ios::out);
 	if (!file_.good())
 	{
 		if (quiet) cout << "Error while loading file" << endl;
@@ -32,8 +32,6 @@ WAV::WAV(string path, string filename, float *samples)
 	file_.seekg(pos_);
 	file_.write(buff_, (4 * num_of_samples));
 	file_.close();
-
-	if (!quiet) cout << "File saved in " << path + slash + filename + ".wav" << endl;
 
 	delete[] buff_;
 }

@@ -17,9 +17,9 @@ In future constructor will change to be same as WAV or OPUS.
 */
 CSV::CSV(string path, string filename, double* spectrum)
 {
-	if (fs::is_regular_file(path + slash + filename + ".csv"))
+	if (fs::is_regular_file(path + "/" + filename + ".csv"))
 	{
-		remove((path + slash + filename + ".csv").c_str());
+		remove((path + "/" + filename + ".csv").c_str());
 	}
 	save_CSV(path, filename, spectrum);
 }
@@ -33,7 +33,7 @@ CSV::CSV(string path, string filename, double* spectrum)
 void CSV::save_CSV(const string& path, const string& filename, double* out)
 {
 	fstream file;
-	file.open(path + slash + filename + ".csv", ios::app);
+	file.open(path + "/" + filename + ".csv", ios::app);
 	if (!file.good())
 	{
 		if (!quiet) cout << "Error while creating/opening file" << endl;
@@ -53,6 +53,4 @@ void CSV::save_CSV(const string& path, const string& filename, double* out)
 	}
 
 	file.close();
-
-	if (!quiet) cout << "File saved in " << path + slash + filename + ".csv" << endl;
 }

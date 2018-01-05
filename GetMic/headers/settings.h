@@ -1,20 +1,26 @@
 #pragma once
-#include <limits>
 
 using namespace std;
+
+class path
+{
+public:
+	string wav;//!<Path to folder where program will save .wav files, if empty no files will be created
+	string opus;//!<Path to folder where program will save .opus files, if empty no files will be created
+	string csv;//!<Path to folder where program will save .csv files, if empty no files will be created
+
+	string get_path();
+};
 
 //!Class for processing user parameters
 /*!
 Class process argv array and fill varables with user settings
 */
-class Settings
+class settings : public path
 {
 public:
-	Settings(int argc, char** argv);
+	settings(int argc, char** argv);
 
-	string folder_for_wav = "";//!<Path to folder where program will save .wav files, if empty no files will be created
-	string folder_for_opus = "";//!<Path to folder where program will save .opus files, if empty no files will be created
-	string folder_for_csv = "";//!<Path to folder where program will save .csv files, if empty no files will be created
 	string prefix = "";//!<Prefix of file, e.g. "File Nr. "
 	string sufix = "";//!<Sufix of file, e.g. " of 10 000"
 	int code = 0;//!<1 end program, 0 continue executing program
