@@ -14,6 +14,8 @@ private:
 	void flip_endian(char *in, char *out, int lenght);
 	void num2char(int in, char *out, int lenght);
 	void num2char(float *in, char *out, int lenght);
+	void write(const char* data, long bytes);
+	void write(int data, long bytes);
 
 	fstream file_;
 	char *buff_;
