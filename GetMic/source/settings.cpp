@@ -16,6 +16,10 @@ settings::settings(const int argc, char** argv)
 	{
 		file_number();
 	}
+	if (!calc_advanced())
+	{
+		code = -1;
+	}
 }
 
 //!Loop that's checking every element in argv
@@ -193,6 +197,54 @@ bool settings::choose_parameter(const string& parameter, const string& next, int
 		}
 		i++;
 	}
+	else if (parameter == "-E_f" || parameter == "--sampling_freq")
+	{
+		if (is_number(next))
+		{
+			sampling_freq = stol(next);
+		}
+		else
+		{
+			code = -1;
+		}
+		i++;
+	}
+	else if (parameter == "-E_i" || parameter == "--samples")
+	{
+		if (is_number(next))
+		{
+			dft_size = stoi(next);
+		}
+		else
+		{
+			code = -1;
+		}
+		i++;
+	}
+	else if (parameter == "-E_t" || parameter == "--time")
+	{
+		if (is_number(next))
+		{
+			time = stoi(next);
+		}
+		else
+		{
+			code = -1;
+		}
+		i++;
+	}
+	else if (parameter == "-E_fb" || parameter == "--freq_bin")
+	{
+		if (is_number(next))
+		{
+			frequency_bin = stoi(next);
+		}
+		else
+		{
+			code = -1;
+		}
+		i++;
+	}
 	else
 	{
 		return true; //!<no match
@@ -296,6 +348,83 @@ int settings::get_last(const string& path, const int offset) const
 bool settings::is_number(const string& s) const
 {
 	return !s.empty() && find_if(s.begin(), s.end(), [](char c) { return !isdigit(c); }) == s.end();
+}
+
+int settings::calc_advanced()
+{
+	//if (sampling_freq == 0 || dft_size == 0 || time == 0 || frequency_bin == 0)
+	auto empty = 4;
+
+	if (sampling_freq == 0) empty--;
+	if (dft_size == 0) empty--;
+	if (time == 0) empty--;
+	if (frequency_bin == 0) empty--;
+
+	if (empty == 0)
+	{
+		sampling_freq = 16000;
+		dft_size = 320;
+		time = 20;
+		frequency_bin = 50;
+
+		return 1;
+	}
+	if (empty != 2)
+	{
+		if (!quiet) cout << "Error: You can only specify 2 parameters" << endl;
+		return 0;
+	}
+	if (time != 0 && frequency_bin != 0)
+	{
+		if (!quiet) cout << "Error: It's not posible to calculate needed information only from time and freq_bin" << endl;
+		return 0;
+	}
+
+	if (time == 0)
+	{
+		if (frequency_bin != 0)
+		{
+			time = 1000 / frequency_bin;
+		}
+		else
+		{
+			time = (1000 * dft_size) / sampling_freq;
+		}
+	}
+	if (frequency_bin == 0)
+	{
+		if (time != 0)
+		{
+			frequency_bin = 1000 / time;
+		}
+		else
+		{
+			frequency_bin = sampling_freq / dft_size;
+		}
+	}
+	if (sampling_freq == 0)
+	{
+		if (time != 0)
+		{
+			sampling_freq = (1000 * dft_size) / time;
+		}
+		else
+		{
+			sampling_freq = dft_size * frequency_bin;
+		}
+	}
+	if (dft_size == 0)
+	{
+		if (sampling_freq != 0)
+		{
+			dft_size = (time * sampling_freq) / 1000;
+		}
+		else
+		{
+			dft_size = sampling_freq / frequency_bin;
+		}
+	}
+	return 1;
 }
 
 string path::get_path()

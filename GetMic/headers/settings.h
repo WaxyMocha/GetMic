@@ -21,6 +21,9 @@ class settings : public path
 public:
 	settings(int argc, char** argv);
 
+	int file_no = 0;//!<Just contain ID of last file, used at beggining of main()
+
+	//basic
 	string prefix = "";//!<Prefix of file, e.g. "File Nr. "
 	string sufix = "";//!<Sufix of file, e.g. " of 10 000"
 	int code = 0;//!<1 end program, 0 continue executing program
@@ -36,7 +39,12 @@ public:
 	bool continue_ = false;//!<Continue from last file(if using prefix see continue_position_of_id)
 	float change = 0;//!<See #differential
 
-	int file_no = 0;//!<Just contain ID of last file, used at beggining of main()
+	//advanced
+
+	long sampling_freq = 0;
+	int dft_size = 0;
+	int time = 0;
+	int frequency_bin = 0;
 
 private:
 	void prepare_input_parameters(int argc, char **argv);
@@ -46,4 +54,6 @@ private:
 	void file_number(); 
 	int get_last(const string& path, int offset) const;
 	bool is_number(const std::string& s) const;
+
+	int calc_advanced();
 };

@@ -28,6 +28,10 @@ int main(int argc, char** argv)
 	}
 	quiet = settings.quiet;
 	debug = settings.debug;
+
+	sample_rate = settings.sampling_freq;
+	dft_size = settings.dft_size;
+
 	paTestData data;
 
 	future<int> threads[max_threads]; //Threads handlers
@@ -98,6 +102,9 @@ int main(int argc, char** argv)
 //!Allocate memory for few variables, create action plan for FFTW, and initialize portaudio for microphone harvesting
 int init(paTestData* data, fftw_plan* plans)
 {
+	num_of_samples = sample_rate * num_channel * num_seconds;
+	iterations = (sample_rate / dft_size) * num_seconds;
+
 	PaStreamParameters input_parameters;
 	PaStream* stream;
 
@@ -140,7 +147,7 @@ int init(paTestData* data, fftw_plan* plans)
 		input_parameters.suggestedLatency = Pa_GetDeviceInfo(input_parameters.device)->defaultLowInputLatency;
 		input_parameters.hostApiSpecificStreamInfo = nullptr;
 
-		if (Pa_OpenStream(&stream, &input_parameters, nullptr, sample_rate, frames_per_buffer, paClipOff, recordCallback,
+		if (Pa_OpenStream(&stream, &input_parameters, nullptr, sample_rate, dft_size, paClipOff, recordCallback,
 		                  data) != paNoError)
 		{
 			Pa_Terminate();
