@@ -39,6 +39,7 @@ using namespace std;
  *
  */
 
+
 inline int sample_rate;
 inline int dft_size;
 const int num_seconds = 1;

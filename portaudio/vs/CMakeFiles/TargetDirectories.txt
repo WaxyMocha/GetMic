@@ -1,0 +1,4 @@
+E:/Workspace/c++/WAV2CSV/portaudio/vs/CMakeFiles/portaudio.dir
+E:/Workspace/c++/WAV2CSV/portaudio/vs/CMakeFiles/portaudio_static.dir
+E:/Workspace/c++/WAV2CSV/portaudio/vs/CMakeFiles/ALL_BUILD.dir
+E:/Workspace/c++/WAV2CSV/portaudio/vs/CMakeFiles/ZERO_CHECK.dir

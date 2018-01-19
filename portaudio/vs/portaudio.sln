@@ -1,0 +1,60 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CMakePredefinedTargets", "CMakePredefinedTargets", "{C248D45E-F4D2-32B0-9F2B-D45A1A9A3425}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Portaudio", "Portaudio", "{CD2BA843-5385-3B33-BA46-F921BE7986FC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{BFB0802B-6903-357B-8EAC-7771042D6EAF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9E961040-F7C3-3D32-8B4F-FDE029883903} = {9E961040-F7C3-3D32-8B4F-FDE029883903}
+		{DE2971AB-702B-3FAE-AEAE-DB243D9E57AA} = {DE2971AB-702B-3FAE-AEAE-DB243D9E57AA}
+		{F0DCF35C-2874-3D59-8480-2AD012331E95} = {F0DCF35C-2874-3D59-8480-2AD012331E95}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{9E961040-F7C3-3D32-8B4F-FDE029883903}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portaudio", "portaudio.vcxproj", "{DE2971AB-702B-3FAE-AEAE-DB243D9E57AA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9E961040-F7C3-3D32-8B4F-FDE029883903} = {9E961040-F7C3-3D32-8B4F-FDE029883903}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portaudio_static", "portaudio_static.vcxproj", "{F0DCF35C-2874-3D59-8480-2AD012331E95}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9E961040-F7C3-3D32-8B4F-FDE029883903} = {9E961040-F7C3-3D32-8B4F-FDE029883903}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BFB0802B-6903-357B-8EAC-7771042D6EAF}.Debug|x64.ActiveCfg = Debug|x64
+		{BFB0802B-6903-357B-8EAC-7771042D6EAF}.Release|x64.ActiveCfg = Release|x64
+		{9E961040-F7C3-3D32-8B4F-FDE029883903}.Debug|x64.ActiveCfg = Debug|x64
+		{9E961040-F7C3-3D32-8B4F-FDE029883903}.Debug|x64.Build.0 = Debug|x64
+		{9E961040-F7C3-3D32-8B4F-FDE029883903}.Release|x64.ActiveCfg = Release|x64
+		{9E961040-F7C3-3D32-8B4F-FDE029883903}.Release|x64.Build.0 = Release|x64
+		{DE2971AB-702B-3FAE-AEAE-DB243D9E57AA}.Debug|x64.ActiveCfg = Debug|x64
+		{DE2971AB-702B-3FAE-AEAE-DB243D9E57AA}.Debug|x64.Build.0 = Debug|x64
+		{DE2971AB-702B-3FAE-AEAE-DB243D9E57AA}.Release|x64.ActiveCfg = Release|x64
+		{DE2971AB-702B-3FAE-AEAE-DB243D9E57AA}.Release|x64.Build.0 = Release|x64
+		{F0DCF35C-2874-3D59-8480-2AD012331E95}.Debug|x64.ActiveCfg = Debug|x64
+		{F0DCF35C-2874-3D59-8480-2AD012331E95}.Debug|x64.Build.0 = Debug|x64
+		{F0DCF35C-2874-3D59-8480-2AD012331E95}.Release|x64.ActiveCfg = Release|x64
+		{F0DCF35C-2874-3D59-8480-2AD012331E95}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BFB0802B-6903-357B-8EAC-7771042D6EAF} = {C248D45E-F4D2-32B0-9F2B-D45A1A9A3425}
+		{9E961040-F7C3-3D32-8B4F-FDE029883903} = {C248D45E-F4D2-32B0-9F2B-D45A1A9A3425}
+		{DE2971AB-702B-3FAE-AEAE-DB243D9E57AA} = {CD2BA843-5385-3B33-BA46-F921BE7986FC}
+		{F0DCF35C-2874-3D59-8480-2AD012331E95} = {CD2BA843-5385-3B33-BA46-F921BE7986FC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6D617174-0109-38E2-9427-6399895DFA9F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,752 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{87CFB814-D135-355D-A2D6-1FF87D5657FB}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>fftw3</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fftw3</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fftw3</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\Workspace\c++\WAV2CSV\fftw\.;E:\Workspace\c++\WAV2CSV\fftw\vs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;/bigobj;FFTW_DLL;CMAKE_INTDIR="Debug";fftw3_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;/bigobj;FFTW_DLL;CMAKE_INTDIR=\"Debug\";fftw3_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Workspace\c++\WAV2CSV\fftw\.;E:\Workspace\c++\WAV2CSV\fftw\vs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\Workspace\c++\WAV2CSV\fftw\.;E:\Workspace\c++\WAV2CSV\fftw\vs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>E:/Workspace/c++/WAV2CSV/fftw/vs/Debug/fftw3.lib</ImportLibrary>
+      <ProgramDataBaseFile>E:/Workspace/c++/WAV2CSV/fftw/vs/Debug/fftw3.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <PostBuildEvent>
+      <Command>lib /MACHINE:x64 /def:$(ProjectDir)..\libfftw3-3.def /out:$(SolutionDir)$(Platform)\$(Configuration)\fftw3.lib</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\Workspace\c++\WAV2CSV\fftw\.;E:\Workspace\c++\WAV2CSV\fftw\vs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;/bigobj;FFTW_DLL;CMAKE_INTDIR="Release";fftw3_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;/bigobj;FFTW_DLL;CMAKE_INTDIR=\"Release\";fftw3_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Workspace\c++\WAV2CSV\fftw\.;E:\Workspace\c++\WAV2CSV\fftw\vs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\Workspace\c++\WAV2CSV\fftw\.;E:\Workspace\c++\WAV2CSV\fftw\vs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>E:/Workspace/c++/WAV2CSV/fftw/vs/Release/fftw3.lib</ImportLibrary>
+      <ProgramDataBaseFile>E:/Workspace/c++/WAV2CSV/fftw/vs/Release/fftw3.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <PostBuildEvent>
+      <Command>lib /MACHINE:x64 /def:$(ProjectDir)..\libfftw3-3.def /out:$(SolutionDir)$(Platform)\$(Configuration)\fftw3.lib</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\Workspace\c++\WAV2CSV\fftw\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule E:/Workspace/c++/WAV2CSV/fftw/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"E:\Program Files\CMake\bin\cmake.exe" -HE:/Workspace/c++/WAV2CSV/fftw -BE:/Workspace/c++/WAV2CSV/fftw/vs --check-stamp-file E:/Workspace/c++/WAV2CSV/fftw/vs/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:/Workspace/c++/WAV2CSV/fftw/CMakeLists.txt;E:\Workspace\c++\WAV2CSV\fftw\CMakeLists.txt;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeSystem.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeSystemSpecificInitialize.cmake;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeCCompiler.cmake;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeCXXCompiler.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeSystemSpecificInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeGenericSystem.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\WindowsPaths.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeLanguageInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC-C.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC.cmake;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeRCCompiler.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeRCInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCommonLanguageInclude.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCXXInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeLanguageInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Compiler\MSVC-CXX.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC-CXX.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCommonLanguageInclude.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\GNUInstallDirs.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckIncludeFile.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckPrototypeDefinition.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckSymbolExists.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckTypeSize.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckIncludeFile.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckIncludeFileCXX.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckCCompilerFlag.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckCSourceCompiles.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;E:\Workspace\c++\WAV2CSV\fftw\cmake.config.h.in;E:\Workspace\c++\WAV2CSV\fftw\fftw.pc.in;E:\Workspace\c++\WAV2CSV\fftw\FFTW3Config.cmake.in;E:\Workspace\c++\WAV2CSV\fftw\FFTW3ConfigVersion.cmake.in;E:\Workspace\c++\WAV2CSV\fftw\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule E:/Workspace/c++/WAV2CSV/fftw/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"E:\Program Files\CMake\bin\cmake.exe" -HE:/Workspace/c++/WAV2CSV/fftw -BE:/Workspace/c++/WAV2CSV/fftw/vs --check-stamp-file E:/Workspace/c++/WAV2CSV/fftw/vs/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:/Workspace/c++/WAV2CSV/fftw/CMakeLists.txt;E:\Workspace\c++\WAV2CSV\fftw\CMakeLists.txt;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeSystem.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeSystemSpecificInitialize.cmake;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeCCompiler.cmake;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeCXXCompiler.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeSystemSpecificInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeGenericSystem.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\WindowsPaths.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeLanguageInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC-C.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC.cmake;E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\3.10.0\CMakeRCCompiler.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeRCInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCommonLanguageInclude.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCXXInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeLanguageInformation.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Compiler\MSVC-CXX.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC-CXX.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\Platform\Windows-MSVC.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCommonLanguageInclude.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\GNUInstallDirs.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckIncludeFile.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckPrototypeDefinition.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckSymbolExists.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckTypeSize.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckIncludeFile.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckIncludeFileCXX.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckCCompilerFlag.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CheckCSourceCompiles.cmake;E:\Program Files\CMake\share\cmake-3.10\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;E:\Workspace\c++\WAV2CSV\fftw\cmake.config.h.in;E:\Workspace\c++\WAV2CSV\fftw\fftw.pc.in;E:\Workspace\c++\WAV2CSV\fftw\FFTW3Config.cmake.in;E:\Workspace\c++\WAV2CSV\fftw\FFTW3ConfigVersion.cmake.in;E:\Workspace\c++\WAV2CSV\fftw\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\Workspace\c++\WAV2CSV\fftw\vs\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\apiplan.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\configure.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute-r2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute-split-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute-split-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute-split-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\execute.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\export-wisdom-to-file.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\export-wisdom-to-string.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\export-wisdom.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\f77api.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\flops.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\forget-wisdom.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\import-system-wisdom.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\import-wisdom-from-file.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\import-wisdom-from-string.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\import-wisdom.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\malloc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\map-r2r-kind.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\mapflags.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\mkprinter-file.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\mkprinter-str.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\mktensor-iodims.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\mktensor-iodims64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\mktensor-rowmajor.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-1d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-2d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-3d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-c2r-1d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-c2r-2d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-c2r-3d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-r2c-1d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-r2c-2d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-r2c-3d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-r2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-split-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-split-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-split-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru64-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru64-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru64-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru64-r2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru64-split-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru64-split-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru64-split-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-many-dft-c2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-many-dft-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-many-dft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-many-r2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-r2r-1d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-r2r-2d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-r2r-3d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-r2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\print-plan.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\rdft2-pad.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\the-planner.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\api\version.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\api.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\f77funcs.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\fftw3.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\guru.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\guru64.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\mktensor-iodims.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-dft-c2r.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-dft-r2c.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-dft.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-r2r.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-split-dft-c2r.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-split-dft-r2c.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\plan-guru-split-dft.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\api\x77.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\bluestein.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\buffered.c">
+      <ObjectFileName>$(IntDir)/dft/buffered.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\conf.c">
+      <ObjectFileName>$(IntDir)/dft/conf.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\ct.c">
+      <ObjectFileName>$(IntDir)/dft/ct.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\dftw-direct.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\dftw-directsq.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\dftw-generic.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\dftw-genericbuf.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\direct.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\generic.c">
+      <ObjectFileName>$(IntDir)/dft/generic.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\indirect-transpose.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\indirect.c">
+      <ObjectFileName>$(IntDir)/dft/indirect.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\kdft-dif.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\kdft-difsq.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\kdft-dit.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\kdft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\nop.c">
+      <ObjectFileName>$(IntDir)/dft/nop.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\plan.c">
+      <ObjectFileName>$(IntDir)/dft/plan.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\problem.c">
+      <ObjectFileName>$(IntDir)/dft/problem.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\rader.c">
+      <ObjectFileName>$(IntDir)/dft/rader.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\rank-geq2.c">
+      <ObjectFileName>$(IntDir)/dft/rank-geq2.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\solve.c">
+      <ObjectFileName>$(IntDir)/dft/solve.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\vrank-geq1.c">
+      <ObjectFileName>$(IntDir)/dft/vrank-geq1.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\zero.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\codelet-dft.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\ct.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\dft.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\n.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\t.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\f.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\n.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\q.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\t.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\codlist.c">
+      <ObjectFileName>$(IntDir)/dft/scalar/codelets/codlist.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_11.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_13.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_14.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\n1_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\q1_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\q1_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\q1_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\q1_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\q1_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\q1_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t1_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\dft\scalar\codelets\t2_8.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\n1b.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\n1f.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\n2b.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\n2f.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\n2s.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\q1b.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\q1f.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t1b.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t1bu.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t1f.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t1fu.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t2b.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t2f.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t3b.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\t3f.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\dft\simd\ts.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\align.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\alloc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\assert.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\awake.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\buffered.c">
+      <ObjectFileName>$(IntDir)/kernel/buffered.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\cpy1d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\cpy2d-pair.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\cpy2d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\ct.c">
+      <ObjectFileName>$(IntDir)/kernel/ct.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\debug.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\extract-reim.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\hash.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\iabs.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\kalloc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\md5-1.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\md5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\minmax.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\ops.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\pickdim.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\plan.c">
+      <ObjectFileName>$(IntDir)/kernel/plan.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\planner.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\primes.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\print.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\problem.c">
+      <ObjectFileName>$(IntDir)/kernel/problem.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\rader.c">
+      <ObjectFileName>$(IntDir)/kernel/rader.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\scan.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\solver.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\solvtab.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\stride.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor1.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tensor9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\tile2d.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\timer.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\transpose.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\trig.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\twiddle.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\cycle.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\kernel\ifftw.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\buffered.c">
+      <ObjectFileName>$(IntDir)/rdft/buffered.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\buffered2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\conf.c">
+      <ObjectFileName>$(IntDir)/rdft/conf.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\ct-hc2c-direct.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\ct-hc2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\dft-r2hc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\dht-r2hc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\dht-rader.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\direct-r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\direct-r2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\direct2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\generic.c">
+      <ObjectFileName>$(IntDir)/rdft/generic.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\hc2hc-direct.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\hc2hc-generic.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\hc2hc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\indirect.c">
+      <ObjectFileName>$(IntDir)/rdft/indirect.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\khc2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\khc2hc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\kr2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\kr2r.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\nop.c">
+      <ObjectFileName>$(IntDir)/rdft/nop.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\nop2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\plan.c">
+      <ObjectFileName>$(IntDir)/rdft/plan.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\plan2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\problem.c">
+      <ObjectFileName>$(IntDir)/rdft/problem.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\problem2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rank-geq2-rdft2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rank-geq2.c">
+      <ObjectFileName>$(IntDir)/rdft/rank-geq2.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rank0-rdft2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rank0.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rdft-dht.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rdft2-inplace-strides.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rdft2-rdft.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rdft2-strides.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rdft2-tensor-max-index.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\solve.c">
+      <ObjectFileName>$(IntDir)/rdft/solve.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\solve2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\vrank-geq1-rdft2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\vrank-geq1.c">
+      <ObjectFileName>$(IntDir)/rdft/vrank-geq1.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\vrank3-transpose.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\codelet-rdft.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\ct-hc2c.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\hc2hc.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\rdft.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\hc2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\hfb.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2c.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2r.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\hb.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\hc2cb.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\hc2cf.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\hf.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cbIII.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cfII.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2r.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\codlist.c">
+      <ObjectFileName>$(IntDir)/rdft/scalar/r2cb/codlist.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb2_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb2_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb2_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb2_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb2_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb2_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb2_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hb_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb2_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb2_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb2_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb2_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb2_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cb_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft2_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft2_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft2_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft2_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft2_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\hc2cbdft_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cbIII_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_11.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_128.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_13.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_14.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cb\r2cb_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\codlist.c">
+      <ObjectFileName>$(IntDir)/rdft/scalar/r2cf/codlist.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf2_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf2_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf2_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf2_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf2_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cf_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft2_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft2_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft2_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft2_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft2_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hc2cfdft_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf2_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf2_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf2_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf2_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf2_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf2_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf2_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\hf_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cfII_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_10.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_11.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_12.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_128.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_13.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_14.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_15.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_16.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_20.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_25.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_3.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_32.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_4.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_5.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_6.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_64.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_7.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2cf\r2cf_9.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2r\codlist.c">
+      <ObjectFileName>$(IntDir)/rdft/scalar/r2r/codlist.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2r\e01_8.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\scalar\r2r\e10_8.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\simd\hc2cbv.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\rdft\simd\hc2cfv.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\conf.c">
+      <ObjectFileName>$(IntDir)/reodft/conf.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\redft00e-r2hc-pad.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\redft00e-r2hc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\reodft00e-splitradix.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\reodft010e-r2hc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\reodft11e-r2hc-odd.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\reodft11e-r2hc.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\reodft11e-radix2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\rodft00e-r2hc-pad.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\rodft00e-r2hc.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\reodft\reodft.h" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\altivec.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\avx-128-fma.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\avx.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\avx2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\avx512.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\kcvi.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\neon.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\sse2.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\taint.c" />
+    <ClCompile Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\vsx.c" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\amd64-cpuid.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-altivec.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-avx-128-fma.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-avx.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-avx2-128.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-avx2.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-avx512.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-common.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-generic128.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-generic256.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-kcvi.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-neon.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-sse2.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\simd-vsx.h" />
+    <ClInclude Include="E:\Workspace\c++\WAV2CSV\fftw\simd-support\x86-cpuid.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="E:\Workspace\c++\WAV2CSV\fftw\vs\ZERO_CHECK.vcxproj">
+      <Project>{A2C0DE78-5E65-34E7-9C32-FB6D77495158}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
