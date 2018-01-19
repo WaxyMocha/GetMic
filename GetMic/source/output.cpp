@@ -27,7 +27,7 @@ void output::save(float* buff, paTestData* data, int thread_number)
 		}
 		avg += val;
 	}
-	avg /= double(num_of_samples);
+	avg /= double(num_of_samples); 
 
 	const auto change = abs((avg_old - avg) / avg) * 100;
 
