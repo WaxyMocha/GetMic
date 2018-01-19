@@ -24,7 +24,7 @@ CSV::CSV(string path, string filename, double* spectrum)
 	save_CSV(path, filename, spectrum);
 }
 
-void CSV::write_CSV(string path, string filename, double* spectrum, int amount)
+CSV::CSV()
 {
 }
 
