@@ -35,9 +35,11 @@ WAV::WAV(string path, string filename, float *samples)
 
 	delete[] buff_;
 }
-WAV::WAV()
+
+void WAV::write_WAV(string path, string filename, float* samples, int amount)
 {
 }
+
 //!Simple method to create .wav header
 /*!
 Method have hard coded parameters of resulting file:

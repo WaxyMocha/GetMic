@@ -8,8 +8,8 @@ class WAV
 {
 public:
 	WAV(string path, string filename, float *samples);
-	WAV();
-	//void WAV(string path, string filename, float *samples, int amount);
+	WAV() = default;
+	void write_WAV(string path, string filename, float *samples, int amount);
 
 private:
 	void create_wav_header();
