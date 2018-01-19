@@ -9,5 +9,6 @@ class OPUS
 {
 public:
 	OPUS(string path, string filename, float *samples);
+	OPUS();
 };
 

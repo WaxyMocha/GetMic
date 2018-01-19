@@ -39,9 +39,6 @@
     <ClInclude Include="headers\settings.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="headers\output.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="headers\WAV.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -49,6 +46,9 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="headers\OPUS.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\output.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
@@ -73,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="source\output\OPUS.cpp">
       <Filter>Pliki źródłowe\output</Filter>
+    </ClCompile>
+    <ClCompile Include="source\output.cpp">
+      <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

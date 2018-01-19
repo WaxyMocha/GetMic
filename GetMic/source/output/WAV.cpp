@@ -35,6 +35,9 @@ WAV::WAV(string path, string filename, float *samples)
 
 	delete[] buff_;
 }
+WAV::WAV()
+{
+}
 //!Simple method to create .wav header
 /*!
 Method have hard coded parameters of resulting file:

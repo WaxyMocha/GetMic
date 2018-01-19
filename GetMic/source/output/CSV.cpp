@@ -24,6 +24,10 @@ CSV::CSV(string path, string filename, double* spectrum)
 	save_CSV(path, filename, spectrum);
 }
 
+CSV::CSV()
+{
+}
+
 //!Save array of real numbers in to "comma-separated values" file. Plot twist, I used semicolon insted of comma.
 /*!
 	- path, directory to save file

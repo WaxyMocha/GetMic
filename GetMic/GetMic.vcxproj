@@ -188,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GetMic.cpp" />
+    <ClCompile Include="source\output.cpp" />
     <ClCompile Include="source\output\CSV.cpp" />
     <ClCompile Include="source\output\OPUS.cpp" />
     <ClCompile Include="source\output\WAV.cpp" />

@@ -16,3 +16,7 @@ OPUS::OPUS(string path, string filename, float* samples)
 	tmp = path + "/" + filename + "_temp.wav"; //delete created earlier .wav file
 	remove(tmp.c_str());
 }
+
+OPUS::OPUS()
+{
+}
