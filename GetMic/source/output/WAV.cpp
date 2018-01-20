@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include <WAV.h>
-#include <GetMic.h>
+#include "WAV.h"
+#include "GetMic.h"
 
 using namespace std;
 
@@ -36,8 +36,32 @@ WAV::WAV(string path, string filename, float *samples)
 	delete[] buff_;
 }
 
-void WAV::write_WAV(string path, string filename, float* samples, int amount)
+void WAV::write_WAV(string path, string filename, float* samples, const int amount)
 {
+	buff_ = new char[amount * 4];
+
+	if (create_new)
+	{
+		create_wav_header();
+		create_new = false;
+	}
+
+	count = amount;
+	if (count > num_of_samples)
+	{
+		create_new = true;
+	}
+
+	num2char(samples, buff_, amount % num_of_samples);
+	for (long i = 0; i < ((amount % num_of_samples) * 4) - 4; i += 4)
+		flip_endian(buff_ + i, buff_ + i, 4);
+
+	file_.seekg(pos_);
+	file_.write(buff_, (4 * (amount % num_of_samples)));
+	pos_ += (amount % num_of_samples) * 4;
+	file_.close();
+
+	delete[] buff_;
 }
 
 //!Simple method to create .wav header

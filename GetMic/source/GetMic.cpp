@@ -4,6 +4,7 @@
 #include <thread.h>
 #include <GetMic.h>
 #include "settings.h"
+#include "output.h"
 
 using namespace std;
 using namespace std::chrono;

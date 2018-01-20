@@ -7,25 +7,30 @@
 #include "..\headers\CSV.h"
 #include "..\headers\OPUS.h"
 
-class output : public WAV, CSV, OPUS
+class output : public WAV, public CSV, public OPUS
 {
 public:
-	output(fftw_plan plan, future<int>& threads, settings settings);
-	void save(float* buff, paTestData* data, int thread_number);
+	output(fftw_plan plan, future<int>& threads, paTestData& data, settings& settings);
+	~output();
+	void save();
 
 private:
 	int output::task(string filename, float *buff, double *in, fftw_complex *out);
 	void complex_2_real(fftw_complex *in, double *out);
+	void calc_dft();
 	void WAV_bootstrap(string path, string filename, float *samples);
-	void OPUS_bootstrap(string path, string filename, float *samples);
-	void CSV_bootstrap(string path, string filename, double *spectrum);
+	
+	double* in;
+	fftw_complex* out;
+	float* buff;
+	double* spectrum;
 
 	fftw_plan dft_plan;
 	settings* program_settings;
-	future<int> thread_handle;
+	paTestData* mic_data;
 	thread handle;
 
-	int nr;
-	double avg_old;
+	int nr = 0;
+	double avg_old = 0;
 };
 

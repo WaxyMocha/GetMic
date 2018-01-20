@@ -2,6 +2,7 @@
 #include "stdafx.h"
 
 using namespace std;
+
 //! CSV class is used to save sound spectrum to .csv file
 class CSV
 {

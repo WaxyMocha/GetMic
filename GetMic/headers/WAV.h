@@ -22,5 +22,6 @@ private:
 	fstream file_;
 	char *buff_;
 	int pos_ = 0;
+	long count = 0;
+	bool create_new = true;
 };
-
