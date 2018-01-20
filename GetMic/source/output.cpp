@@ -13,6 +13,18 @@ output::output(fftw_plan plan, future<int>& threads, settings settings)
 
 void output::save(float* buff, paTestData* data, int thread_number)
 {
+
+	double** in = new double*[max_threads];
+	fftw_complex** out = new fftw_complex*[max_threads];
+	
+
+	for (int i = 0; i < max_threads; i++)
+	{
+		in[i] = (double*)fftw_malloc(sizeof(double) * dft_size); //allocate memory for input
+		out[i] = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * dft_size); //and output
+	}
+
+
 	copy(data->recordedSamples, data->recordedSamples + num_of_samples, buff); //Copy buffer to other place
 
 	auto val = buff[0], max = buff[0];
@@ -33,8 +45,8 @@ void output::save(float* buff, paTestData* data, int thread_number)
 
 	if (!program_settings->differential)
 	{
-		thread_handle = async(task, program_settings->prefix + to_string(nr) + program_settings->sufix, dft_plan, buff, in[thread_number],
-			out[thread_number], program_settings); //New thread
+		handle = thread(&output::task, this, program_settings->prefix + to_string(nr) + program_settings->sufix, buff, in[thread_number],
+			out[thread_number]); //New thread
 		if (!quiet) cout << "Started No. " << nr << endl;
 
 		if (debug) cout << "New thread created on: " << thread_number << endl;
@@ -44,8 +56,8 @@ void output::save(float* buff, paTestData* data, int thread_number)
 	{
 		if (change >= program_settings->change)
 		{
-			thread_handle = async(task, program_settings->prefix + to_string(nr) + program_settings->sufix, dft_plan, buff, in[thread_number],
-				out[thread_number], program_settings); //New thread
+			handle = thread(&output::task, this, program_settings->prefix + to_string(nr) + program_settings->sufix, buff, in[thread_number],
+				out[thread_number]); //New thread
 			if (!quiet) cout << "Started No. " << nr << endl;
 
 			if (debug) cout << "New thread created on: " << thread_number << endl;
@@ -65,7 +77,7 @@ void output::save(float* buff, paTestData* data, int thread_number)
 	avg_old = avg;
 }
 
-int output::task(string filename, fftw_plan plan, float *buff, double *in, fftw_complex *out, settings settings)
+int output::task(string filename, float *buff, double *in, fftw_complex *out)
 {
 	auto t1 = high_resolution_clock::now();
 	thread wav_h, opus_h, csv_h;
@@ -75,23 +87,23 @@ int output::task(string filename, fftw_plan plan, float *buff, double *in, fftw_
 	for (auto i = 0; i < iterations; i++)
 	{
 		copy(buff + ((dft_size / 2) * i), buff + ((dft_size / 2) * (i + 1)), in);
-		fftw_execute(plan);
+		fftw_execute(dft_plan);
 		complex_2_real(out, spectrum + (i * dft_size));
 	}
 
-	if (!settings.opus.empty())
+	if (!program_settings->opus.empty())
 	{
-		opus_h = thread(OPUS_bootstrap, settings.opus, filename, buff);//I really have no clue how to run object in thread, so i use bootstrap function, forgive me
+		opus_h = thread(&output::OPUS_bootstrap, this, program_settings->opus, filename, buff);//I really have no clue how to run object in thread, so i use bootstrap function, forgive me
 	}
 
-	if (!settings.wav.empty())
+	if (!program_settings->wav.empty())
 	{
-		wav_h = thread(WAV_bootstrap, settings.wav, filename, buff);
+		wav_h = thread(&output::WAV_bootstrap, this, program_settings->wav, filename, buff);
 	}
 
-	if (!settings.csv.empty())
+	if (!program_settings->csv.empty())
 	{
-		csv_h = thread(CSV_bootstrap, settings.csv, filename, spectrum);
+		csv_h = thread(&output::CSV_bootstrap, this, program_settings->csv, filename, spectrum);
 	}
 
 	if (opus_h.joinable())
