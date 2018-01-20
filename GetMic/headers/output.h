@@ -14,7 +14,7 @@ public:
 	void save(float* buff, paTestData* data, int thread_number);
 
 private:
-	int task(string filename, fftw_plan plan, float *buff, double *in, fftw_complex *out, settings settings);
+	int output::task(string filename, float *buff, double *in, fftw_complex *out);
 	void complex_2_real(fftw_complex *in, double *out);
 	void WAV_bootstrap(string path, string filename, float *samples);
 	void OPUS_bootstrap(string path, string filename, float *samples);
@@ -23,6 +23,7 @@ private:
 	fftw_plan dft_plan;
 	settings* program_settings;
 	future<int> thread_handle;
+	thread handle;
 
 	int nr;
 	double avg_old;
