@@ -40,14 +40,14 @@ using namespace std;
  */
 
 
-inline int sample_rate;
-inline int dft_size;
+int sample_rate;
+int dft_size;
 const int num_seconds = 1;
 const int num_channel = 1;
 const float sample_silence = 0.0;
 
-inline int num_of_samples;
-inline int iterations;
+int num_of_samples;
+int iterations;
 const int max_threads = 4;
 
 struct paTestData
