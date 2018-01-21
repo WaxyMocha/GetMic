@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include "settings.h"
 
 using namespace std;
