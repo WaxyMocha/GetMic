@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "fftw3.h"
-#include "Settings.h"
+#include "settings.h"
 
 using namespace std;
 
