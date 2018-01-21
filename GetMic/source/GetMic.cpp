@@ -126,6 +126,7 @@ int init(paTestData* data, fftw_plan* plans)
 
 	data->recordedSamples = new float[num_of_samples];
 	memset(data->recordedSamples, 0, num_of_samples * sizeof(*data->recordedSamples));
+	data->maxFrameIndex = num_of_samples;
 
 	{
 		if (Pa_Initialize() != paNoError)
