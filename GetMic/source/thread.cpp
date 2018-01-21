@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <cmath>
 #include "thread.h"
 #include "WAV.h"
 #include "OPUS.h"
