@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\headers\output.h"
+#include "output.h"
 
 
 output::output()

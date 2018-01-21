@@ -1,8 +1,8 @@
 #pragma once
 
-#include "..\headers\WAV.h"
-#include "..\headers\CSV.h"
-#include "..\headers\OPUS.h"
+#include "WAV.h"
+#include "CSV.h"
+#include "OPUS.h"
 
 class output : public WAV, CSV, OPUS
 {

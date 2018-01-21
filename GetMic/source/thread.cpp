@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include <GetMic.h>
-#include <thread.h>
-#include <WAV.h>
-#include <OPUS.h>
-#include <CSV.h>
+#include "GetMic.h"
+#include "thread.h"
+#include "WAV.h"
+#include "OPUS.h"
+#include "CSV.h"
 
 using namespace std;
 using namespace std::chrono;

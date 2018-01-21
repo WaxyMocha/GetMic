@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include <portaudio.h>
-#include <fftw3.h>
-#include <thread.h>
-#include <GetMic.h>
+#include "portaudio.h"
+#include "fftw3.h"
+#include "thread.h"
+#include "GetMic.h"
 #include "settings.h"
 
 using namespace std;

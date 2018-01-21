@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "WAV.h"
 
 using namespace std;
 
