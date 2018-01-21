@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "OPUS.h"
 #include "WAV.h"
-#include "GetMic.h"
 
 using namespace std;
+
+
+
 
 OPUS::OPUS(string path, string filename, float* samples)
 {

@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include <WAV.h>
-#include <GetMic.h>
 
 using namespace std;
+
+extern int num_of_samples;
+
+extern bool quiet;
+
 
 /*!
 To use %WAV class, you need to declare object with this arguments:

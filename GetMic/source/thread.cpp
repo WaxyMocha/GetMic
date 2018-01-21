@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "GetMic.h"
 #include "thread.h"
 #include "WAV.h"
 #include "OPUS.h"
@@ -7,6 +6,14 @@
 
 using namespace std;
 using namespace std::chrono;
+
+extern int dft_size;
+extern int num_of_samples;
+extern int iterations;
+
+extern bool quiet;
+extern bool debug;
+
 
 void complex_2_real(fftw_complex *in, double *out);
 void WAV_bootstrap(string path, string filename, float *samples);

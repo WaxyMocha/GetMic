@@ -1,8 +1,13 @@
 #include "stdafx.h"
 #include "CSV.h"
-#include "GetMic.h"
 
 using namespace std;
+
+extern int dft_size;
+extern int iterations;
+
+extern bool quiet;
+
 namespace fs = std::experimental::filesystem;
 //!This constructor should be same as WAV or OPUS, in future I will move process of creating DFT outside of class.
 /*!

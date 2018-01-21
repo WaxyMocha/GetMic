@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <cmath>
 #include "portaudio.h"
 #include "fftw3.h"
 #include "thread.h"
