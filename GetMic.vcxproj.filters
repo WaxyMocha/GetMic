@@ -45,9 +45,6 @@
     <ClInclude Include="headers\OPUS.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="headers\output.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="headers\stdafx.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
     </ClCompile>
     <ClCompile Include="source\output\OPUS.cpp">
       <Filter>Pliki źródłowe\output</Filter>
-    </ClCompile>
-    <ClCompile Include="source\output.cpp">
-      <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
