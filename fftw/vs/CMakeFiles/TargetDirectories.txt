@@ -1,4 +1,0 @@
-E:/Workspace/c++/WAV2CSV/fftw/vs/CMakeFiles/fftw3.dir
-E:/Workspace/c++/WAV2CSV/fftw/vs/CMakeFiles/INSTALL.dir
-E:/Workspace/c++/WAV2CSV/fftw/vs/CMakeFiles/ALL_BUILD.dir
-E:/Workspace/c++/WAV2CSV/fftw/vs/CMakeFiles/ZERO_CHECK.dir

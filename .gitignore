@@ -264,5 +264,4 @@ __pycache__/
 *.csv
 *.wav
 *.opus
-
-!.lib
+*.exe
