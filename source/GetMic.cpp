@@ -30,7 +30,6 @@ int main(int argc, char** argv)
 	quiet = settings.quiet;
 	debug = settings.debug;
 
-	sample_rate = settings.sampling_freq;
 	dft_size = settings.dft_size;
 
 	paTestData data;
@@ -38,11 +37,10 @@ int main(int argc, char** argv)
 	future<int> threads[max_threads]; //Threads handlers
 
 	auto create_new = false;
-	auto file_no = settings.file_no;
 
 	fftw_plan plans[max_threads]; //Plans for FFT
 
-	if (init(&data, plans) && !quiet)
+	if (init(&data, plans, settings) && !quiet)
 	{
 		if (!quiet) cout << "Init failed, ending..." << endl;
 		return 0;
@@ -50,7 +48,7 @@ int main(int argc, char** argv)
 
 	if (debug) cout << "Init completed" << endl;
 
-	for (; file_no < settings.end_on; file_no++)
+	for (auto file_no = settings.file_no; file_no < settings.end_on; file_no++)
 	{
 		while (data.frameIndex != num_of_samples) //check if callback function buffer is full
 		{
@@ -101,10 +99,10 @@ int main(int argc, char** argv)
 }
 
 //!Allocate memory for few variables, create action plan for FFTW, and initialize portaudio for microphone harvesting
-int init(paTestData* data, fftw_plan* plans)
+int init(paTestData* data, fftw_plan* plans, const settings& settings)
 {
-	num_of_samples = sample_rate * num_channel * num_seconds;
-	iterations = (sample_rate / dft_size) * num_seconds;
+	num_of_samples = settings.sampling_freq * num_channel * num_seconds;
+	iterations = (settings.sampling_freq / dft_size) * num_seconds;
 
 	PaStreamParameters input_parameters;
 	PaStream* stream;
@@ -149,7 +147,7 @@ int init(paTestData* data, fftw_plan* plans)
 		input_parameters.suggestedLatency = Pa_GetDeviceInfo(input_parameters.device)->defaultLowInputLatency;
 		input_parameters.hostApiSpecificStreamInfo = nullptr;
 
-		if (Pa_OpenStream(&stream, &input_parameters, nullptr, sample_rate, dft_size, paClipOff, recordCallback,
+		if (Pa_OpenStream(&stream, &input_parameters, nullptr, settings.sampling_freq, dft_size, paClipOff, recordCallback,
 		                  data) != paNoError)
 		{
 			Pa_Terminate();
@@ -180,11 +178,16 @@ void new_thread(fftw_plan plan, future<int>& threads, float* buff, paTestData* d
 {
 	static int no;
 
+	if (no == 0)
+	{
+		no = settings.continue_from;
+	}
+
+	copy(data->recordedSamples, data->recordedSamples + num_of_samples, buff); //Copy buffer to other place
+
 	auto val = buff[0], max = buff[0];
 	double avg = 0;
 	static double avg_old;
-
-	copy(data->recordedSamples, data->recordedSamples + num_of_samples, buff); //Copy buffer to other place
 
 	for (auto i = 0; i < num_of_samples; i++)
 	{

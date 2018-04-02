@@ -40,7 +40,6 @@ using namespace std;
  */
 
 
-int sample_rate;
 int dft_size;
 const int num_seconds = 1;
 const int num_channel = 1;
@@ -61,5 +60,5 @@ struct paTestData
 extern bool quiet;
 extern bool debug;
 
-int init(paTestData *data, fftw_plan *plans);
+int init(paTestData *data, fftw_plan *plans, const settings& settings);
 void new_thread(fftw_plan plan, future<int> &threads, float *buff, paTestData *data, int thread_number, settings settings);
