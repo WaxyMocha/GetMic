@@ -174,7 +174,7 @@ void new_thread(fftw_plan plan, future<int>& threads, float* buff, paTestData* d
 {
 	static int no;
 
-	if (no == 0)
+	if (no == 0 && settings.continue_from != -1)
 	{
 		no = settings.continue_from;
 	}

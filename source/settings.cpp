@@ -198,7 +198,7 @@ bool settings::choose_parameter(const string& parameter, const string& next, int
 		}
 		i++;
 	}
-	else if (parameter == "-E_f" || parameter == "--sampling_freq")
+	else if (parameter == "-Df" || parameter == "--DFT_sampling_freq")
 	{
 		if (is_number(next))
 		{
@@ -210,7 +210,7 @@ bool settings::choose_parameter(const string& parameter, const string& next, int
 		}
 		i++;
 	}
-	else if (parameter == "-E_i" || parameter == "--samples")
+	else if (parameter == "-Di" || parameter == "--DFT_samples")
 	{
 		if (is_number(next))
 		{
@@ -222,7 +222,7 @@ bool settings::choose_parameter(const string& parameter, const string& next, int
 		}
 		i++;
 	}
-	else if (parameter == "-E_t" || parameter == "--time")
+	else if (parameter == "-Dt" || parameter == "--DFT_time")
 	{
 		if (is_number(next))
 		{
@@ -234,7 +234,7 @@ bool settings::choose_parameter(const string& parameter, const string& next, int
 		}
 		i++;
 	}
-	else if (parameter == "-E_fb" || parameter == "--freq_bin")
+	else if (parameter == "-Dfb" || parameter == "--DFT_freq_bin")
 	{
 		if (is_number(next))
 		{
@@ -351,6 +351,38 @@ bool settings::is_number(const string& s) const
 	return !s.empty() && find_if(s.begin(), s.end(), [](char c) { return !isdigit(c); }) == s.end();
 }
 
+/*
+*I take time and write down some formulas, so user can enter more advanced parameters and don't broke program,
+*	f - sample rate, in Hz
+*	i = number of samples used to make spectrum
+*	t = time, how much time i represents, in ms
+*	fb = number of hertz in frequency bin
+*
+*	f = (1000 * i) / t; i * fb
+*	i = (t * f) / 1000; f : fb
+*	t = (1000 * i) / f; 1000 / fb
+*	fb = f / i; 1000 / t
+*
+*	Example:
+*	User wants to sample audio at 48 kHz and get frequency intervals 20 hz
+*	i = f : fb
+*	i = 48 000 / 20 = 2 400
+*
+*	t = 1000 / fb
+*	t = 1000 / 20 = 50 ms
+*
+*	Size of dft must be 2 400 points and that is 50 ms
+*
+*	NOTE: You just can't get f or i from only t and fb, trust me I tried. I literally write down math proof why it is impossible! Why? Take formulas for seconds instead ms
+*	t = i / f
+*	fb = f / i
+*	It's just ratio of these two.
+*
+*	BUT, I was capable of creating this:
+*
+*	f = (t * fb) / (1000 : f) :)
+*
+*/
 int settings::calc_advanced()
 {
 	//if (sampling_freq == 0 || dft_size == 0 || time == 0 || frequency_bin == 0)
@@ -396,7 +428,7 @@ int settings::calc_advanced()
 	{
 		if (time != 0)
 		{
-			frequency_bin = 1000 / time;
+			frequency_bin = (1000 / time);
 		}
 		else
 		{
