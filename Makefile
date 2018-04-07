@@ -1,6 +1,6 @@
 SHELL = /bin/bash
 
-CXXFLAGS = -Wall -pthread -lstdc++fs -std=c++17 -Iheaders
+CXXFLAGS = -Wall -lrt -lm -lasound -ljack -pthread -lstdc++fs -std=c++17 -Iheaders
 CXX = g++
 LIBS = -lfftw3 -lportaudio
 
